@@ -6,6 +6,7 @@
     "inventory": "Inventory",
     "items": "Items",
     "item_groups": "Item Groups",
+    "uom_conversion_groups": "UOM Conversion Group",
     "uoms": "UOM",
     "warehousing": "Warehousing",
     "warehouses": "Warehouses",
@@ -46,6 +47,9 @@
     "title": "Item Groups",
     "parent_group": "Parent Group",
     "delete_confirm": "Delete this group?"
+  },
+  "uom_conversion_groups": {
+    "delete_confirm": "Delete this UOM Conversion Group?"
   },
   "uoms": {
     "title": "Units of Measure",

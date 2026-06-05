@@ -6,6 +6,7 @@
     "inventory": "المخزون",
     "items": "الأصناف",
     "item_groups": "مجموعات الأصناف",
+    "uom_conversion_groups": "مجموعات تحويل وحدات القياس",
     "uoms": "وحدات القياس",
     "warehousing": "المستودعات",
     "warehouses": "المستودعات",
@@ -46,6 +47,9 @@
     "title": "مجموعات الأصناف",
     "parent_group": "المجموعة الأصل",
     "delete_confirm": "حذف هذه المجموعة؟"
+  },
+  "uom_conversion_groups": {
+    "delete_confirm": "حذف مجموعة تحويل وحدة القياس؟"
   },
   "uoms": {
     "title": "وحدات القياس",

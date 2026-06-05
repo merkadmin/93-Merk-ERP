@@ -1,0 +1,74 @@
+<h5 class="mb-4"><i class="ki-outline ki-arrows-loop fs-2 me-2"></i>{{ 'stock_movement.title' | translate }}</h5>
+
+<div class="card" style="max-width:650px">
+  <div class="card-body">
+    <form (ngSubmit)="post()">
+      <div class="row g-3">
+
+        <div class="col-12">
+          <label class="form-label">{{ 'stock_movement.item' | translate }} <span class="text-danger">*</span></label>
+          <select class="form-select" [(ngModel)]="form.itemId" name="itemId" required>
+            <option [ngValue]="0">{{ 'stock_movement.select_item' | translate }}</option>
+            <option *ngFor="let i of items()" [ngValue]="i.itemId">{{ i.itemCode }} — {{ i.itemName }}</option>
+          </select>
+        </div>
+
+        <div class="col-12">
+          <label class="form-label">{{ 'stock_movement.warehouse' | translate }} <span class="text-danger">*</span></label>
+          <select class="form-select" [(ngModel)]="form.warehouseId" name="warehouseId" required>
+            <option [ngValue]="0">{{ 'stock_movement.select_warehouse' | translate }}</option>
+            <option *ngFor="let w of warehouses()" [ngValue]="w.warehouseId">{{ w.name }}</option>
+          </select>
+        </div>
+
+        <div class="col-6">
+          <label class="form-label">{{ 'stock_movement.qty' | translate }} <span class="text-danger">*</span></label>
+          <input class="form-control" type="number" step="0.001" [(ngModel)]="form.qty" name="qty" required>
+          <div class="form-text">{{ 'stock_movement.qty_hint' | translate }}</div>
+        </div>
+
+        <div class="col-6">
+          <label class="form-label">{{ 'stock_movement.valuation_rate' | translate }}</label>
+          <input class="form-control" type="number" step="0.01" [(ngModel)]="form.valuationRate" name="valuationRate">
+        </div>
+
+        <div class="col-6">
+          <label class="form-label">{{ 'stock_movement.voucher_type' | translate }}</label>
+          <select class="form-select" [(ngModel)]="form.voucherType" name="voucherType">
+            <option>StockEntry</option>
+            <option>PurchaseReceipt</option>
+            <option>DeliveryNote</option>
+            <option>StockReconciliation</option>
+          </select>
+        </div>
+
+        <div class="col-6">
+          <label class="form-label">{{ 'stock_movement.voucher_no' | translate }}</label>
+          <input class="form-control" [(ngModel)]="form.voucherNo" name="voucherNo">
+        </div>
+
+        <div class="col-6">
+          <label class="form-label">{{ 'stock_movement.batch_no' | translate }}</label>
+          <input class="form-control" [(ngModel)]="form.batchNo" name="batchNo">
+        </div>
+
+        <div class="col-6">
+          <label class="form-label">{{ 'stock_movement.posting_date' | translate }} <span class="text-danger">*</span></label>
+          <input class="form-control" type="date" [(ngModel)]="form.postingDate" name="postingDate" required>
+        </div>
+
+      </div>
+
+      <div class="mt-4 d-flex gap-2 align-items-center">
+        <button type="submit" class="btn btn-success" [disabled]="posting()">
+          <span *ngIf="posting()" class="spinner-border spinner-border-sm me-1"></span>
+          {{ 'stock_movement.post' | translate }}
+        </button>
+        <span *ngIf="success()" class="text-success fw-semibold">
+          <i class="ki-outline ki-check-circle fs-5"></i> {{ 'stock_movement.posted_success' | translate }}
+        </span>
+        <span *ngIf="error()" class="text-danger">{{ error() }}</span>
+      </div>
+    </form>
+  </div>
+</div>

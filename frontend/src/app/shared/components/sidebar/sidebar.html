@@ -47,6 +47,13 @@
         </div>
 
         <div class="menu-item">
+          <a class="menu-link py-3" routerLink="/uom-conversion-groups" routerLinkActive="active" (click)="closeSidebar()">
+            <span class="menu-icon"><i class="ki-outline ki-abstract-14 fs-2"></i></span>
+            <span class="menu-title">{{ 'nav.uom_conversion_groups' | translate }}</span>
+          </a>
+        </div>
+
+        <div class="menu-item">
           <a class="menu-link py-3" routerLink="/uoms" routerLinkActive="active" (click)="closeSidebar()">
             <span class="menu-icon"><i class="ki-outline ki-ruler fs-2"></i></span>
             <span class="menu-title">{{ 'nav.uoms' | translate }}</span>

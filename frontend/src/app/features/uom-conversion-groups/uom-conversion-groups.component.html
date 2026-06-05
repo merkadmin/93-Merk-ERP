@@ -1,0 +1,60 @@
+<h5 class="mb-4">
+  <i class="ki-outline ki-abstract-14 fs-2 me-2"></i>
+  {{ 'nav.uom_conversion_groups' | translate }}
+</h5>
+
+<!-- Add / Edit form -->
+<div class="card mb-6" style="max-width:520px">
+  <div class="card-body">
+    <div class="row g-3">
+      <div class="col-12">
+        <label class="form-label">{{ 'common.name' | translate }} (EN)</label>
+        <input class="form-control" [(ngModel)]="form.name_EN" name="name_EN">
+      </div>
+      <div class="col-12">
+        <label class="form-label">{{ 'common.name' | translate }} (AR)</label>
+        <input class="form-control" [(ngModel)]="form.name_AR" name="name_AR">
+      </div>
+      <div class="col-12 d-flex gap-2">
+        <button class="btn btn-primary" (click)="save()">
+          <i class="ki-outline ki-check fs-4"></i> {{ 'common.save' | translate }}
+        </button>
+        <button class="btn btn-light" *ngIf="editing()" (click)="cancelEdit()">
+          {{ 'common.cancel' | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Table -->
+<div class="card">
+  <div class="card-body p-0">
+    <table class="table table-row-dashed table-row-gray-300 align-middle gs-4 gy-3 mb-0">
+      <thead>
+        <tr class="fw-bold text-muted bg-light">
+          <th>{{ 'common.name' | translate }} (EN)</th>
+          <th>{{ 'common.name' | translate }} (AR)</th>
+          <th class="text-end">{{ 'common.add' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let g of groups()">
+          <td>{{ g.name_EN }}</td>
+          <td>{{ g.name_AR }}</td>
+          <td class="text-end">
+            <button class="btn btn-icon btn-sm btn-light-primary me-1" (click)="startEdit(g)">
+              <i class="ki-outline ki-pencil fs-4"></i>
+            </button>
+            <button class="btn btn-icon btn-sm btn-light-danger" (click)="delete(g.id)">
+              <i class="ki-outline ki-trash fs-4"></i>
+            </button>
+          </td>
+        </tr>
+        <tr *ngIf="groups().length === 0">
+          <td colspan="3" class="text-center text-muted py-6">—</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
