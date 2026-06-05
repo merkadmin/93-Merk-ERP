@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using MerkERP.Core.Models;
 
 namespace MerkERP.DAL.Context;
@@ -12,6 +12,7 @@ public class MerkDbContext : DbContext
 	public DbSet<UOM_cs> UOM_cs { get; set; }
 	public DbSet<Item_cs> Item_cs { get; set; }
 	public DbSet<ItemUOMConversion_cs> ItemUOMConversion_cs { get; set; }
+	public DbSet<UOMConversionFactor_cs> UOMConversionFactor_cs { get; set; }
 	public DbSet<WareHouse_cs> WareHouse_cs { get; set; }
 	public DbSet<WarehouseTransaction> WarehouseTransaction { get; set; }
 	public DbSet<StockLedgerTransaction> StockLedgerTransaction { get; set; }
@@ -24,6 +25,7 @@ public class MerkDbContext : DbContext
 		m.Entity<UOM_cs>().HasKey(e => e.UOMId);
 		m.Entity<Item_cs>().HasKey(e => e.ItemId);
 		m.Entity<ItemUOMConversion_cs>().HasKey(e => e.Id);
+		m.Entity<UOMConversionFactor_cs>().HasKey(e => e.Id);
 		m.Entity<WareHouse_cs>().HasKey(e => e.WarehouseId);
 		m.Entity<WarehouseTransaction>().HasKey(e => e.BinId);
 		m.Entity<StockLedgerTransaction>().HasKey(e => e.SLTId);
@@ -53,6 +55,11 @@ public class MerkDbContext : DbContext
 		m.Entity<ItemUOMConversion_cs>()
 			.HasOne(c => c.UOM).WithMany(u => u.Conversions).HasForeignKey(c => c.UOMId).OnDelete(DeleteBehavior.Restrict);
 
+		m.Entity<UOMConversionFactor_cs>()
+			.HasOne(g => g.UOMFrom).WithMany().HasForeignKey(g => g.UOMFromId).OnDelete(DeleteBehavior.Restrict);
+		m.Entity<UOMConversionFactor_cs>()
+			.HasOne(g => g.UOMTo).WithMany().HasForeignKey(g => g.UOMToId).OnDelete(DeleteBehavior.Restrict);
+
 		m.Entity<WarehouseTransaction>()
 			.HasOne(b => b.Item).WithMany(i => i.WarehouseTransactions).HasForeignKey(b => b.ItemId).OnDelete(DeleteBehavior.Restrict);
 		m.Entity<WarehouseTransaction>()
@@ -72,9 +79,9 @@ public class MerkDbContext : DbContext
 			.IsUnique();
 
 		m.Entity<ItemType_s>().HasData(
-			new ItemType_s { ItemTypeId = 1, Name = "Stock Item" },
-			new ItemType_s { ItemTypeId = 2, Name = "Service" },
-			new ItemType_s { ItemTypeId = 3, Name = "Non-Stock Item" }
+			new ItemType_s { ItemTypeId = 1L, Name = "Stock Item" },
+			new ItemType_s { ItemTypeId = 2L, Name = "Service" },
+			new ItemType_s { ItemTypeId = 3L, Name = "Non-Stock Item" }
 		);
 	}
 }

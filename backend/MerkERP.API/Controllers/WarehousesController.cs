@@ -14,7 +14,7 @@ public class WarehousesController(MerkDbContext db) : ControllerBase
 		Ok(await db.WareHouse_cs.OrderBy(w => w.Name).ToListAsync());
 
 	[HttpGet("{id}")]
-	public async Task<IActionResult> Get(int id) =>
+	public async Task<IActionResult> Get(long id) =>
 		await db.WareHouse_cs.FindAsync(id) is { } e ? Ok(e) : NotFound();
 
 	[HttpPost]
@@ -26,7 +26,7 @@ public class WarehousesController(MerkDbContext db) : ControllerBase
 	}
 
 	[HttpPut("{id}")]
-	public async Task<IActionResult> Update(int id, WareHouse_cs e)
+	public async Task<IActionResult> Update(long id, WareHouse_cs e)
 	{
 		if (id != e.WarehouseId) return BadRequest();
 		db.WareHouse_cs.Update(e);
@@ -35,7 +35,7 @@ public class WarehousesController(MerkDbContext db) : ControllerBase
 	}
 
 	[HttpDelete("{id}")]
-	public async Task<IActionResult> Delete(int id)
+	public async Task<IActionResult> Delete(long id)
 	{
 		var e = await db.WareHouse_cs.FindAsync(id);
 		if (e is null) return NotFound();

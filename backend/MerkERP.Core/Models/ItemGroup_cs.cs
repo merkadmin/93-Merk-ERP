@@ -2,9 +2,9 @@ namespace MerkERP.Core.Models;
 
 public class ItemGroup_cs
 {
-	public int ItemGroupId { get; set; }
+	public long ItemGroupId { get; set; }
 	public string Name { get; set; } = string.Empty;
-	public int? ParentItemGroupId { get; set; }
+	public long? ParentItemGroupId { get; set; }
 	public bool IsGroup { get; set; }
 	public bool IsActive { get; set; } = true;
 

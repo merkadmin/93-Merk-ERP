@@ -4,6 +4,7 @@ using MerkERP.DAL.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MerkERP.DAL.Migrations
 {
     [DbContext(typeof(MerkDbContext))]
-    partial class MerkDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260605192352_AllIdsToLong_AddUOMConversionGroup")]
+    partial class AllIdsToLong_AddUOMConversionGroup
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -216,7 +219,7 @@ namespace MerkERP.DAL.Migrations
                     b.ToTable("StockLedgerTransaction");
                 });
 
-            modelBuilder.Entity("MerkERP.Core.Models.UOMConversionFactor_cs", b =>
+            modelBuilder.Entity("MerkERP.Core.Models.UOMConversionGroup_cs", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -239,7 +242,7 @@ namespace MerkERP.DAL.Migrations
 
                     b.HasIndex("UOMToId");
 
-                    b.ToTable("UOMConversionFactor_cs");
+                    b.ToTable("UOMConversionGroup_cs");
                 });
 
             modelBuilder.Entity("MerkERP.Core.Models.UOM_cs", b =>
@@ -413,7 +416,7 @@ namespace MerkERP.DAL.Migrations
                     b.Navigation("Warehouse");
                 });
 
-            modelBuilder.Entity("MerkERP.Core.Models.UOMConversionFactor_cs", b =>
+            modelBuilder.Entity("MerkERP.Core.Models.UOMConversionGroup_cs", b =>
                 {
                     b.HasOne("MerkERP.Core.Models.UOM_cs", "UOMFrom")
                         .WithMany()

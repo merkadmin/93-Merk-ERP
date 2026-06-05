@@ -13,7 +13,7 @@ public class Repository<T> : IRepository<T> where T : class
 
 	public async Task<IEnumerable<T>> GetAllAsync() => await _set.ToListAsync();
 
-	public async Task<T?> GetByIdAsync(int id) => await _set.FindAsync(id);
+	public async Task<T?> GetByIdAsync(long id) => await _set.FindAsync(id);
 
 	public async Task<T> CreateAsync(T entity)
 	{
@@ -29,7 +29,7 @@ public class Repository<T> : IRepository<T> where T : class
 		return entity;
 	}
 
-	public async Task<bool> DeleteAsync(int id)
+	public async Task<bool> DeleteAsync(long id)
 	{
 		var entity = await _set.FindAsync(id);
 		if (entity is null) return false;

@@ -9,13 +9,13 @@ namespace MerkERP.API.Controllers;
 public class UOMsController(IRepository<UOM_cs> repo) : ControllerBase
 {
 	[HttpGet] public async Task<IActionResult> GetAll() => Ok(await repo.GetAllAsync());
-	[HttpGet("{id}")] public async Task<IActionResult> Get(int id) => await repo.GetByIdAsync(id) is { } e ? Ok(e) : NotFound();
+	[HttpGet("{id}")] public async Task<IActionResult> Get(long id) => await repo.GetByIdAsync(id) is { } e ? Ok(e) : NotFound();
 	[HttpPost] public async Task<IActionResult> Create(UOM_cs e) => Ok(await repo.CreateAsync(e));
 	[HttpPut("{id}")]
-	public async Task<IActionResult> Update(int id, UOM_cs e)
+	public async Task<IActionResult> Update(long id, UOM_cs e)
 	{
 		if (id != e.UOMId) return BadRequest();
 		return Ok(await repo.UpdateAsync(e));
 	}
-	[HttpDelete("{id}")] public async Task<IActionResult> Delete(int id) => await repo.DeleteAsync(id) ? NoContent() : NotFound();
+	[HttpDelete("{id}")] public async Task<IActionResult> Delete(long id) => await repo.DeleteAsync(id) ? NoContent() : NotFound();
 }

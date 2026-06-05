@@ -2,8 +2,8 @@ namespace MerkERP.Core.DTOs;
 
 public class StockMovementDto
 {
-	public int ItemId { get; set; }
-	public int WarehouseId { get; set; }
+	public long ItemId { get; set; }
+	public long WarehouseId { get; set; }
 	public decimal Qty { get; set; }
 	public decimal ValuationRate { get; set; }
 	public string VoucherType { get; set; } = "StockEntry";

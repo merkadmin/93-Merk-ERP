@@ -14,7 +14,7 @@ public class ItemGroupsController(MerkDbContext db) : ControllerBase
 		Ok(await db.ItemGroup_cs.OrderBy(g => g.Name).ToListAsync());
 
 	[HttpGet("{id}")]
-	public async Task<IActionResult> Get(int id) =>
+	public async Task<IActionResult> Get(long id) =>
 		await db.ItemGroup_cs.FindAsync(id) is { } e ? Ok(e) : NotFound();
 
 	[HttpPost]
@@ -26,7 +26,7 @@ public class ItemGroupsController(MerkDbContext db) : ControllerBase
 	}
 
 	[HttpPut("{id}")]
-	public async Task<IActionResult> Update(int id, ItemGroup_cs e)
+	public async Task<IActionResult> Update(long id, ItemGroup_cs e)
 	{
 		if (id != e.ItemGroupId) return BadRequest();
 		db.ItemGroup_cs.Update(e);
@@ -35,7 +35,7 @@ public class ItemGroupsController(MerkDbContext db) : ControllerBase
 	}
 
 	[HttpDelete("{id}")]
-	public async Task<IActionResult> Delete(int id)
+	public async Task<IActionResult> Delete(long id)
 	{
 		var e = await db.ItemGroup_cs.FindAsync(id);
 		if (e is null) return NotFound();

@@ -19,7 +19,7 @@ public class ItemsController(MerkDbContext db) : ControllerBase
 			.ToListAsync());
 
 	[HttpGet("{id}")]
-	public async Task<IActionResult> Get(int id) =>
+	public async Task<IActionResult> Get(long id) =>
 		await db.Item_cs
 			.Include(i => i.ItemGroup)
 			.Include(i => i.ItemType)
@@ -35,7 +35,7 @@ public class ItemsController(MerkDbContext db) : ControllerBase
 	}
 
 	[HttpPut("{id}")]
-	public async Task<IActionResult> Update(int id, Item_cs e)
+	public async Task<IActionResult> Update(long id, Item_cs e)
 	{
 		if (id != e.ItemId) return BadRequest();
 		db.Item_cs.Update(e);
@@ -44,7 +44,7 @@ public class ItemsController(MerkDbContext db) : ControllerBase
 	}
 
 	[HttpDelete("{id}")]
-	public async Task<IActionResult> Delete(int id)
+	public async Task<IActionResult> Delete(long id)
 	{
 		var e = await db.Item_cs.FindAsync(id);
 		if (e is null) return NotFound();

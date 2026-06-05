@@ -2,9 +2,9 @@ namespace MerkERP.Core.Models;
 
 public class ItemUOMConversion_cs
 {
-	public int Id { get; set; }
-	public int ItemId { get; set; }
-	public int UOMId { get; set; }
+	public long Id { get; set; }
+	public long ItemId { get; set; }
+	public long UOMId { get; set; }
 	public decimal ConversionFactor { get; set; }
 
 	public Item_cs Item { get; set; } = null!;

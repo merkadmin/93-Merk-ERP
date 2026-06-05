@@ -2,9 +2,9 @@ namespace MerkERP.Core.Models;
 
 public class WarehouseTransaction
 {
-	public int BinId { get; set; }
-	public int ItemId { get; set; }
-	public int WarehouseId { get; set; }
+	public long BinId { get; set; }
+	public long ItemId { get; set; }
+	public long WarehouseId { get; set; }
 	public decimal ActualQty { get; set; }
 	public decimal ReservedQty { get; set; }
 	public decimal OrderedQty { get; set; }

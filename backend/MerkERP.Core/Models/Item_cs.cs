@@ -2,12 +2,12 @@ namespace MerkERP.Core.Models;
 
 public class Item_cs
 {
-	public int ItemId { get; set; }
+	public long ItemId { get; set; }
 	public string ItemCode { get; set; } = string.Empty;
 	public string ItemName { get; set; } = string.Empty;
-	public int ItemGroupId { get; set; }
-	public int ItemTypeId { get; set; }
-	public int DefaultUOMId { get; set; }
+	public long ItemGroupId { get; set; }
+	public long ItemTypeId { get; set; }
+	public long DefaultUOMId { get; set; }
 	public string? Description { get; set; }
 	public bool HasBatch { get; set; }
 	public bool HasSerial { get; set; }

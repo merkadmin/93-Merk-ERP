@@ -2,9 +2,9 @@ namespace MerkERP.Core.Models;
 
 public class StockLedgerTransaction
 {
-	public int SLTId { get; set; }
-	public int ItemId { get; set; }
-	public int WarehouseId { get; set; }
+	public long SLTId { get; set; }
+	public long ItemId { get; set; }
+	public long WarehouseId { get; set; }
 	public DateOnly PostingDate { get; set; }
 	public TimeOnly PostingTime { get; set; }
 	public decimal ActualQty { get; set; }

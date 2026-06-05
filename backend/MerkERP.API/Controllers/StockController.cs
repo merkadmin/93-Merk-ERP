@@ -20,8 +20,8 @@ public class StockController(MerkDbContext db, StockService stockService) : Cont
 
 	[HttpGet("ledger")]
 	public async Task<IActionResult> GetLedger(
-		[FromQuery] int? itemId,
-		[FromQuery] int? warehouseId) =>
+		[FromQuery] long? itemId,
+		[FromQuery] long? warehouseId) =>
 		Ok(await db.StockLedgerTransaction
 			.Include(s => s.Item)
 			.Include(s => s.Warehouse)
