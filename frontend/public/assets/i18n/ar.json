@@ -11,5 +11,79 @@
     "warehouses": "المستودعات",
     "current_stock": "المخزون الحالي",
     "stock_movement": "حركة المخزون"
+  },
+  "common": {
+    "yes": "نعم",
+    "no": "لا",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "edit": "تعديل",
+    "delete": "حذف",
+    "add": "إضافة",
+    "name": "الاسم",
+    "active": "نشط",
+    "is_group": "مجموعة",
+    "parent": "الأصل",
+    "select": "— اختر —",
+    "none": "— لا شيء —",
+    "refresh": "تحديث"
+  },
+  "items": {
+    "title": "الأصناف",
+    "add": "إضافة صنف",
+    "code": "الكود",
+    "name": "الاسم",
+    "group": "المجموعة",
+    "type": "النوع",
+    "uom": "وحدة القياس",
+    "default_uom": "وحدة القياس الافتراضية",
+    "batch": "دفعة",
+    "serial": "تسلسلي",
+    "description": "الوصف",
+    "delete_confirm": "حذف هذا الصنف؟"
+  },
+  "item_groups": {
+    "title": "مجموعات الأصناف",
+    "parent_group": "المجموعة الأصل",
+    "delete_confirm": "حذف هذه المجموعة؟"
+  },
+  "uoms": {
+    "title": "وحدات القياس",
+    "whole_number": "عدد صحيح",
+    "whole_number_only": "عدد صحيح فقط",
+    "delete_confirm": "حذف وحدة القياس؟"
+  },
+  "warehouses": {
+    "title": "المستودعات",
+    "parent_warehouse": "المستودع الأصل",
+    "delete_confirm": "حذف هذا المستودع؟"
+  },
+  "stock": {
+    "title": "المخزون الحالي",
+    "item_code": "كود الصنف",
+    "item_name": "اسم الصنف",
+    "warehouse": "المستودع",
+    "actual_qty": "الكمية الفعلية",
+    "reserved": "محجوز",
+    "ordered": "مأمور",
+    "valuation_rate": "سعر التقييم",
+    "stock_value": "قيمة المخزون",
+    "no_entries": "لا توجد قيود مخزون."
+  },
+  "stock_movement": {
+    "title": "ترحيل حركة مخزون",
+    "item": "الصنف",
+    "warehouse": "المستودع",
+    "qty": "الكمية",
+    "valuation_rate": "سعر التقييم",
+    "voucher_type": "نوع السند",
+    "voucher_no": "رقم السند",
+    "batch_no": "رقم الدفعة",
+    "posting_date": "تاريخ الترحيل",
+    "qty_hint": "موجب = استلام | سالب = إصدار",
+    "post": "ترحيل الحركة",
+    "posted_success": "تم الترحيل بنجاح!",
+    "select_item": "— اختر الصنف —",
+    "select_warehouse": "— اختر المستودع —"
   }
 }

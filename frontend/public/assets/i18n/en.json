@@ -11,5 +11,79 @@
     "warehouses": "Warehouses",
     "current_stock": "Current Stock",
     "stock_movement": "Stock Movement"
+  },
+  "common": {
+    "yes": "Yes",
+    "no": "No",
+    "save": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete",
+    "add": "Add",
+    "name": "Name",
+    "active": "Active",
+    "is_group": "Is Group",
+    "parent": "Parent",
+    "select": "— Select —",
+    "none": "— None —",
+    "refresh": "Refresh"
+  },
+  "items": {
+    "title": "Items",
+    "add": "Add Item",
+    "code": "Code",
+    "name": "Name",
+    "group": "Group",
+    "type": "Type",
+    "uom": "UOM",
+    "default_uom": "Default UOM",
+    "batch": "Batch",
+    "serial": "Serial",
+    "description": "Description",
+    "delete_confirm": "Delete this item?"
+  },
+  "item_groups": {
+    "title": "Item Groups",
+    "parent_group": "Parent Group",
+    "delete_confirm": "Delete this group?"
+  },
+  "uoms": {
+    "title": "Units of Measure",
+    "whole_number": "Whole Number",
+    "whole_number_only": "Whole Number Only",
+    "delete_confirm": "Delete this UOM?"
+  },
+  "warehouses": {
+    "title": "Warehouses",
+    "parent_warehouse": "Parent Warehouse",
+    "delete_confirm": "Delete this warehouse?"
+  },
+  "stock": {
+    "title": "Current Stock",
+    "item_code": "Item Code",
+    "item_name": "Item Name",
+    "warehouse": "Warehouse",
+    "actual_qty": "Actual Qty",
+    "reserved": "Reserved",
+    "ordered": "Ordered",
+    "valuation_rate": "Valuation Rate",
+    "stock_value": "Stock Value",
+    "no_entries": "No stock entries found."
+  },
+  "stock_movement": {
+    "title": "Post Stock Movement",
+    "item": "Item",
+    "warehouse": "Warehouse",
+    "qty": "Qty",
+    "valuation_rate": "Valuation Rate",
+    "voucher_type": "Voucher Type",
+    "voucher_no": "Voucher No",
+    "batch_no": "Batch No",
+    "posting_date": "Posting Date",
+    "qty_hint": "Positive = Receipt | Negative = Issue",
+    "post": "Post Movement",
+    "posted_success": "Posted successfully!",
+    "select_item": "— Select Item —",
+    "select_warehouse": "— Select Warehouse —"
   }
 }

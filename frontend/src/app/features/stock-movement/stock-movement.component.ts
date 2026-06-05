@@ -1,6 +1,7 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgFor, NgIf } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 import { ApiService } from '../../core/api.service';
 
 interface Item      { itemId: number; itemCode: string; itemName: string; }
@@ -20,9 +21,9 @@ interface MovementForm {
 @Component({
   selector: 'app-stock-movement',
   standalone: true,
-  imports: [FormsModule, NgFor, NgIf],
+  imports: [FormsModule, NgFor, NgIf, TranslatePipe],
   template: `
-    <h5 class="mb-4"><i class="bi bi-arrow-left-right me-2"></i>Post Stock Movement</h5>
+    <h5 class="mb-4"><i class="ki-outline ki-arrows-loop fs-2 me-2"></i>{{ 'stock_movement.title' | translate }}</h5>
 
     <div class="card" style="max-width:650px">
       <div class="card-body">
@@ -30,34 +31,34 @@ interface MovementForm {
           <div class="row g-3">
 
             <div class="col-12">
-              <label class="form-label">Item <span class="text-danger">*</span></label>
+              <label class="form-label">{{ 'stock_movement.item' | translate }} <span class="text-danger">*</span></label>
               <select class="form-select" [(ngModel)]="form.itemId" name="itemId" required>
-                <option [ngValue]="0">— Select Item —</option>
+                <option [ngValue]="0">{{ 'stock_movement.select_item' | translate }}</option>
                 <option *ngFor="let i of items()" [ngValue]="i.itemId">{{ i.itemCode }} — {{ i.itemName }}</option>
               </select>
             </div>
 
             <div class="col-12">
-              <label class="form-label">Warehouse <span class="text-danger">*</span></label>
+              <label class="form-label">{{ 'stock_movement.warehouse' | translate }} <span class="text-danger">*</span></label>
               <select class="form-select" [(ngModel)]="form.warehouseId" name="warehouseId" required>
-                <option [ngValue]="0">— Select Warehouse —</option>
+                <option [ngValue]="0">{{ 'stock_movement.select_warehouse' | translate }}</option>
                 <option *ngFor="let w of warehouses()" [ngValue]="w.warehouseId">{{ w.name }}</option>
               </select>
             </div>
 
             <div class="col-6">
-              <label class="form-label">Qty <span class="text-danger">*</span></label>
+              <label class="form-label">{{ 'stock_movement.qty' | translate }} <span class="text-danger">*</span></label>
               <input class="form-control" type="number" step="0.001" [(ngModel)]="form.qty" name="qty" required>
-              <div class="form-text">Positive = Receipt &nbsp;|&nbsp; Negative = Issue</div>
+              <div class="form-text">{{ 'stock_movement.qty_hint' | translate }}</div>
             </div>
 
             <div class="col-6">
-              <label class="form-label">Valuation Rate</label>
+              <label class="form-label">{{ 'stock_movement.valuation_rate' | translate }}</label>
               <input class="form-control" type="number" step="0.01" [(ngModel)]="form.valuationRate" name="valuationRate">
             </div>
 
             <div class="col-6">
-              <label class="form-label">Voucher Type</label>
+              <label class="form-label">{{ 'stock_movement.voucher_type' | translate }}</label>
               <select class="form-select" [(ngModel)]="form.voucherType" name="voucherType">
                 <option>StockEntry</option>
                 <option>PurchaseReceipt</option>
@@ -67,17 +68,17 @@ interface MovementForm {
             </div>
 
             <div class="col-6">
-              <label class="form-label">Voucher No</label>
+              <label class="form-label">{{ 'stock_movement.voucher_no' | translate }}</label>
               <input class="form-control" [(ngModel)]="form.voucherNo" name="voucherNo">
             </div>
 
             <div class="col-6">
-              <label class="form-label">Batch No</label>
+              <label class="form-label">{{ 'stock_movement.batch_no' | translate }}</label>
               <input class="form-control" [(ngModel)]="form.batchNo" name="batchNo">
             </div>
 
             <div class="col-6">
-              <label class="form-label">Posting Date <span class="text-danger">*</span></label>
+              <label class="form-label">{{ 'stock_movement.posting_date' | translate }} <span class="text-danger">*</span></label>
               <input class="form-control" type="date" [(ngModel)]="form.postingDate" name="postingDate" required>
             </div>
 
@@ -86,9 +87,11 @@ interface MovementForm {
           <div class="mt-4 d-flex gap-2 align-items-center">
             <button type="submit" class="btn btn-success" [disabled]="posting()">
               <span *ngIf="posting()" class="spinner-border spinner-border-sm me-1"></span>
-              Post Movement
+              {{ 'stock_movement.post' | translate }}
             </button>
-            <span *ngIf="success()" class="text-success fw-semibold"><i class="bi bi-check-circle me-1"></i>Posted successfully!</span>
+            <span *ngIf="success()" class="text-success fw-semibold">
+              <i class="ki-outline ki-check-circle fs-5"></i> {{ 'stock_movement.posted_success' | translate }}
+            </span>
             <span *ngIf="error()" class="text-danger">{{ error() }}</span>
           </div>
         </form>
