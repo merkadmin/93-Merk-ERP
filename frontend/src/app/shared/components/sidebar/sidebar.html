@@ -1,0 +1,92 @@
+<div id="kt_app_sidebar" class="app-sidebar flex-column" [class.sidebar-mobile-open]="sidebarOpen">
+
+  <!-- Logo -->
+  <div class="app-sidebar-logo d-flex align-items-center px-4 h-70px border-bottom border-bottom-dashed"
+       id="kt_app_sidebar_logo">
+    <a routerLink="/" (click)="closeSidebar()"
+       class="d-flex align-items-center gap-3 flex-grow-1 text-decoration-none">
+      <i class="ki-outline ki-abstract-26 fs-1 text-primary"></i>
+      <span class="fw-bolder fs-4 text-gray-800 lh-1">{{ 'app.title' | translate }}</span>
+    </a>
+    <!-- Close button — mobile only -->
+    <button class="btn btn-icon btn-sm btn-light d-flex d-lg-none" (click)="closeSidebar()">
+      <i class="ki-outline ki-cross fs-2"></i>
+    </button>
+  </div>
+
+  <!-- Scrollable menu area -->
+  <div class="app-sidebar-menu overflow-hidden flex-column-fluid">
+    <div id="kt_app_sidebar_menu_wrapper"
+         class="app-sidebar-wrapper hover-scroll-overlay-y my-3 px-3"
+         data-kt-scroll="true" data-kt-scroll-activate="true" data-kt-scroll-height="auto"
+         data-kt-scroll-dependencies="#kt_app_sidebar_logo" data-kt-scroll-offset="5px">
+
+      <div class="menu menu-column menu-rounded menu-sub-indention fw-semibold">
+
+        <!-- ── Inventory section ─────────────────────────────────── -->
+        <div class="menu-item">
+          <div class="menu-content pt-4 pb-2">
+            <span class="text-gray-600 text-uppercase fw-bold fs-7 ls-1">
+              {{ 'nav.inventory' | translate }}
+            </span>
+          </div>
+        </div>
+
+        <div class="menu-item">
+          <a class="menu-link py-3" routerLink="/items" routerLinkActive="active" (click)="closeSidebar()">
+            <span class="menu-icon"><i class="ki-outline ki-package fs-2"></i></span>
+            <span class="menu-title">{{ 'nav.items' | translate }}</span>
+          </a>
+        </div>
+
+        <div class="menu-item">
+          <a class="menu-link py-3" routerLink="/item-groups" routerLinkActive="active" (click)="closeSidebar()">
+            <span class="menu-icon"><i class="ki-outline ki-category fs-2"></i></span>
+            <span class="menu-title">{{ 'nav.item_groups' | translate }}</span>
+          </a>
+        </div>
+
+        <div class="menu-item">
+          <a class="menu-link py-3" routerLink="/uoms" routerLinkActive="active" (click)="closeSidebar()">
+            <span class="menu-icon"><i class="ki-outline ki-ruler fs-2"></i></span>
+            <span class="menu-title">{{ 'nav.uoms' | translate }}</span>
+          </a>
+        </div>
+
+        <div class="separator mx-3 my-1"></div>
+
+        <!-- ── Warehouse section ─────────────────────────────────── -->
+        <div class="menu-item">
+          <div class="menu-content pt-4 pb-2">
+            <span class="text-gray-600 text-uppercase fw-bold fs-7 ls-1">
+              {{ 'nav.warehousing' | translate }}
+            </span>
+          </div>
+        </div>
+
+        <div class="menu-item">
+          <a class="menu-link py-3" routerLink="/warehouses" routerLinkActive="active" (click)="closeSidebar()">
+            <span class="menu-icon"><i class="ki-outline ki-home-2 fs-2"></i></span>
+            <span class="menu-title">{{ 'nav.warehouses' | translate }}</span>
+          </a>
+        </div>
+
+        <div class="menu-item">
+          <a class="menu-link py-3" routerLink="/stock" routerLinkActive="active" (click)="closeSidebar()">
+            <span class="menu-icon"><i class="ki-outline ki-chart-simple fs-2"></i></span>
+            <span class="menu-title">{{ 'nav.current_stock' | translate }}</span>
+          </a>
+        </div>
+
+        <div class="menu-item">
+          <a class="menu-link py-3" routerLink="/stock-movement" routerLinkActive="active" (click)="closeSidebar()">
+            <span class="menu-icon"><i class="ki-outline ki-arrows-loop fs-2"></i></span>
+            <span class="menu-title">{{ 'nav.stock_movement' | translate }}</span>
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div>

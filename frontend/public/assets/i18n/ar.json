@@ -1,0 +1,15 @@
+{
+  "app": {
+    "title": "ميرك ERP"
+  },
+  "nav": {
+    "inventory": "المخزون",
+    "items": "الأصناف",
+    "item_groups": "مجموعات الأصناف",
+    "uoms": "وحدات القياس",
+    "warehousing": "المستودعات",
+    "warehouses": "المستودعات",
+    "current_stock": "المخزون الحالي",
+    "stock_movement": "حركة المخزون"
+  }
+}

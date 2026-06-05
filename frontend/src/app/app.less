@@ -1,0 +1,30 @@
+/* ── Quick-access bar ─────────────────────────────────────────────────── */
+.quick-access-bar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.qa-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 6px 10px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--bs-body-color);
+  cursor: pointer;
+  transition: background 0.15s;
+  text-decoration: none;
+
+  &:hover, &.qa-btn-active {
+    background: var(--bs-secondary-bg);
+  }
+}
+
+.lang-btn {
+  min-width: 64px;
+  font-size: 0.8rem;
+}

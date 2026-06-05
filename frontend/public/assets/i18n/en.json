@@ -1,0 +1,15 @@
+{
+  "app": {
+    "title": "Merk ERP"
+  },
+  "nav": {
+    "inventory": "Inventory",
+    "items": "Items",
+    "item_groups": "Item Groups",
+    "uoms": "Units of Measure",
+    "warehousing": "Warehousing",
+    "warehouses": "Warehouses",
+    "current_stock": "Current Stock",
+    "stock_movement": "Stock Movement"
+  }
+}

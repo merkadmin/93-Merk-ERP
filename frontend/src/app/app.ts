@@ -1,25 +1,33 @@
-import { Component } from '@angular/core';
-import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+import { Component, ViewChild, HostListener } from '@angular/core';
+import { CommonModule, NgTemplateOutlet } from '@angular/common';
+import { RouterOutlet, RouterLink } from '@angular/router';
+import { TranslatePipe } from '@ngx-translate/core';
+import { ThemeService } from './services/theme.service';
+import { LanguageService } from './services/language.service';
+import { SidebarComponent } from './shared/components/sidebar/sidebar';
+import { LoadingSpinnerComponent } from './shared/components/loading-spinner/loading-spinner';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive],
-  template: `
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark px-3">
-      <a class="navbar-brand fw-bold" routerLink="/"><i class="bi bi-boxes me-2"></i>Merk ERP</a>
-      <div class="navbar-nav flex-row gap-1 ms-3">
-        <a class="nav-link px-2" routerLink="/items"          routerLinkActive="text-warning">Items</a>
-        <a class="nav-link px-2" routerLink="/item-groups"    routerLinkActive="text-warning">Item Groups</a>
-        <a class="nav-link px-2" routerLink="/uoms"           routerLinkActive="text-warning">UOMs</a>
-        <a class="nav-link px-2" routerLink="/warehouses"     routerLinkActive="text-warning">Warehouses</a>
-        <a class="nav-link px-2" routerLink="/stock"          routerLinkActive="text-warning">Current Stock</a>
-        <a class="nav-link px-2" routerLink="/stock-movement" routerLinkActive="text-warning">Stock Movement</a>
-      </div>
-    </nav>
-    <div class="container-fluid p-4">
-      <router-outlet />
-    </div>
-  `,
+  imports: [CommonModule, NgTemplateOutlet, RouterOutlet, RouterLink, TranslatePipe, SidebarComponent, LoadingSpinnerComponent],
+  templateUrl: './app.html',
+  styleUrl: './app.less'
 })
-export class App {}
+export class App {
+  @ViewChild(SidebarComponent) private sidebarRef!: SidebarComponent;
+
+  userMenuOpen = false;
+
+  constructor(
+    public themeService:  ThemeService,
+    public langService:   LanguageService,
+  ) {}
+
+  @HostListener('document:click')
+  closeMenus() { this.userMenuOpen = false; }
+
+  toggleUserMenu(e: Event) { e.stopPropagation(); this.userMenuOpen = !this.userMenuOpen; }
+
+  openSidebar() { this.sidebarRef?.openSidebar(); }
+}
