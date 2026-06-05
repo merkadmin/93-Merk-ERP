@@ -1,6 +1,5 @@
-﻿import { Component, inject, OnInit, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { NgFor, NgIf } from '@angular/common';
+import { Component, inject, OnInit, signal } from '@angular/core';
+import { Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ApiService } from '../../core/api.service';
 
@@ -15,20 +14,16 @@ interface UomConversionGroup {
 @Component({
   selector: 'app-uom-conversion-groups',
   standalone: true,
-  imports: [FormsModule, NgFor, NgIf, TranslatePipe],
+  imports: [TranslatePipe],
   templateUrl: './uom-conversion-groups.component.html',
   styleUrl: './uom-conversion-groups.component.less',
 })
 export class UomConversionGroupsComponent implements OnInit {
-  api      = inject(ApiService);
-  translate = inject(TranslateService);
-  groups   = signal<UomConversionGroup[]>([]);
-  editing  = signal(false);
-  form: Partial<UomConversionGroup> = this.blank();
+  private api       = inject(ApiService);
+  private router    = inject(Router);
+  private translate = inject(TranslateService);
 
-  blank(): Partial<UomConversionGroup> {
-    return { id: 0, name_EN: '', name_AR: '' };
-  }
+  groups = signal<UomConversionGroup[]>([]);
 
   ngOnInit() { this.load(); }
 
@@ -36,24 +31,12 @@ export class UomConversionGroupsComponent implements OnInit {
     this.api.get<UomConversionGroup[]>('uomconversiongroups').subscribe(d => this.groups.set(d));
   }
 
-  save() {
-    if (this.editing()) {
-      this.api.put<UomConversionGroup>(`uomconversiongroups/${this.form.id}`, this.form)
-        .subscribe(() => { this.cancelEdit(); this.load(); });
-    } else {
-      this.api.post<UomConversionGroup>('uomconversiongroups', this.form)
-        .subscribe(() => { this.form = this.blank(); this.load(); });
-    }
+  addNew() {
+    this.router.navigate(['/uom-conversion-groups/operation']);
   }
 
-  startEdit(g: UomConversionGroup) {
-    this.form = { ...g };
-    this.editing.set(true);
-  }
-
-  cancelEdit() {
-    this.form = this.blank();
-    this.editing.set(false);
+  edit(id: number) {
+    this.router.navigate(['/uom-conversion-groups/operation', id]);
   }
 
   delete(id: number) {
@@ -61,5 +44,3 @@ export class UomConversionGroupsComponent implements OnInit {
     this.api.delete(`uomconversiongroups/${id}`).subscribe(() => this.load());
   }
 }
-
-

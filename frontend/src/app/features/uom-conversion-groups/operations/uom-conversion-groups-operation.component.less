@@ -1,0 +1,18 @@
+:host {
+  display: block;
+}
+
+.field-name {
+  max-width: 32.5rem;
+}
+
+// RTL: show AR first (rightmost) then EN — swap column order
+:host-context([dir=rtl]) .col-name-ar { order: 1; }
+:host-context([dir=rtl]) .col-name-en { order: 2; }
+
+// RTL: row-reverse puts Save leftmost (left→right order),
+// !important overrides Bootstrap's justify-content-end !important
+:host-context([dir=rtl]) .card-footer {
+  flex-direction: row-reverse;
+  justify-content: flex-start !important;
+}

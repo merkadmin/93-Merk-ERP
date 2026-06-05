@@ -1,32 +1,13 @@
+<!-- Page title -->
 <div class="d-flex align-items-center bg-light-primary border border-dashed border-primary rounded py-4 px-6 mb-8">
   <i class="ki-outline ki-abstract-14 fs-2tx text-primary me-4"></i>
-  <div class="d-flex flex-column">
+  <div class="d-flex flex-column flex-grow-1">
     <h2 class="fw-bold text-gray-900 fs-3 mb-0">{{ 'nav.uom_conversion_groups' | translate }}</h2>
   </div>
-</div>
-
-<!-- Add / Edit form -->
-<div class="card mb-6" style="max-width:520px">
-  <div class="card-body">
-    <div class="row g-3">
-      <div class="col-12">
-        <label class="form-label">{{ 'common.name' | translate }} (EN)</label>
-        <input class="form-control" [(ngModel)]="form.name_EN" name="name_EN">
-      </div>
-      <div class="col-12">
-        <label class="form-label">{{ 'common.name' | translate }} (AR)</label>
-        <input class="form-control" [(ngModel)]="form.name_AR" name="name_AR">
-      </div>
-      <div class="col-12 d-flex gap-2">
-        <button class="btn btn-primary" (click)="save()">
-          <i class="ki-outline ki-check fs-4"></i> {{ 'common.save' | translate }}
-        </button>
-        <button class="btn btn-light" *ngIf="editing()" (click)="cancelEdit()">
-          {{ 'common.cancel' | translate }}
-        </button>
-      </div>
-    </div>
-  </div>
+  <button class="btn btn-primary btn-sm" (click)="addNew()">
+    <i class="ki-outline ki-plus fs-4 me-1"></i>
+    {{ 'common.add' | translate }}
+  </button>
 </div>
 
 <!-- Table -->
@@ -37,25 +18,28 @@
         <tr class="fw-bold text-muted bg-light">
           <th>{{ 'common.name' | translate }} (EN)</th>
           <th>{{ 'common.name' | translate }} (AR)</th>
-          <th class="text-end">{{ 'common.add' | translate }}</th>
+          <th class="text-end">{{ 'common.actions' | translate }}</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let g of groups()">
-          <td>{{ g.name_EN }}</td>
-          <td>{{ g.name_AR }}</td>
-          <td class="text-end">
-            <button class="btn btn-icon btn-sm btn-light-primary me-1" (click)="startEdit(g)">
-              <i class="ki-outline ki-pencil fs-4"></i>
-            </button>
-            <button class="btn btn-icon btn-sm btn-light-danger" (click)="delete(g.id)">
-              <i class="ki-outline ki-trash fs-4"></i>
-            </button>
-          </td>
-        </tr>
-        <tr *ngIf="groups().length === 0">
-          <td colspan="3" class="text-center text-muted py-6">—</td>
-        </tr>
+        @for (g of groups(); track g.id) {
+          <tr>
+            <td>{{ g.name_EN }}</td>
+            <td>{{ g.name_AR }}</td>
+            <td class="text-end">
+              <button class="btn btn-icon btn-sm btn-light-primary me-1" (click)="edit(g.id)">
+                <i class="ki-outline ki-pencil fs-4"></i>
+              </button>
+              <button class="btn btn-icon btn-sm btn-light-danger" (click)="delete(g.id)">
+                <i class="ki-outline ki-trash fs-4"></i>
+              </button>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="3" class="text-center text-muted py-6">—</td>
+          </tr>
+        }
       </tbody>
     </table>
   </div>

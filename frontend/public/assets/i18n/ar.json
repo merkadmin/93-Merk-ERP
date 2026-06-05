@@ -28,7 +28,10 @@
     "parent": "الأصل",
     "select": "— اختر —",
     "none": "— لا شيء —",
-    "refresh": "تحديث"
+    "refresh": "تحديث",
+    "actions": "إجراءات",
+    "validation_error": "حقول مطلوبة مفقودة",
+    "save_success": "تم الحفظ بنجاح"
   },
   "items": {
     "title": "الأصناف",
@@ -50,6 +53,8 @@
     "delete_confirm": "حذف هذه المجموعة؟"
   },
   "uom_conversion_groups": {
+    "add_title": "مجموعة تحويل وحدة قياس جديدة",
+    "edit_title": "تعديل مجموعة تحويل وحدة القياس",
     "delete_confirm": "حذف مجموعة تحويل وحدة القياس؟"
   },
   "uom_conversion_factors": {

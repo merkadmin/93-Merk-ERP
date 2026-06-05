@@ -5,6 +5,8 @@ export const routes: Routes = [
   { path: 'items',          loadComponent: () => import('./features/items/items.component').then(m => m.ItemsComponent) },
   { path: 'item-groups',    loadComponent: () => import('./features/item-groups/item-groups.component').then(m => m.ItemGroupsComponent) },
   { path: 'uom-conversion-groups', loadComponent: () => import('./features/uom-conversion-groups/uom-conversion-groups.component').then(m => m.UomConversionGroupsComponent) },
+  { path: 'uom-conversion-groups/operation',     loadComponent: () => import('./features/uom-conversion-groups/operations/uom-conversion-groups-operation.component').then(m => m.UomConversionGroupsOperationComponent) },
+  { path: 'uom-conversion-groups/operation/:id', loadComponent: () => import('./features/uom-conversion-groups/operations/uom-conversion-groups-operation.component').then(m => m.UomConversionGroupsOperationComponent) },
   { path: 'uoms',                   loadComponent: () => import('./features/uoms/uoms.component').then(m => m.UomsComponent) },
   { path: 'uom-conversion-factors', loadComponent: () => import('./features/uom-conversion-factors/uom-conversion-factors.component').then(m => m.UomConversionFactorsComponent) },
   { path: 'warehouses',     loadComponent: () => import('./features/warehouses/warehouses.component').then(m => m.WarehousesComponent) },

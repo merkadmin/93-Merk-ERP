@@ -1,0 +1,43 @@
+<!-- Page title -->
+<div class="d-flex align-items-center bg-light-primary border border-dashed border-primary rounded py-4 px-6 mb-8">
+  <i class="ki-outline ki-abstract-14 fs-2tx text-primary me-4"></i>
+  <div class="d-flex flex-column">
+    <h2 class="fw-bold text-gray-900 fs-3 mb-0">
+      {{ (isEdit() ? 'uom_conversion_groups.edit_title' : 'uom_conversion_groups.add_title') | translate }}
+    </h2>
+  </div>
+</div>
+
+<!-- Form card -->
+<div class="card">
+  <div class="card-body">
+    <div class="row g-4">
+
+      <div class="col-6 col-name-en">
+        <label class="form-label required">{{ 'common.name' | translate }} (EN)</label>
+        <input class="form-control field-name" [(ngModel)]="form.name_EN" name="name_EN" [placeholder]="'common.name' | translate">
+      </div>
+
+      <div class="col-6 col-name-ar">
+        <label class="form-label required">{{ 'common.name' | translate }} (AR)</label>
+        <input class="form-control field-name" [(ngModel)]="form.name_AR" name="name_AR" [placeholder]="'common.name' | translate">
+      </div>
+
+    </div>
+  </div>
+
+  <div class="card-footer d-flex justify-content-end gap-3">
+    <button class="btn btn-primary" (click)="save()" [disabled]="saving()">
+      @if (saving()) {
+        <span class="spinner-border spinner-border-sm me-2"></span>
+      } @else {
+        <i class="ki-outline ki-check fs-4 me-1"></i>
+      }
+      {{ 'common.save' | translate }}
+    </button>
+    <button class="btn btn-light" (click)="back()">
+      <i class="ki-outline ki-arrow-left fs-4 me-1"></i>
+      {{ 'common.cancel' | translate }}
+    </button>
+  </div>
+</div>

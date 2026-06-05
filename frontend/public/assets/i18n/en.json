@@ -28,7 +28,10 @@
     "parent": "Parent",
     "select": "— Select —",
     "none": "— None —",
-    "refresh": "Refresh"
+    "refresh": "Refresh",
+    "actions": "Actions",
+    "validation_error": "Missing required fields",
+    "save_success": "Saved successfully"
   },
   "items": {
     "title": "Items",
@@ -50,6 +53,8 @@
     "delete_confirm": "Delete this group?"
   },
   "uom_conversion_groups": {
+    "add_title": "New UOM Conversion Group",
+    "edit_title": "Edit UOM Conversion Group",
     "delete_confirm": "Delete this UOM Conversion Group?"
   },
   "uom_conversion_factors": {
