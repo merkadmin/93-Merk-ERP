@@ -8,6 +8,7 @@
     "item_groups": "مجموعات الأصناف",
     "uom_conversion_groups": "مجموعات تحويل وحدات القياس",
     "uoms": "وحدات القياس",
+    "uom_conversion_factors": "معاملات وحدات القياس",
     "warehousing": "المستودعات",
     "warehouses": "المستودعات",
     "current_stock": "المخزون الحالي",
@@ -50,6 +51,12 @@
   },
   "uom_conversion_groups": {
     "delete_confirm": "حذف مجموعة تحويل وحدة القياس؟"
+  },
+  "uom_conversion_factors": {
+    "from_uom": "من وحدة القياس",
+    "to_uom": "إلى وحدة القياس",
+    "value": "معامل التحويل",
+    "delete_confirm": "حذف معامل التحويل هذا؟"
   },
   "uoms": {
     "title": "وحدات القياس",

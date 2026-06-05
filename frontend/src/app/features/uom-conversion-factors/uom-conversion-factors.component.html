@@ -1,0 +1,78 @@
+<h5 class="mb-4">
+  <i class="ki-outline ki-arrows-circle fs-2 me-2"></i>
+  {{ 'nav.uom_conversion_factors' | translate }}
+</h5>
+
+<!-- Add / Edit form -->
+<div class="card mb-6" style="max-width:560px">
+  <div class="card-body">
+    <div class="row g-3">
+      <div class="col-5">
+        <label class="form-label">{{ 'uom_conversion_factors.from_uom' | translate }}</label>
+        <select class="form-select" [(ngModel)]="form.uomFromId" name="uomFromId">
+          <option [ngValue]="0">{{ 'common.select' | translate }}</option>
+          <option *ngFor="let u of uoms()" [ngValue]="u.uomId">{{ u.name }}</option>
+        </select>
+      </div>
+      <div class="col-5">
+        <label class="form-label">{{ 'uom_conversion_factors.to_uom' | translate }}</label>
+        <select class="form-select" [(ngModel)]="form.uomToId" name="uomToId">
+          <option [ngValue]="0">{{ 'common.select' | translate }}</option>
+          <option *ngFor="let u of uoms()" [ngValue]="u.uomId">{{ u.name }}</option>
+        </select>
+      </div>
+      <div class="col-2">
+        <label class="form-label">{{ 'uom_conversion_factors.value' | translate }}</label>
+        <input class="form-control" type="number" step="0.0001" [(ngModel)]="form.value" name="value">
+      </div>
+      <div class="col-12 d-flex gap-2">
+        <button class="btn btn-primary" (click)="save()">
+          <i class="ki-outline ki-check fs-4"></i> {{ 'common.save' | translate }}
+        </button>
+        <button class="btn btn-light" *ngIf="editing()" (click)="cancelEdit()">
+          {{ 'common.cancel' | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Table -->
+<div class="card">
+  <div class="card-body p-0">
+    <table class="table table-row-dashed table-row-gray-300 align-middle gs-4 gy-3 mb-0">
+      <thead>
+        <tr class="fw-bold text-muted bg-light">
+          <th>{{ 'uom_conversion_factors.from_uom' | translate }}</th>
+          <th>{{ 'uom_conversion_factors.to_uom' | translate }}</th>
+          <th class="text-end">{{ 'uom_conversion_factors.value' | translate }}</th>
+          <th class="text-end">{{ 'common.active' | translate }}</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let f of factors()">
+          <td>{{ f.uomFrom?.name ?? uomName(f.uomFromId) }}</td>
+          <td>{{ f.uomTo?.name ?? uomName(f.uomToId) }}</td>
+          <td class="text-end fw-semibold">{{ f.value }}</td>
+          <td class="text-end">
+            <span class="badge" [class]="f.isActive ? 'bg-success' : 'bg-secondary'">
+              {{ (f.isActive ? 'common.yes' : 'common.no') | translate }}
+            </span>
+          </td>
+          <td class="text-end">
+            <button class="btn btn-icon btn-sm btn-light-primary me-1" (click)="startEdit(f)">
+              <i class="ki-outline ki-pencil fs-4"></i>
+            </button>
+            <button class="btn btn-icon btn-sm btn-light-danger" (click)="delete(f.id)">
+              <i class="ki-outline ki-trash fs-4"></i>
+            </button>
+          </td>
+        </tr>
+        <tr *ngIf="factors().length === 0">
+          <td colspan="5" class="text-center text-muted py-6">—</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

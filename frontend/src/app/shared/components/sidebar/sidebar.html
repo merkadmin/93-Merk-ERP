@@ -8,7 +8,6 @@
       <i class="ki-outline ki-abstract-26 fs-1 text-primary"></i>
       <span class="fw-bolder fs-4 text-gray-800 lh-1">{{ 'app.title' | translate }}</span>
     </a>
-    <!-- Close button — mobile only -->
     <button class="btn btn-icon btn-sm btn-light d-flex d-lg-none" (click)="closeSidebar()">
       <i class="ki-outline ki-cross fs-2"></i>
     </button>
@@ -23,74 +22,35 @@
 
       <div class="menu menu-column menu-rounded menu-sub-indention fw-semibold">
 
-        <!-- ── Inventory section ─────────────────────────────────── -->
-        <div class="menu-item">
-          <div class="menu-content pt-4 pb-2">
-            <span class="text-gray-600 text-uppercase fw-bold fs-7 ls-1">
-              {{ 'nav.inventory' | translate }}
-            </span>
-          </div>
-        </div>
+        <!-- ── Data-driven sections ────────────────────────────── -->
+        @for (section of sidebarService.sections; track section.id) {
+          @if (section.isVisible()) {
+            <div class="menu-item menu-accordion" [class.show]="isSectionExpanded(section.id)">
+              <span class="menu-link py-3" (click)="toggleSection(section.id)">
+                <span class="menu-icon">
+                  <i class="ki-outline {{ section.icon }} fs-2 {{ section.iconColor }}"></i>
+                </span>
+                <span class="menu-title {{ section.iconColor }}">{{ section.labelKey | translate }}</span>
+                <span class="menu-arrow"></span>
+              </span>
 
-        <div class="menu-item">
-          <a class="menu-link py-3" routerLink="/items" routerLinkActive="active" (click)="closeSidebar()">
-            <span class="menu-icon"><i class="ki-outline ki-package fs-2"></i></span>
-            <span class="menu-title">{{ 'nav.items' | translate }}</span>
-          </a>
-        </div>
-
-        <div class="menu-item">
-          <a class="menu-link py-3" routerLink="/item-groups" routerLinkActive="active" (click)="closeSidebar()">
-            <span class="menu-icon"><i class="ki-outline ki-category fs-2"></i></span>
-            <span class="menu-title">{{ 'nav.item_groups' | translate }}</span>
-          </a>
-        </div>
-
-        <div class="menu-item">
-          <a class="menu-link py-3" routerLink="/uom-conversion-groups" routerLinkActive="active" (click)="closeSidebar()">
-            <span class="menu-icon"><i class="ki-outline ki-abstract-14 fs-2"></i></span>
-            <span class="menu-title">{{ 'nav.uom_conversion_groups' | translate }}</span>
-          </a>
-        </div>
-
-        <div class="menu-item">
-          <a class="menu-link py-3" routerLink="/uoms" routerLinkActive="active" (click)="closeSidebar()">
-            <span class="menu-icon"><i class="ki-outline ki-ruler fs-2"></i></span>
-            <span class="menu-title">{{ 'nav.uoms' | translate }}</span>
-          </a>
-        </div>
-
-        <div class="separator mx-3 my-1"></div>
-
-        <!-- ── Warehouse section ─────────────────────────────────── -->
-        <div class="menu-item">
-          <div class="menu-content pt-4 pb-2">
-            <span class="text-gray-600 text-uppercase fw-bold fs-7 ls-1">
-              {{ 'nav.warehousing' | translate }}
-            </span>
-          </div>
-        </div>
-
-        <div class="menu-item">
-          <a class="menu-link py-3" routerLink="/warehouses" routerLinkActive="active" (click)="closeSidebar()">
-            <span class="menu-icon"><i class="ki-outline ki-home-2 fs-2"></i></span>
-            <span class="menu-title">{{ 'nav.warehouses' | translate }}</span>
-          </a>
-        </div>
-
-        <div class="menu-item">
-          <a class="menu-link py-3" routerLink="/stock" routerLinkActive="active" (click)="closeSidebar()">
-            <span class="menu-icon"><i class="ki-outline ki-chart-simple fs-2"></i></span>
-            <span class="menu-title">{{ 'nav.current_stock' | translate }}</span>
-          </a>
-        </div>
-
-        <div class="menu-item">
-          <a class="menu-link py-3" routerLink="/stock-movement" routerLinkActive="active" (click)="closeSidebar()">
-            <span class="menu-icon"><i class="ki-outline ki-arrows-loop fs-2"></i></span>
-            <span class="menu-title">{{ 'nav.stock_movement' | translate }}</span>
-          </a>
-        </div>
+              @if (isSectionExpanded(section.id)) {
+                <div class="menu-sub menu-sub-accordion">
+                  @for (item of section.getChildren(); track item.route) {
+                    <div class="menu-item">
+                      <a class="menu-link py-2" [routerLink]="item.route" routerLinkActive="active"
+                         (click)="closeSidebar()">
+                        <span class="menu-icon"><i class="{{ item.icon }} fs-3"></i></span>
+                        <span class="menu-title">{{ item.labelKey | translate }}</span>
+                      </a>
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+          }
+        }
+        <!-- ── End sections ────────────────────────────────────── -->
 
       </div>
     </div>

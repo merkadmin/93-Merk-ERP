@@ -11,6 +11,7 @@ interface ItemGroup { itemGroupId: number; name: string; parentItemGroupId: numb
   standalone: true,
   imports: [FormsModule, NgFor, NgIf, TranslatePipe],
   templateUrl: './item-groups.component.html',
+  styleUrl: './item-groups.component.less',
 })
 export class ItemGroupsComponent implements OnInit {
   api = inject(ApiService);
@@ -37,4 +38,5 @@ export class ItemGroupsComponent implements OnInit {
       this.api.delete(`itemgroups/${id}`).subscribe(() => this.load());
   }
 }
+
 

@@ -8,6 +8,7 @@
     "item_groups": "Item Groups",
     "uom_conversion_groups": "UOM Conversion Group",
     "uoms": "UOM",
+    "uom_conversion_factors": "UOM Conversion Factor",
     "warehousing": "Warehousing",
     "warehouses": "Warehouses",
     "current_stock": "Current Stock",
@@ -50,6 +51,12 @@
   },
   "uom_conversion_groups": {
     "delete_confirm": "Delete this UOM Conversion Group?"
+  },
+  "uom_conversion_factors": {
+    "from_uom": "From UOM",
+    "to_uom": "To UOM",
+    "value": "Factor",
+    "delete_confirm": "Delete this conversion factor?"
   },
   "uoms": {
     "title": "Units of Measure",

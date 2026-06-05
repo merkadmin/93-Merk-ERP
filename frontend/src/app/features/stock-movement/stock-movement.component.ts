@@ -23,6 +23,7 @@ interface MovementForm {
   standalone: true,
   imports: [FormsModule, NgFor, NgIf, TranslatePipe],
   templateUrl: './stock-movement.component.html',
+  styleUrl: './stock-movement.component.less',
 })
 export class StockMovementComponent implements OnInit {
   api        = inject(ApiService);
@@ -60,4 +61,5 @@ export class StockMovementComponent implements OnInit {
     });
   }
 }
+
 

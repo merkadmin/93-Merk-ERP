@@ -15,6 +15,7 @@ interface UOM       { uomId: number; name: string; }
   standalone: true,
   imports: [FormsModule, NgFor, NgIf, TranslatePipe],
   templateUrl: './items.component.html',
+  styleUrl: './items.component.less',
 })
 export class ItemsComponent implements OnInit {
   api    = inject(ApiService);
@@ -60,4 +61,5 @@ export class ItemsComponent implements OnInit {
       this.api.delete(`items/${id}`).subscribe(() => this.load());
   }
 }
+
 

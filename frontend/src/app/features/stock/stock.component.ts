@@ -18,6 +18,7 @@ interface StockBin {
   standalone: true,
   imports: [NgFor, NgIf, DecimalPipe, TranslatePipe],
   templateUrl: './stock.component.html',
+  styleUrl: './stock.component.less',
 })
 export class StockComponent implements OnInit {
   api  = inject(ApiService);
@@ -26,4 +27,5 @@ export class StockComponent implements OnInit {
   ngOnInit() { this.load(); }
   load() { this.api.get<StockBin[]>('stock').subscribe(d => this.bins.set(d)); }
 }
+
 

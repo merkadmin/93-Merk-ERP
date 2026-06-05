@@ -11,6 +11,7 @@ interface Warehouse { warehouseId: number; name: string; parentWarehouseId: numb
   standalone: true,
   imports: [FormsModule, NgFor, NgIf, TranslatePipe],
   templateUrl: './warehouses.component.html',
+  styleUrl: './warehouses.component.less',
 })
 export class WarehousesComponent implements OnInit {
   api = inject(ApiService);
@@ -37,4 +38,5 @@ export class WarehousesComponent implements OnInit {
       this.api.delete(`warehouses/${id}`).subscribe(() => this.load());
   }
 }
+
 

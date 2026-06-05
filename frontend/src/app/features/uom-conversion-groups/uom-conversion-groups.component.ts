@@ -17,6 +17,7 @@ interface UomConversionGroup {
   standalone: true,
   imports: [FormsModule, NgFor, NgIf, TranslatePipe],
   templateUrl: './uom-conversion-groups.component.html',
+  styleUrl: './uom-conversion-groups.component.less',
 })
 export class UomConversionGroupsComponent implements OnInit {
   api      = inject(ApiService);
@@ -60,4 +61,5 @@ export class UomConversionGroupsComponent implements OnInit {
     this.api.delete(`uomconversiongroups/${id}`).subscribe(() => this.load());
   }
 }
+
 

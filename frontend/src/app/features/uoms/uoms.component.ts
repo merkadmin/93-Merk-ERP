@@ -11,6 +11,7 @@ interface UOM { uomId: number; name: string; mustBeWholeNumber: boolean; }
   standalone: true,
   imports: [FormsModule, NgFor, NgIf, TranslatePipe],
   templateUrl: './uoms.component.html',
+  styleUrl: './uoms.component.less',
 })
 export class UomsComponent implements OnInit {
   api = inject(ApiService);
@@ -36,4 +37,5 @@ export class UomsComponent implements OnInit {
       this.api.delete(`uoms/${id}`).subscribe(() => this.load());
   }
 }
+
 
