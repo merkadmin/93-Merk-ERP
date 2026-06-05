@@ -13,6 +13,7 @@ public class MerkDbContext : DbContext
 	public DbSet<Item_cs> Item_cs { get; set; }
 	public DbSet<ItemUOMConversion_cs> ItemUOMConversion_cs { get; set; }
 	public DbSet<UOMConversionFactor_cs> UOMConversionFactor_cs { get; set; }
+	public DbSet<UOMConversionGroup_cs> UOMConversionGroup_cs { get; set; }
 	public DbSet<WareHouse_cs> WareHouse_cs { get; set; }
 	public DbSet<WarehouseTransaction> WarehouseTransaction { get; set; }
 	public DbSet<StockLedgerTransaction> StockLedgerTransaction { get; set; }
@@ -26,6 +27,7 @@ public class MerkDbContext : DbContext
 		m.Entity<Item_cs>().HasKey(e => e.ItemId);
 		m.Entity<ItemUOMConversion_cs>().HasKey(e => e.Id);
 		m.Entity<UOMConversionFactor_cs>().HasKey(e => e.Id);
+		m.Entity<UOMConversionGroup_cs>().HasKey(e => e.Id);
 		m.Entity<WareHouse_cs>().HasKey(e => e.WarehouseId);
 		m.Entity<WarehouseTransaction>().HasKey(e => e.BinId);
 		m.Entity<StockLedgerTransaction>().HasKey(e => e.SLTId);
@@ -77,6 +79,11 @@ public class MerkDbContext : DbContext
 		m.Entity<Item_cs>()
 			.HasIndex(i => i.ItemCode)
 			.IsUnique();
+
+		m.Entity<UOMConversionGroup_cs>()
+			.Property(e => e.Name_EN).HasColumnType("nvarchar(100)");
+		m.Entity<UOMConversionGroup_cs>()
+			.Property(e => e.Name_AR).HasColumnType("nvarchar(100)");
 
 		m.Entity<ItemType_s>().HasData(
 			new ItemType_s { ItemTypeId = 1L, Name = "Stock Item" },
