@@ -10,437 +10,437 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace MerkERP.DAL.Migrations
 {
-    [DbContext(typeof(MerkDbContext))]
-    partial class MerkDbContextModelSnapshot : ModelSnapshot
-    {
-        protected override void BuildModel(ModelBuilder modelBuilder)
-        {
+	[DbContext(typeof(MerkDbContext))]
+	partial class MerkDbContextModelSnapshot : ModelSnapshot
+	{
+		protected override void BuildModel(ModelBuilder modelBuilder)
+		{
 #pragma warning disable 612, 618
-            modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.16")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+			modelBuilder
+				.HasAnnotation("ProductVersion", "9.0.16")
+				.HasAnnotation("Relational:MaxIdentifierLength", 128);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+			SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("MerkERP.Core.Models.ItemGroup_cs", b =>
-                {
-                    b.Property<int>("ItemGroupId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+			modelBuilder.Entity("MerkERP.Core.Models.ItemGroup_cs", b =>
+				{
+					b.Property<int>("ItemGroupId")
+						.ValueGeneratedOnAdd()
+						.HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ItemGroupId"));
+					SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ItemGroupId"));
 
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+					b.Property<bool>("IsActive")
+						.HasColumnType("bit");
 
-                    b.Property<bool>("IsGroup")
-                        .HasColumnType("bit");
+					b.Property<bool>("IsGroup")
+						.HasColumnType("bit");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+					b.Property<string>("Name")
+						.IsRequired()
+						.HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ParentItemGroupId")
-                        .HasColumnType("int");
+					b.Property<int?>("ParentItemGroupId")
+						.HasColumnType("int");
 
-                    b.HasKey("ItemGroupId");
+					b.HasKey("ItemGroupId");
 
-                    b.HasIndex("ParentItemGroupId");
+					b.HasIndex("ParentItemGroupId");
 
-                    b.ToTable("ItemGroup_cs");
-                });
+					b.ToTable("ItemGroup_cs");
+				});
 
-            modelBuilder.Entity("MerkERP.Core.Models.ItemType_s", b =>
-                {
-                    b.Property<int>("ItemTypeId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+			modelBuilder.Entity("MerkERP.Core.Models.ItemType_s", b =>
+				{
+					b.Property<int>("ItemTypeId")
+						.ValueGeneratedOnAdd()
+						.HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ItemTypeId"));
+					SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ItemTypeId"));
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+					b.Property<string>("Name")
+						.IsRequired()
+						.HasColumnType("nvarchar(max)");
 
-                    b.HasKey("ItemTypeId");
+					b.HasKey("ItemTypeId");
 
-                    b.ToTable("ItemType_s");
+					b.ToTable("ItemType_s");
 
-                    b.HasData(
-                        new
-                        {
-                            ItemTypeId = 1,
-                            Name = "Stock Item"
-                        },
-                        new
-                        {
-                            ItemTypeId = 2,
-                            Name = "Service"
-                        },
-                        new
-                        {
-                            ItemTypeId = 3,
-                            Name = "Non-Stock Item"
-                        });
-                });
+					b.HasData(
+						new
+						{
+							ItemTypeId = 1,
+							Name = "Stock Item"
+						},
+						new
+						{
+							ItemTypeId = 2,
+							Name = "Service"
+						},
+						new
+						{
+							ItemTypeId = 3,
+							Name = "Non-Stock Item"
+						});
+				});
 
-            modelBuilder.Entity("MerkERP.Core.Models.ItemUOMConversion_cs", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+			modelBuilder.Entity("MerkERP.Core.Models.ItemUOMConversion_cs", b =>
+				{
+					b.Property<int>("Id")
+						.ValueGeneratedOnAdd()
+						.HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+					SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal>("ConversionFactor")
-                        .HasColumnType("decimal(18,2)");
+					b.Property<decimal>("ConversionFactor")
+						.HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("ItemId")
-                        .HasColumnType("int");
+					b.Property<int>("ItemId")
+						.HasColumnType("int");
 
-                    b.Property<int>("UOMId")
-                        .HasColumnType("int");
+					b.Property<int>("UOMId")
+						.HasColumnType("int");
 
-                    b.HasKey("Id");
+					b.HasKey("Id");
 
-                    b.HasIndex("ItemId");
+					b.HasIndex("ItemId");
 
-                    b.HasIndex("UOMId");
+					b.HasIndex("UOMId");
 
-                    b.ToTable("ItemUOMConversion_cs");
-                });
+					b.ToTable("ItemUOMConversion_cs");
+				});
 
-            modelBuilder.Entity("MerkERP.Core.Models.Item_cs", b =>
-                {
-                    b.Property<int>("ItemId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+			modelBuilder.Entity("MerkERP.Core.Models.Item_cs", b =>
+				{
+					b.Property<int>("ItemId")
+						.ValueGeneratedOnAdd()
+						.HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ItemId"));
+					SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ItemId"));
 
-                    b.Property<int>("DefaultUOMId")
-                        .HasColumnType("int");
+					b.Property<int>("DefaultUOMId")
+						.HasColumnType("int");
 
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+					b.Property<string>("Description")
+						.HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("HasBatch")
-                        .HasColumnType("bit");
+					b.Property<bool>("HasBatch")
+						.HasColumnType("bit");
 
-                    b.Property<bool>("HasSerial")
-                        .HasColumnType("bit");
+					b.Property<bool>("HasSerial")
+						.HasColumnType("bit");
 
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+					b.Property<bool>("IsActive")
+						.HasColumnType("bit");
 
-                    b.Property<string>("ItemCode")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+					b.Property<string>("ItemCode")
+						.IsRequired()
+						.HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("ItemGroupId")
-                        .HasColumnType("int");
+					b.Property<int>("ItemGroupId")
+						.HasColumnType("int");
 
-                    b.Property<string>("ItemName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+					b.Property<string>("ItemName")
+						.IsRequired()
+						.HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ItemTypeId")
-                        .HasColumnType("int");
+					b.Property<int>("ItemTypeId")
+						.HasColumnType("int");
 
-                    b.HasKey("ItemId");
+					b.HasKey("ItemId");
 
-                    b.HasIndex("DefaultUOMId");
+					b.HasIndex("DefaultUOMId");
 
-                    b.HasIndex("ItemCode")
-                        .IsUnique();
+					b.HasIndex("ItemCode")
+						.IsUnique();
 
-                    b.HasIndex("ItemGroupId");
+					b.HasIndex("ItemGroupId");
 
-                    b.HasIndex("ItemTypeId");
+					b.HasIndex("ItemTypeId");
 
-                    b.ToTable("Item_cs");
-                });
+					b.ToTable("Item_cs");
+				});
 
-            modelBuilder.Entity("MerkERP.Core.Models.StockLedgerTransaction", b =>
-                {
-                    b.Property<int>("SLTId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+			modelBuilder.Entity("MerkERP.Core.Models.StockLedgerTransaction", b =>
+				{
+					b.Property<int>("SLTId")
+						.ValueGeneratedOnAdd()
+						.HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SLTId"));
+					SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SLTId"));
 
-                    b.Property<decimal>("ActualQty")
-                        .HasColumnType("decimal(18,2)");
+					b.Property<decimal>("ActualQty")
+						.HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("BatchNo")
-                        .HasColumnType("nvarchar(max)");
+					b.Property<string>("BatchNo")
+						.HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+					b.Property<DateTime>("CreatedAt")
+						.HasColumnType("datetime2");
 
-                    b.Property<int>("ItemId")
-                        .HasColumnType("int");
+					b.Property<int>("ItemId")
+						.HasColumnType("int");
 
-                    b.Property<DateOnly>("PostingDate")
-                        .HasColumnType("date");
+					b.Property<DateOnly>("PostingDate")
+						.HasColumnType("date");
 
-                    b.Property<TimeOnly>("PostingTime")
-                        .HasColumnType("time");
+					b.Property<TimeOnly>("PostingTime")
+						.HasColumnType("time");
 
-                    b.Property<decimal>("QtyAfterTransaction")
-                        .HasColumnType("decimal(18,2)");
+					b.Property<decimal>("QtyAfterTransaction")
+						.HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal>("StockValue")
-                        .HasColumnType("decimal(18,2)");
+					b.Property<decimal>("StockValue")
+						.HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal>("ValuationRate")
-                        .HasColumnType("decimal(18,2)");
+					b.Property<decimal>("ValuationRate")
+						.HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("VoucherNo")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+					b.Property<string>("VoucherNo")
+						.IsRequired()
+						.HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("VoucherType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+					b.Property<string>("VoucherType")
+						.IsRequired()
+						.HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("WarehouseId")
-                        .HasColumnType("int");
+					b.Property<int>("WarehouseId")
+						.HasColumnType("int");
 
-                    b.HasKey("SLTId");
+					b.HasKey("SLTId");
 
-                    b.HasIndex("ItemId");
+					b.HasIndex("ItemId");
 
-                    b.HasIndex("WarehouseId");
+					b.HasIndex("WarehouseId");
 
-                    b.ToTable("StockLedgerTransaction");
-                });
+					b.ToTable("StockLedgerTransaction");
+				});
 
-            modelBuilder.Entity("MerkERP.Core.Models.UOM_cs", b =>
-                {
-                    b.Property<int>("UOMId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+			modelBuilder.Entity("MerkERP.Core.Models.UOM_cs", b =>
+				{
+					b.Property<int>("UOMId")
+						.ValueGeneratedOnAdd()
+						.HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UOMId"));
+					SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UOMId"));
 
-                    b.Property<bool>("MustBeWholeNumber")
-                        .HasColumnType("bit");
+					b.Property<bool>("MustBeWholeNumber")
+						.HasColumnType("bit");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+					b.Property<string>("Name")
+						.IsRequired()
+						.HasColumnType("nvarchar(max)");
 
-                    b.HasKey("UOMId");
+					b.HasKey("UOMId");
 
-                    b.ToTable("UOM_cs");
-                });
+					b.ToTable("UOM_cs");
+				});
 
-            modelBuilder.Entity("MerkERP.Core.Models.WareHouse_cs", b =>
-                {
-                    b.Property<int>("WarehouseId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+			modelBuilder.Entity("MerkERP.Core.Models.WareHouse_cs", b =>
+				{
+					b.Property<int>("WarehouseId")
+						.ValueGeneratedOnAdd()
+						.HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("WarehouseId"));
+					SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("WarehouseId"));
 
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+					b.Property<bool>("IsActive")
+						.HasColumnType("bit");
 
-                    b.Property<bool>("IsGroup")
-                        .HasColumnType("bit");
+					b.Property<bool>("IsGroup")
+						.HasColumnType("bit");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+					b.Property<string>("Name")
+						.IsRequired()
+						.HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ParentWarehouseId")
-                        .HasColumnType("int");
+					b.Property<int?>("ParentWarehouseId")
+						.HasColumnType("int");
 
-                    b.HasKey("WarehouseId");
+					b.HasKey("WarehouseId");
 
-                    b.HasIndex("ParentWarehouseId");
+					b.HasIndex("ParentWarehouseId");
 
-                    b.ToTable("WareHouse_cs");
-                });
+					b.ToTable("WareHouse_cs");
+				});
 
-            modelBuilder.Entity("MerkERP.Core.Models.WarehouseTransaction", b =>
-                {
-                    b.Property<int>("BinId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+			modelBuilder.Entity("MerkERP.Core.Models.WarehouseTransaction", b =>
+				{
+					b.Property<int>("BinId")
+						.ValueGeneratedOnAdd()
+						.HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BinId"));
+					SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BinId"));
 
-                    b.Property<decimal>("ActualQty")
-                        .HasColumnType("decimal(18,2)");
+					b.Property<decimal>("ActualQty")
+						.HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("ItemId")
-                        .HasColumnType("int");
+					b.Property<int>("ItemId")
+						.HasColumnType("int");
 
-                    b.Property<decimal>("OrderedQty")
-                        .HasColumnType("decimal(18,2)");
+					b.Property<decimal>("OrderedQty")
+						.HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal>("ReservedQty")
-                        .HasColumnType("decimal(18,2)");
+					b.Property<decimal>("ReservedQty")
+						.HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal>("ValuationRate")
-                        .HasColumnType("decimal(18,2)");
+					b.Property<decimal>("ValuationRate")
+						.HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("WarehouseId")
-                        .HasColumnType("int");
+					b.Property<int>("WarehouseId")
+						.HasColumnType("int");
 
-                    b.HasKey("BinId");
+					b.HasKey("BinId");
 
-                    b.HasIndex("WarehouseId");
+					b.HasIndex("WarehouseId");
 
-                    b.HasIndex("ItemId", "WarehouseId")
-                        .IsUnique();
+					b.HasIndex("ItemId", "WarehouseId")
+						.IsUnique();
 
-                    b.ToTable("WarehouseTransaction");
-                });
+					b.ToTable("WarehouseTransaction");
+				});
 
-            modelBuilder.Entity("MerkERP.Core.Models.ItemGroup_cs", b =>
-                {
-                    b.HasOne("MerkERP.Core.Models.ItemGroup_cs", "ParentItemGroup")
-                        .WithMany("Children")
-                        .HasForeignKey("ParentItemGroupId")
-                        .OnDelete(DeleteBehavior.Restrict);
+			modelBuilder.Entity("MerkERP.Core.Models.ItemGroup_cs", b =>
+				{
+					b.HasOne("MerkERP.Core.Models.ItemGroup_cs", "ParentItemGroup")
+						.WithMany("Children")
+						.HasForeignKey("ParentItemGroupId")
+						.OnDelete(DeleteBehavior.Restrict);
 
-                    b.Navigation("ParentItemGroup");
-                });
+					b.Navigation("ParentItemGroup");
+				});
 
-            modelBuilder.Entity("MerkERP.Core.Models.ItemUOMConversion_cs", b =>
-                {
-                    b.HasOne("MerkERP.Core.Models.Item_cs", "Item")
-                        .WithMany("UOMConversions")
-                        .HasForeignKey("ItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+			modelBuilder.Entity("MerkERP.Core.Models.ItemUOMConversion_cs", b =>
+				{
+					b.HasOne("MerkERP.Core.Models.Item_cs", "Item")
+						.WithMany("UOMConversions")
+						.HasForeignKey("ItemId")
+						.OnDelete(DeleteBehavior.Cascade)
+						.IsRequired();
 
-                    b.HasOne("MerkERP.Core.Models.UOM_cs", "UOM")
-                        .WithMany("Conversions")
-                        .HasForeignKey("UOMId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+					b.HasOne("MerkERP.Core.Models.UOM_cs", "UOM")
+						.WithMany("Conversions")
+						.HasForeignKey("UOMId")
+						.OnDelete(DeleteBehavior.Restrict)
+						.IsRequired();
 
-                    b.Navigation("Item");
+					b.Navigation("Item");
 
-                    b.Navigation("UOM");
-                });
+					b.Navigation("UOM");
+				});
 
-            modelBuilder.Entity("MerkERP.Core.Models.Item_cs", b =>
-                {
-                    b.HasOne("MerkERP.Core.Models.UOM_cs", "DefaultUOM")
-                        .WithMany("DefaultForItems")
-                        .HasForeignKey("DefaultUOMId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+			modelBuilder.Entity("MerkERP.Core.Models.Item_cs", b =>
+				{
+					b.HasOne("MerkERP.Core.Models.UOM_cs", "DefaultUOM")
+						.WithMany("DefaultForItems")
+						.HasForeignKey("DefaultUOMId")
+						.OnDelete(DeleteBehavior.Restrict)
+						.IsRequired();
 
-                    b.HasOne("MerkERP.Core.Models.ItemGroup_cs", "ItemGroup")
-                        .WithMany("Items")
-                        .HasForeignKey("ItemGroupId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+					b.HasOne("MerkERP.Core.Models.ItemGroup_cs", "ItemGroup")
+						.WithMany("Items")
+						.HasForeignKey("ItemGroupId")
+						.OnDelete(DeleteBehavior.Restrict)
+						.IsRequired();
 
-                    b.HasOne("MerkERP.Core.Models.ItemType_s", "ItemType")
-                        .WithMany("Items")
-                        .HasForeignKey("ItemTypeId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+					b.HasOne("MerkERP.Core.Models.ItemType_s", "ItemType")
+						.WithMany("Items")
+						.HasForeignKey("ItemTypeId")
+						.OnDelete(DeleteBehavior.Restrict)
+						.IsRequired();
 
-                    b.Navigation("DefaultUOM");
+					b.Navigation("DefaultUOM");
 
-                    b.Navigation("ItemGroup");
+					b.Navigation("ItemGroup");
 
-                    b.Navigation("ItemType");
-                });
+					b.Navigation("ItemType");
+				});
 
-            modelBuilder.Entity("MerkERP.Core.Models.StockLedgerTransaction", b =>
-                {
-                    b.HasOne("MerkERP.Core.Models.Item_cs", "Item")
-                        .WithMany("StockLedgerTransactions")
-                        .HasForeignKey("ItemId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+			modelBuilder.Entity("MerkERP.Core.Models.StockLedgerTransaction", b =>
+				{
+					b.HasOne("MerkERP.Core.Models.Item_cs", "Item")
+						.WithMany("StockLedgerTransactions")
+						.HasForeignKey("ItemId")
+						.OnDelete(DeleteBehavior.Restrict)
+						.IsRequired();
 
-                    b.HasOne("MerkERP.Core.Models.WareHouse_cs", "Warehouse")
-                        .WithMany("StockLedgerTransactions")
-                        .HasForeignKey("WarehouseId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+					b.HasOne("MerkERP.Core.Models.WareHouse_cs", "Warehouse")
+						.WithMany("StockLedgerTransactions")
+						.HasForeignKey("WarehouseId")
+						.OnDelete(DeleteBehavior.Restrict)
+						.IsRequired();
 
-                    b.Navigation("Item");
+					b.Navigation("Item");
 
-                    b.Navigation("Warehouse");
-                });
+					b.Navigation("Warehouse");
+				});
 
-            modelBuilder.Entity("MerkERP.Core.Models.WareHouse_cs", b =>
-                {
-                    b.HasOne("MerkERP.Core.Models.WareHouse_cs", "ParentWarehouse")
-                        .WithMany("Children")
-                        .HasForeignKey("ParentWarehouseId")
-                        .OnDelete(DeleteBehavior.Restrict);
+			modelBuilder.Entity("MerkERP.Core.Models.WareHouse_cs", b =>
+				{
+					b.HasOne("MerkERP.Core.Models.WareHouse_cs", "ParentWarehouse")
+						.WithMany("Children")
+						.HasForeignKey("ParentWarehouseId")
+						.OnDelete(DeleteBehavior.Restrict);
 
-                    b.Navigation("ParentWarehouse");
-                });
+					b.Navigation("ParentWarehouse");
+				});
 
-            modelBuilder.Entity("MerkERP.Core.Models.WarehouseTransaction", b =>
-                {
-                    b.HasOne("MerkERP.Core.Models.Item_cs", "Item")
-                        .WithMany("WarehouseTransactions")
-                        .HasForeignKey("ItemId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+			modelBuilder.Entity("MerkERP.Core.Models.WarehouseTransaction", b =>
+				{
+					b.HasOne("MerkERP.Core.Models.Item_cs", "Item")
+						.WithMany("WarehouseTransactions")
+						.HasForeignKey("ItemId")
+						.OnDelete(DeleteBehavior.Restrict)
+						.IsRequired();
 
-                    b.HasOne("MerkERP.Core.Models.WareHouse_cs", "Warehouse")
-                        .WithMany("Transactions")
-                        .HasForeignKey("WarehouseId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+					b.HasOne("MerkERP.Core.Models.WareHouse_cs", "Warehouse")
+						.WithMany("Transactions")
+						.HasForeignKey("WarehouseId")
+						.OnDelete(DeleteBehavior.Restrict)
+						.IsRequired();
 
-                    b.Navigation("Item");
+					b.Navigation("Item");
 
-                    b.Navigation("Warehouse");
-                });
+					b.Navigation("Warehouse");
+				});
 
-            modelBuilder.Entity("MerkERP.Core.Models.ItemGroup_cs", b =>
-                {
-                    b.Navigation("Children");
+			modelBuilder.Entity("MerkERP.Core.Models.ItemGroup_cs", b =>
+				{
+					b.Navigation("Children");
 
-                    b.Navigation("Items");
-                });
+					b.Navigation("Items");
+				});
 
-            modelBuilder.Entity("MerkERP.Core.Models.ItemType_s", b =>
-                {
-                    b.Navigation("Items");
-                });
+			modelBuilder.Entity("MerkERP.Core.Models.ItemType_s", b =>
+				{
+					b.Navigation("Items");
+				});
 
-            modelBuilder.Entity("MerkERP.Core.Models.Item_cs", b =>
-                {
-                    b.Navigation("StockLedgerTransactions");
+			modelBuilder.Entity("MerkERP.Core.Models.Item_cs", b =>
+				{
+					b.Navigation("StockLedgerTransactions");
 
-                    b.Navigation("UOMConversions");
+					b.Navigation("UOMConversions");
 
-                    b.Navigation("WarehouseTransactions");
-                });
+					b.Navigation("WarehouseTransactions");
+				});
 
-            modelBuilder.Entity("MerkERP.Core.Models.UOM_cs", b =>
-                {
-                    b.Navigation("Conversions");
+			modelBuilder.Entity("MerkERP.Core.Models.UOM_cs", b =>
+				{
+					b.Navigation("Conversions");
 
-                    b.Navigation("DefaultForItems");
-                });
+					b.Navigation("DefaultForItems");
+				});
 
-            modelBuilder.Entity("MerkERP.Core.Models.WareHouse_cs", b =>
-                {
-                    b.Navigation("Children");
+			modelBuilder.Entity("MerkERP.Core.Models.WareHouse_cs", b =>
+				{
+					b.Navigation("Children");
 
-                    b.Navigation("StockLedgerTransactions");
+					b.Navigation("StockLedgerTransactions");
 
-                    b.Navigation("Transactions");
-                });
+					b.Navigation("Transactions");
+				});
 #pragma warning restore 612, 618
-        }
-    }
+		}
+	}
 }
