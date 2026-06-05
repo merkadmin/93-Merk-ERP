@@ -6,10 +6,16 @@
   max-width: 32.5rem;
 }
 
-// RTL: InternalCode (rightmost) → AR Name → EN Name (leftmost)
-:host-context([dir=rtl]) .col-internal-code { order: 1; }
-:host-context([dir=rtl]) .col-name-ar        { order: 2; }
-:host-context([dir=rtl]) .col-name-en        { order: 3; }
+// LTR visual: Internal Code | EN Name | AR Name
+// DOM order is [Internal Code, AR Name, EN Name] to match tab order,
+// so EN and AR are swapped visually for LTR only.
+.col-name-en { order: 2; }
+.col-name-ar { order: 3; }
+
+// RTL visual: Internal Code (right) | AR Name | EN Name (left)
+// DOM order already matches desired RTL visual, just restore natural ordering.
+:host-context([dir=rtl]) .col-name-ar { order: 2; }
+:host-context([dir=rtl]) .col-name-en { order: 3; }
 
 // RTL: row-reverse puts Save leftmost (left→right order),
 // !important overrides Bootstrap's justify-content-end !important

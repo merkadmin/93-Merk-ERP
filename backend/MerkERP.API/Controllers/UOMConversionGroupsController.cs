@@ -13,7 +13,24 @@ public class UOMConversionGroupsController(MerkDbContext db) : ControllerBase
 	public async Task<IActionResult> GetAll() =>
 		Ok(await db.UOMConversionGroup_cs.OrderBy(g => g.Name_EN).ToListAsync());
 
-	[HttpGet("{id}")]
+	[HttpGet("nextcode")]
+	public async Task<IActionResult> NextCode()
+	{
+		const string prefix = "UGR-";
+		var codes = await db.UOMConversionGroup_cs
+			.Where(g => g.InternalCode != null && g.InternalCode.StartsWith(prefix))
+			.Select(g => g.InternalCode!)
+			.ToListAsync();
+
+		var maxNum = codes
+			.Select(c => int.TryParse(c[prefix.Length..], out var n) ? n : 0)
+			.DefaultIfEmpty(0)
+			.Max();
+
+		return Ok(new { code = $"{prefix}{(maxNum + 1):D3}" });
+	}
+
+	[HttpGet("{id:int}")]
 	public async Task<IActionResult> Get(int id) =>
 		await db.UOMConversionGroup_cs.FindAsync(id) is { } e ? Ok(e) : NotFound();
 
@@ -25,7 +42,7 @@ public class UOMConversionGroupsController(MerkDbContext db) : ControllerBase
 		return Ok(e);
 	}
 
-	[HttpPut("{id}")]
+	[HttpPut("{id:int}")]
 	public async Task<IActionResult> Update(int id, UOMConversionGroup_cs e)
 	{
 		if (id != e.Id) return BadRequest();
@@ -34,12 +51,33 @@ public class UOMConversionGroupsController(MerkDbContext db) : ControllerBase
 		return Ok(e);
 	}
 
-	[HttpDelete("{id}")]
+	[HttpDelete("{id:int}")]
 	public async Task<IActionResult> Delete(int id)
 	{
 		var e = await db.UOMConversionGroup_cs.FindAsync(id);
 		if (e is null) return NotFound();
 		db.UOMConversionGroup_cs.Remove(e);
+		await db.SaveChangesAsync();
+		return NoContent();
+	}
+
+	[HttpPatch("{id:int}/toggle-active")]
+	public async Task<IActionResult> ToggleActive(int id)
+	{
+		var e = await db.UOMConversionGroup_cs.FindAsync(id);
+		if (e is null) return NotFound();
+		e.IsActive = !e.IsActive;
+		await db.SaveChangesAsync();
+		return Ok(e);
+	}
+
+	[HttpDelete("bulk")]
+	public async Task<IActionResult> DeleteBulk([FromBody] List<int> ids)
+	{
+		var entities = await db.UOMConversionGroup_cs
+			.Where(g => ids.Contains(g.Id))
+			.ToListAsync();
+		db.UOMConversionGroup_cs.RemoveRange(entities);
 		await db.SaveChangesAsync();
 		return NoContent();
 	}

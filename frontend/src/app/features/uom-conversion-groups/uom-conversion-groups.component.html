@@ -4,10 +4,18 @@
   <div class="d-flex flex-column flex-grow-1">
     <h2 class="fw-bold text-gray-900 fs-3 mb-0">{{ 'nav.uom_conversion_groups' | translate }}</h2>
   </div>
-  <button class="btn btn-primary btn-sm" (click)="addNew()">
-    <i class="ki-outline ki-plus fs-4 me-1"></i>
-    {{ 'common.add' | translate }}
-  </button>
+  <div class="d-flex gap-2">
+    @if (selectedIds().size > 0) {
+      <button class="btn btn-danger btn-sm" (click)="deleteSelected()">
+        <i class="ki-outline ki-trash fs-4 me-1"></i>
+        {{ 'common.delete' | translate }} ({{ selectedIds().size }})
+      </button>
+    }
+    <button class="btn btn-primary btn-sm" (click)="addNew()">
+      <i class="ki-outline ki-plus fs-4 me-1"></i>
+      {{ 'common.add' | translate }}
+    </button>
+  </div>
 </div>
 
 <!-- Table -->
@@ -16,6 +24,12 @@
     <table class="table table-row-dashed table-row-gray-300 align-middle gs-4 gy-3 mb-0">
       <thead>
         <tr class="fw-bold text-primary bg-light-primary">
+          <th class="w-40px">
+            <input type="checkbox" class="form-check-input"
+              [checked]="isAllSelected"
+              [indeterminate]="isIndeterminate"
+              (change)="toggleAll()">
+          </th>
           <th>{{ 'uom_conversion_groups.internal_code' | translate }}</th>
           @if (isRtl) {
             <th>{{ 'common.name' | translate }} (AR)</th>
@@ -24,12 +38,17 @@
             <th>{{ 'common.name' | translate }} (EN)</th>
             <th>{{ 'common.name' | translate }} (AR)</th>
           }
-          <th class="text-end">{{ 'common.actions' | translate }}</th>
+          <th [class.text-end]="!isRtl" [class.text-start]="isRtl">{{ 'common.actions' | translate }}</th>
         </tr>
       </thead>
       <tbody>
         @for (g of groups(); track g.id) {
-          <tr>
+          <tr [class.table-active]="isSelected(g.id)">
+            <td>
+              <input type="checkbox" class="form-check-input"
+                [checked]="isSelected(g.id)"
+                (change)="toggleOne(g.id)">
+            </td>
             <td>{{ g.internalCode }}</td>
             @if (isRtl) {
               <td>{{ g.name_AR }}</td>
@@ -38,18 +57,31 @@
               <td>{{ g.name_EN }}</td>
               <td>{{ g.name_AR }}</td>
             }
-            <td class="text-end">
-              <button class="btn btn-icon btn-sm btn-light-primary me-1" (click)="edit(g.id)">
+            <td [class.text-end]="!isRtl" [class.text-start]="isRtl">
+              <button class="btn btn-icon btn-sm btn-light-primary me-1" (click)="edit(g.id)"
+                [title]="'common.edit' | translate">
                 <i class="ki-outline ki-pencil fs-4"></i>
               </button>
-              <button class="btn btn-icon btn-sm btn-light-danger" (click)="delete(g.id)">
+              @if (g.isActive) {
+                <button class="btn btn-icon btn-sm btn-light-warning me-1" (click)="toggleActive(g)"
+                  [title]="'common.deactivate' | translate">
+                  <i class="ki-outline ki-minus-circle fs-4"></i>
+                </button>
+              } @else {
+                <button class="btn btn-icon btn-sm btn-light-success me-1" (click)="toggleActive(g)"
+                  [title]="'common.activate' | translate">
+                  <i class="ki-outline ki-check-circle fs-4"></i>
+                </button>
+              }
+              <button class="btn btn-icon btn-sm btn-light-danger" (click)="delete(g.id)"
+                [title]="'common.delete' | translate">
                 <i class="ki-outline ki-trash fs-4"></i>
               </button>
             </td>
           </tr>
         } @empty {
           <tr>
-            <td colspan="3" class="text-center text-muted py-6">—</td>
+            <td colspan="6" class="text-center text-muted py-6">—</td>
           </tr>
         }
       </tbody>

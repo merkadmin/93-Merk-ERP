@@ -30,6 +30,8 @@
     "none": "— لا شيء —",
     "refresh": "تحديث",
     "actions": "إجراءات",
+    "activate": "تفعيل",
+    "deactivate": "تعطيل",
     "validation_error": "حقول مطلوبة مفقودة",
     "save_success": "تم الحفظ بنجاح",
     "save_and_new": "حفظ وجديد"
@@ -57,6 +59,7 @@
     "add_title": "مجموعة تحويل وحدة قياس جديدة",
     "edit_title": "تعديل مجموعة تحويل وحدة القياس",
     "delete_confirm": "حذف مجموعة تحويل وحدة القياس؟",
+    "delete_selected_confirm": "حذف {{count}} مجموعة محددة؟",
     "internal_code": "الكود الداخلي"
   },
   "uom_conversion_factors": {

@@ -14,18 +14,18 @@
     <div class="row g-4">
 
       <div class="col-4 col-internal-code">
-        <label class="form-label">{{ 'uom_conversion_groups.internal_code' | translate }}</label>
+        <label class="form-label required">{{ 'uom_conversion_groups.internal_code' | translate }}</label>
         <input class="form-control field-name" [(ngModel)]="form.internalCode" name="internalCode" [placeholder]="'uom_conversion_groups.internal_code' | translate">
-      </div>
-
-      <div class="col-4 col-name-en">
-        <label class="form-label required">{{ 'common.name' | translate }} (EN)</label>
-        <input class="form-control field-name" [(ngModel)]="form.name_EN" name="name_EN" [placeholder]="'common.name' | translate">
       </div>
 
       <div class="col-4 col-name-ar">
         <label class="form-label required">{{ 'common.name' | translate }} (AR)</label>
         <input class="form-control field-name" [(ngModel)]="form.name_AR" name="name_AR" [placeholder]="'common.name' | translate">
+      </div>
+
+      <div class="col-4 col-name-en">
+        <label class="form-label required">{{ 'common.name' | translate }} (EN)</label>
+        <input class="form-control field-name" [(ngModel)]="form.name_EN" name="name_EN" [placeholder]="'common.name' | translate">
       </div>
 
     </div>

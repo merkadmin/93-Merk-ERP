@@ -39,7 +39,15 @@ export class UomConversionGroupsOperationComponent implements OnInit {
     if (id) {
       this.isEdit.set(true);
       this.api.get<UomConversionGroup>(`uomconversiongroups/${id}`).subscribe(g => this.form = { ...g });
+    } else {
+      this.loadNextCode();
     }
+  }
+
+  private loadNextCode() {
+    this.api.get<{ code: string }>('uomconversiongroups/nextcode').subscribe(r => {
+      this.form.internalCode = r.code;
+    });
   }
 
   private blank(): Partial<UomConversionGroup> {
@@ -48,6 +56,9 @@ export class UomConversionGroupsOperationComponent implements OnInit {
 
   private validate(): boolean {
     const missing: string[] = [];
+
+    if (!this.form.internalCode?.trim())
+      missing.push(this.translate.instant('uom_conversion_groups.internal_code'));
 
     if (!this.form.name_EN?.trim())
       missing.push(`${this.translate.instant('common.name')} (EN)`);
@@ -82,6 +93,7 @@ export class UomConversionGroupsOperationComponent implements OnInit {
           this.form = this.blank();
           this.isEdit.set(false);
           this.savingNew.set(false);
+          this.loadNextCode();
         } else {
           this.back();
         }

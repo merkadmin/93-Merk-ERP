@@ -30,6 +30,8 @@
     "none": "— None —",
     "refresh": "Refresh",
     "actions": "Actions",
+    "activate": "Activate",
+    "deactivate": "Deactivate",
     "validation_error": "Missing required fields",
     "save_success": "Saved successfully",
     "save_and_new": "Save & New"
@@ -57,6 +59,7 @@
     "add_title": "New UOM Conversion Group",
     "edit_title": "Edit UOM Conversion Group",
     "delete_confirm": "Delete this UOM Conversion Group?",
+    "delete_selected_confirm": "Delete {{count}} selected group(s)?",
     "internal_code": "Internal Code"
   },
   "uom_conversion_factors": {
