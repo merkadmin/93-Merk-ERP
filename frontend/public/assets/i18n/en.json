@@ -31,7 +31,8 @@
     "refresh": "Refresh",
     "actions": "Actions",
     "validation_error": "Missing required fields",
-    "save_success": "Saved successfully"
+    "save_success": "Saved successfully",
+    "save_and_new": "Save & New"
   },
   "items": {
     "title": "Items",
@@ -55,7 +56,8 @@
   "uom_conversion_groups": {
     "add_title": "New UOM Conversion Group",
     "edit_title": "Edit UOM Conversion Group",
-    "delete_confirm": "Delete this UOM Conversion Group?"
+    "delete_confirm": "Delete this UOM Conversion Group?",
+    "internal_code": "Internal Code"
   },
   "uom_conversion_factors": {
     "from_uom": "From UOM",

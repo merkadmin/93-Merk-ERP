@@ -7,6 +7,7 @@ import { ApiService } from '../../../core/api.service';
 
 interface UomConversionGroup {
   id: number;
+  internalCode: string;
   name_EN: string;
   name_AR: string;
   isActive: boolean;
@@ -27,10 +28,11 @@ export class UomConversionGroupsOperationComponent implements OnInit {
   private translate = inject(TranslateService);
   private toastr    = inject(ToastrService);
 
-  isEdit = signal(false);
-  saving = signal(false);
+  isEdit     = signal(false);
+  saving     = signal(false);
+  savingNew  = signal(false);
 
-  form: Partial<UomConversionGroup> = { id: 0, name_EN: '', name_AR: '', isActive: true, isFavorite: false };
+  form: Partial<UomConversionGroup> = this.blank();
 
   ngOnInit() {
     const id = Number(this.route.snapshot.paramMap.get('id'));
@@ -38,6 +40,10 @@ export class UomConversionGroupsOperationComponent implements OnInit {
       this.isEdit.set(true);
       this.api.get<UomConversionGroup>(`uomconversiongroups/${id}`).subscribe(g => this.form = { ...g });
     }
+  }
+
+  private blank(): Partial<UomConversionGroup> {
+    return { id: 0, internalCode: '', name_EN: '', name_AR: '', isActive: true, isFavorite: false };
   }
 
   private validate(): boolean {
@@ -60,10 +66,11 @@ export class UomConversionGroupsOperationComponent implements OnInit {
     return true;
   }
 
-  save() {
+  private submit(andNew: boolean) {
     if (!this.validate()) return;
 
-    this.saving.set(true);
+    andNew ? this.savingNew.set(true) : this.saving.set(true);
+
     const req = this.isEdit()
       ? this.api.put<UomConversionGroup>(`uomconversiongroups/${this.form.id}`, this.form)
       : this.api.post<UomConversionGroup>('uomconversiongroups', this.form);
@@ -71,11 +78,23 @@ export class UomConversionGroupsOperationComponent implements OnInit {
     req.subscribe({
       next: () => {
         this.toastr.success(this.translate.instant('common.save_success'));
-        this.back();
+        if (andNew) {
+          this.form = this.blank();
+          this.isEdit.set(false);
+          this.savingNew.set(false);
+        } else {
+          this.back();
+        }
       },
-      error: () => this.saving.set(false),
+      error: () => {
+        this.saving.set(false);
+        this.savingNew.set(false);
+      },
     });
   }
+
+  save()       { this.submit(false); }
+  saveAndNew() { this.submit(true);  }
 
   back() {
     this.router.navigate(['/uom-conversion-groups']);

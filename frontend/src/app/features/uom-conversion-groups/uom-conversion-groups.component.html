@@ -15,17 +15,29 @@
   <div class="card-body p-0">
     <table class="table table-row-dashed table-row-gray-300 align-middle gs-4 gy-3 mb-0">
       <thead>
-        <tr class="fw-bold text-muted bg-light">
-          <th>{{ 'common.name' | translate }} (EN)</th>
-          <th>{{ 'common.name' | translate }} (AR)</th>
+        <tr class="fw-bold text-primary bg-light-primary">
+          <th>{{ 'uom_conversion_groups.internal_code' | translate }}</th>
+          @if (isRtl) {
+            <th>{{ 'common.name' | translate }} (AR)</th>
+            <th>{{ 'common.name' | translate }} (EN)</th>
+          } @else {
+            <th>{{ 'common.name' | translate }} (EN)</th>
+            <th>{{ 'common.name' | translate }} (AR)</th>
+          }
           <th class="text-end">{{ 'common.actions' | translate }}</th>
         </tr>
       </thead>
       <tbody>
         @for (g of groups(); track g.id) {
           <tr>
-            <td>{{ g.name_EN }}</td>
-            <td>{{ g.name_AR }}</td>
+            <td>{{ g.internalCode }}</td>
+            @if (isRtl) {
+              <td>{{ g.name_AR }}</td>
+              <td>{{ g.name_EN }}</td>
+            } @else {
+              <td>{{ g.name_EN }}</td>
+              <td>{{ g.name_AR }}</td>
+            }
             <td class="text-end">
               <button class="btn btn-icon btn-sm btn-light-primary me-1" (click)="edit(g.id)">
                 <i class="ki-outline ki-pencil fs-4"></i>

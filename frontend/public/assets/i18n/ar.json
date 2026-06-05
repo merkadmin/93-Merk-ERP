@@ -31,7 +31,8 @@
     "refresh": "تحديث",
     "actions": "إجراءات",
     "validation_error": "حقول مطلوبة مفقودة",
-    "save_success": "تم الحفظ بنجاح"
+    "save_success": "تم الحفظ بنجاح",
+    "save_and_new": "حفظ وجديد"
   },
   "items": {
     "title": "الأصناف",
@@ -55,7 +56,8 @@
   "uom_conversion_groups": {
     "add_title": "مجموعة تحويل وحدة قياس جديدة",
     "edit_title": "تعديل مجموعة تحويل وحدة القياس",
-    "delete_confirm": "حذف مجموعة تحويل وحدة القياس؟"
+    "delete_confirm": "حذف مجموعة تحويل وحدة القياس؟",
+    "internal_code": "الكود الداخلي"
   },
   "uom_conversion_factors": {
     "from_uom": "من وحدة القياس",

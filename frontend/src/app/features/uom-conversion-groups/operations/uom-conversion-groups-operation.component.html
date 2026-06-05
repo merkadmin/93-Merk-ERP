@@ -13,12 +13,17 @@
   <div class="card-body">
     <div class="row g-4">
 
-      <div class="col-6 col-name-en">
+      <div class="col-4 col-internal-code">
+        <label class="form-label">{{ 'uom_conversion_groups.internal_code' | translate }}</label>
+        <input class="form-control field-name" [(ngModel)]="form.internalCode" name="internalCode" [placeholder]="'uom_conversion_groups.internal_code' | translate">
+      </div>
+
+      <div class="col-4 col-name-en">
         <label class="form-label required">{{ 'common.name' | translate }} (EN)</label>
         <input class="form-control field-name" [(ngModel)]="form.name_EN" name="name_EN" [placeholder]="'common.name' | translate">
       </div>
 
-      <div class="col-6 col-name-ar">
+      <div class="col-4 col-name-ar">
         <label class="form-label required">{{ 'common.name' | translate }} (AR)</label>
         <input class="form-control field-name" [(ngModel)]="form.name_AR" name="name_AR" [placeholder]="'common.name' | translate">
       </div>
@@ -27,7 +32,7 @@
   </div>
 
   <div class="card-footer d-flex justify-content-end gap-3">
-    <button class="btn btn-primary" (click)="save()" [disabled]="saving()">
+    <button class="btn btn-primary" (click)="save()" [disabled]="saving() || savingNew()">
       @if (saving()) {
         <span class="spinner-border spinner-border-sm me-2"></span>
       } @else {
@@ -35,7 +40,15 @@
       }
       {{ 'common.save' | translate }}
     </button>
-    <button class="btn btn-light" (click)="back()">
+    <button class="btn btn-success" (click)="saveAndNew()" [disabled]="saving() || savingNew()">
+      @if (savingNew()) {
+        <span class="spinner-border spinner-border-sm me-2"></span>
+      } @else {
+        <i class="ki-outline ki-plus fs-4 me-1"></i>
+      }
+      {{ 'common.save_and_new' | translate }}
+    </button>
+    <button class="btn btn-light" (click)="back()" [disabled]="saving() || savingNew()">
       <i class="ki-outline ki-arrow-left fs-4 me-1"></i>
       {{ 'common.cancel' | translate }}
     </button>

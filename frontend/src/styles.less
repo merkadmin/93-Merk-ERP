@@ -80,13 +80,23 @@ app-root { display: contents; }
   margin-left: 1rem !important;
 }
 
-/* ── All inputs: primary border on hover ── */
+/* ── All inputs: glowing border on hover and focus ── */
 .form-control,
 .form-control-solid,
 .form-select,
 .form-select-solid {
-  transition: border-color 0.15s !important;
-  &:hover { border-color: var(--bs-primary) !important; }
+  transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+
+  &:hover {
+    border-color: var(--bs-primary) !important;
+    box-shadow: 0 0 0 3px rgba(var(--bs-primary-rgb), 0.15) !important;
+  }
+
+  &:focus {
+    border-color: var(--bs-primary) !important;
+    box-shadow: 0 0 0 4px rgba(var(--bs-primary-rgb), 0.25) !important;
+    outline: none !important;
+  }
 }
 
 /* ── Light mode: white backgrounds for inputs ── */

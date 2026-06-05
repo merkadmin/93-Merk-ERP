@@ -1,3 +1,4 @@
+import { DOCUMENT } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
@@ -5,6 +6,7 @@ import { ApiService } from '../../core/api.service';
 
 interface UomConversionGroup {
   id: number;
+  internalCode: string;
   name_EN: string;
   name_AR: string;
   isActive: boolean;
@@ -22,6 +24,9 @@ export class UomConversionGroupsComponent implements OnInit {
   private api       = inject(ApiService);
   private router    = inject(Router);
   private translate = inject(TranslateService);
+  private doc       = inject(DOCUMENT);
+
+  get isRtl() { return this.doc.documentElement.dir === 'rtl'; }
 
   groups = signal<UomConversionGroup[]>([]);
 

@@ -6,9 +6,10 @@
   max-width: 32.5rem;
 }
 
-// RTL: show AR first (rightmost) then EN — swap column order
-:host-context([dir=rtl]) .col-name-ar { order: 1; }
-:host-context([dir=rtl]) .col-name-en { order: 2; }
+// RTL: InternalCode (rightmost) → AR Name → EN Name (leftmost)
+:host-context([dir=rtl]) .col-internal-code { order: 1; }
+:host-context([dir=rtl]) .col-name-ar        { order: 2; }
+:host-context([dir=rtl]) .col-name-en        { order: 3; }
 
 // RTL: row-reverse puts Save leftmost (left→right order),
 // !important overrides Bootstrap's justify-content-end !important

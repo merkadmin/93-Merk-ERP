@@ -81,6 +81,8 @@ public class MerkDbContext : DbContext
 			.IsUnique();
 
 		m.Entity<UOMConversionGroup_cs>()
+			.Property(e => e.InternalCode).HasColumnType("nvarchar(50)");
+		m.Entity<UOMConversionGroup_cs>()
 			.Property(e => e.Name_EN).HasColumnType("nvarchar(100)");
 		m.Entity<UOMConversionGroup_cs>()
 			.Property(e => e.Name_AR).HasColumnType("nvarchar(100)");
