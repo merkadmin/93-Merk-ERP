@@ -224,6 +224,18 @@ namespace MerkERP.DAL.Migrations
 
 					SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UOMId"));
 
+					b.Property<long?>("InsertedBy")
+						.HasColumnType("bigint");
+
+					b.Property<DateTime?>("InsertedDate")
+						.HasColumnType("datetime2");
+
+					b.Property<bool>("IsActive")
+						.HasColumnType("bit");
+
+					b.Property<bool>("IsFavorite")
+						.HasColumnType("bit");
+
 					b.Property<bool>("MustBeWholeNumber")
 						.HasColumnType("bit");
 
