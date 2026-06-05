@@ -6,7 +6,7 @@
     "inventory": "Inventory",
     "items": "Items",
     "item_groups": "Item Groups",
-    "uoms": "Units of Measure",
+    "uoms": "UOM",
     "warehousing": "Warehousing",
     "warehouses": "Warehouses",
     "current_stock": "Current Stock",
