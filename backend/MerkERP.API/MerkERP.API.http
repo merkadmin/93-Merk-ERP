@@ -1,0 +1,6 @@
+@MerkERP.API_HostAddress = http://localhost:5202
+
+GET {{MerkERP.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
