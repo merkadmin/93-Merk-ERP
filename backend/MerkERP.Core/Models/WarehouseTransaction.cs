@@ -9,6 +9,10 @@ public class WarehouseTransaction
 	public decimal ReservedQty { get; set; }
 	public decimal OrderedQty { get; set; }
 	public decimal ValuationRate { get; set; }
+	public bool IsActive { get; set; } = true;
+	public bool IsFavorite { get; set; } = false;
+	public long? InsertedBy { get; set; }
+	public DateTime? InsertedDate { get; set; }
 
 	public Item_cs Item { get; set; } = null!;
 	public WareHouse_cs Warehouse { get; set; } = null!;

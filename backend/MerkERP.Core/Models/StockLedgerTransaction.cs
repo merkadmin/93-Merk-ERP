@@ -15,6 +15,10 @@ public class StockLedgerTransaction
 	public string VoucherNo { get; set; } = string.Empty;
 	public string? BatchNo { get; set; }
 	public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+	public bool IsActive { get; set; } = true;
+	public bool IsFavorite { get; set; } = false;
+	public long? InsertedBy { get; set; }
+	public DateTime? InsertedDate { get; set; }
 
 	public Item_cs Item { get; set; } = null!;
 	public WareHouse_cs Warehouse { get; set; } = null!;

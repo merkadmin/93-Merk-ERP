@@ -86,9 +86,9 @@ public class MerkDbContext : DbContext
 			.Property(e => e.Name_AR).HasColumnType("nvarchar(100)");
 
 		m.Entity<ItemType_s>().HasData(
-			new ItemType_s { ItemTypeId = 1L, Name = "Stock Item" },
-			new ItemType_s { ItemTypeId = 2L, Name = "Service" },
-			new ItemType_s { ItemTypeId = 3L, Name = "Non-Stock Item" }
+			new ItemType_s { ItemTypeId = 1L, Name = "Stock Item",     IsActive = true },
+			new ItemType_s { ItemTypeId = 2L, Name = "Service",        IsActive = true },
+			new ItemType_s { ItemTypeId = 3L, Name = "Non-Stock Item", IsActive = true }
 		);
 	}
 }

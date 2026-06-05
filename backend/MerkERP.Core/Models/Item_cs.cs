@@ -12,6 +12,9 @@ public class Item_cs
 	public bool HasBatch { get; set; }
 	public bool HasSerial { get; set; }
 	public bool IsActive { get; set; } = true;
+	public bool IsFavorite { get; set; } = false;
+	public long? InsertedBy { get; set; }
+	public DateTime? InsertedDate { get; set; }
 
 	public ItemGroup_cs ItemGroup { get; set; } = null!;
 	public ItemType_s ItemType { get; set; } = null!;

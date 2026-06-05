@@ -6,6 +6,10 @@ public class ItemUOMConversion_cs
 	public long ItemId { get; set; }
 	public long UOMId { get; set; }
 	public decimal ConversionFactor { get; set; }
+	public bool IsActive { get; set; } = true;
+	public bool IsFavorite { get; set; } = false;
+	public long? InsertedBy { get; set; }
+	public DateTime? InsertedDate { get; set; }
 
 	public Item_cs Item { get; set; } = null!;
 	public UOM_cs UOM { get; set; } = null!;
