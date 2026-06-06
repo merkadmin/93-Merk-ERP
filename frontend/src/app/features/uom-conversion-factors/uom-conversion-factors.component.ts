@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import Swal from 'sweetalert2';
 import { ApiService } from '../../core/api.service';
+import { RegularListSearchActionsComponent, SearchField } from '../../shared/components/cards/regular-list-search-actions/regular-list-search-actions.component';
 
 interface UOM { id: number; name_EN: string; name_AR: string; }
 
@@ -21,7 +22,7 @@ interface UomConversionFactor {
 @Component({
   selector: 'app-uom-conversion-factors',
   standalone: true,
-  imports: [TranslatePipe],
+  imports: [TranslatePipe, RegularListSearchActionsComponent],
   templateUrl: './uom-conversion-factors.component.html',
   styleUrl: './uom-conversion-factors.component.less',
 })
@@ -33,12 +34,32 @@ export class UomConversionFactorsComponent implements OnInit {
 
   get isRtl() { return this.doc.documentElement.dir === 'rtl'; }
 
-  factors     = signal<UomConversionFactor[]>([]);
-  selectedIds = signal<Set<number>>(new Set());
+  factors      = signal<UomConversionFactor[]>([]);
+  selectedIds  = signal<Set<number>>(new Set());
+  activeFilter = signal<Record<string, string | number | null>>({});
 
   uomLabel(uom?: UOM): string {
     if (!uom) return '';
     return this.isRtl ? (uom.name_AR || uom.name_EN) : (uom.name_EN || uom.name_AR);
+  }
+
+  get searchFields(): SearchField[] {
+    const factors = this.factors();
+    const fromMap = new Map<number, UOM>();
+    const toMap   = new Map<number, UOM>();
+    for (const f of factors) {
+      if (f.uomFrom) fromMap.set(f.uomFromId, f.uomFrom);
+      if (f.uomTo)   toMap.set(f.uomToId,   f.uomTo);
+    }
+    const toOpts = (map: Map<number, UOM>) =>
+      [...map.values()]
+        .map(u => ({ value: u.id, label: this.uomLabel(u) }))
+        .sort((a, b) => a.label.localeCompare(b.label));
+
+    return [
+      { key: 'uomFrom', label: this.translate.instant('uom_conversion_factors.from_uom'), type: 'select', options: toOpts(fromMap) },
+      { key: 'uomTo',   label: this.translate.instant('uom_conversion_factors.to_uom'),   type: 'select', options: toOpts(toMap)   },
+    ];
   }
 
   get sortedFactors(): UomConversionFactor[] {
@@ -46,6 +67,20 @@ export class UomConversionFactorsComponent implements OnInit {
       if (a.isFavorite !== b.isFavorite) return a.isFavorite ? -1 : 1;
       return this.uomLabel(a.uomFrom).localeCompare(this.uomLabel(b.uomFrom));
     });
+  }
+
+  get filteredFactors(): UomConversionFactor[] {
+    const f = this.activeFilter();
+    return this.sortedFactors.filter(x => {
+      if (f['uomFrom'] != null && x.uomFromId !== f['uomFrom']) return false;
+      if (f['uomTo']   != null && x.uomToId   !== f['uomTo'])   return false;
+      return true;
+    });
+  }
+
+  onFilterChange(filter: Record<string, string | number | null>) {
+    this.activeFilter.set(filter);
+    this.selectedIds.set(new Set());
   }
 
   ngOnInit() { this.load(); }
@@ -62,7 +97,7 @@ export class UomConversionFactorsComponent implements OnInit {
   isSelected(id: number) { return this.selectedIds().has(id); }
 
   get isAllSelected() {
-    const f = this.factors();
+    const f = this.filteredFactors;
     return f.length > 0 && f.every(item => this.selectedIds().has(item.id));
   }
 
@@ -80,7 +115,7 @@ export class UomConversionFactorsComponent implements OnInit {
     if (this.isAllSelected) {
       this.selectedIds.set(new Set());
     } else {
-      this.selectedIds.set(new Set(this.factors().map(f => f.id)));
+      this.selectedIds.set(new Set(this.filteredFactors.map(f => f.id)));
     }
   }
 

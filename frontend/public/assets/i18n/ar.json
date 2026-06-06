@@ -37,7 +37,9 @@
     "validation_error": "حقول مطلوبة مفقودة",
     "save_success": "تم الحفظ بنجاح",
     "save_and_new": "حفظ وجديد",
-    "reset": "مسح"
+    "reset": "مسح",
+    "all": "الكل",
+    "clear_filter": "مسح الفلتر"
   },
   "items": {
     "title": "الأصناف",

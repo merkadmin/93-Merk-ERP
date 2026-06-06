@@ -12,8 +12,8 @@ interface UOM { id: number; name_EN: string; name_AR: string; }
 
 interface UomConversionFactor {
   id: number;
-  uomFromId: number | undefined;
-  uomToId: number | undefined;
+  uomFromId: number;
+  uomToId: number;
   value: number;
   isActive: boolean;
   isFavorite: boolean;
@@ -78,13 +78,13 @@ export class UomConversionFactorsOperationComponent implements OnInit {
   }
 
   private blank(): Partial<UomConversionFactor> {
-    return { id: 0, uomFromId: undefined, uomToId: undefined, value: 1, isActive: true, isFavorite: false };
+    return { id: 0, uomFromId: 0, uomToId: 0, value: 1, isActive: true, isFavorite: false };
   }
 
   private resetAll() {
     this.form.id         = 0;
-    this.form.uomFromId  = undefined;
-    this.form.uomToId    = undefined;
+    this.form.uomFromId  = 0;
+    this.form.uomToId    = 0;
     this.form.value      = 1;
     this.form.isActive   = true;
     this.form.isFavorite = false;

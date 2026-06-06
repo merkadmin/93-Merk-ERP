@@ -11,6 +11,6 @@ public class UOMConversionFactor_cs
 	public long? InsertedBy { get; set; }
 	public DateTime? InsertedDate { get; set; }
 
-	public UOM_cs UOMFrom { get; set; } = null!;
-	public UOM_cs UOMTo { get; set; } = null!;
+	public UOM_cs? UOMFrom { get; set; }
+	public UOM_cs? UOMTo { get; set; }
 }

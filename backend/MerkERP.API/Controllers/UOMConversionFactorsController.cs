@@ -29,8 +29,8 @@ public class UOMConversionFactorsController(MerkDbContext db) : ControllerBase
 	[HttpPost]
 	public async Task<IActionResult> Create(UOMConversionFactor_cs e)
 	{
-		e.UOMFrom      = null!;
-		e.UOMTo        = null!;
+		e.UOMFrom      = null;
+		e.UOMTo        = null;
 		e.InsertedDate = DateTime.UtcNow;
 		db.UOMConversionFactor_cs.Add(e);
 		await db.SaveChangesAsync();

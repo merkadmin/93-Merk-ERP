@@ -21,6 +21,11 @@
   </div>
 </div>
 
+<!-- Search -->
+<app-regular-list-search-actions
+  [fields]="searchFields"
+  (filterChange)="onFilterChange($event)" />
+
 <!-- Table -->
 <div class="card">
   <div class="card-body p-0">
@@ -40,7 +45,7 @@
         </tr>
       </thead>
       <tbody>
-        @for (f of sortedFactors; track f.id) {
+        @for (f of filteredFactors; track f.id) {
           <tr [class.table-active]="isSelected(f.id)">
             <td>
               <input type="checkbox" class="form-check-input"
