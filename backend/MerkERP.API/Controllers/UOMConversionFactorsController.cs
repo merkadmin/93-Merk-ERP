@@ -14,7 +14,7 @@ public class UOMConversionFactorsController(MerkDbContext db) : ControllerBase
 		Ok(await db.UOMConversionFactor_cs
 			.Include(f => f.UOMFrom)
 			.Include(f => f.UOMTo)
-			.OrderBy(f => f.UOMFrom.Name)
+			.OrderBy(f => f.UOMFrom.Name_EN)
 			.ToListAsync());
 
 	[HttpGet("{id}")]

@@ -1,27 +1,33 @@
 <app-regular-operation-header
   [title]="(isEdit() ? 'uoms.edit_title' : 'uoms.add_title') | translate"
-  icon="ki-outline ki-ruler"
-  color="primary" />
+  icon="ki-outline ki-abstract-26"
+  color="success" />
 
 <!-- Form card -->
 <div class="card">
   <div class="card-body">
-    <div class="row g-4 align-items-end">
+    <div class="row g-4">
 
-      <div class="col-4">
+      <div class="col-3 col-internal-code">
         <label class="form-label required">{{ 'uoms.internal_code' | translate }}</label>
         <input class="form-control" [(ngModel)]="form.internalCode" name="internalCode"
           [placeholder]="'uoms.internal_code' | translate">
       </div>
 
-      <div class="col-4">
-        <label class="form-label required">{{ 'common.name' | translate }}</label>
-        <input class="form-control" [(ngModel)]="form.name" name="name"
+      <div class="col-3 col-name-ar">
+        <label class="form-label required">{{ 'common.name' | translate }} (AR)</label>
+        <input class="form-control" [(ngModel)]="form.name_AR" name="name_AR"
           [placeholder]="'common.name' | translate">
       </div>
 
-      <div class="col-4">
-        <div class="form-check form-check-custom form-check-solid mb-2">
+      <div class="col-3 col-name-en">
+        <label class="form-label required">{{ 'common.name' | translate }} (EN)</label>
+        <input class="form-control" [(ngModel)]="form.name_EN" name="name_EN"
+          [placeholder]="'common.name' | translate">
+      </div>
+
+      <div class="col-3 col-whole-number d-flex align-items-end pb-2">
+        <div class="form-check form-check-custom form-check-solid">
           <input class="form-check-input" type="checkbox"
             [(ngModel)]="form.mustBeWholeNumber" name="mustBeWholeNumber" id="mustBeWholeNumber">
           <label class="form-check-label fw-semibold" for="mustBeWholeNumber">

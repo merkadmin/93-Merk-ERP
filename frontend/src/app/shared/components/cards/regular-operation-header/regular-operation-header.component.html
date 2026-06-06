@@ -1,6 +1,5 @@
-<div class="d-flex align-items-center rounded py-4 px-6 mb-8 border border-dashed"
-  [class]="'bg-light-' + color() + ' border-' + color()">
-  <i class="fs-2tx me-4" [class]="icon() + ' text-' + color()"></i>
+<div [class]="'d-flex align-items-center rounded py-4 px-6 mb-8 border border-dashed bg-light-' + color() + ' border-' + color()">
+  <i [class]="'fs-2tx me-4 ' + icon() + ' text-' + color()"></i>
   <div class="d-flex flex-column">
     <h2 class="fw-bold text-gray-900 fs-3 mb-0">{{ title() }}</h2>
   </div>

@@ -23,7 +23,7 @@ public class MerkDbContext : DbContext
 		// Explicit PKs (class names contain underscores so EF convention doesn't match)
 		m.Entity<ItemType_s>().HasKey(e => e.ItemTypeId);
 		m.Entity<ItemGroup_cs>().HasKey(e => e.ItemGroupId);
-		m.Entity<UOM_cs>().HasKey(e => e.UOMId);
+		m.Entity<UOM_cs>().HasKey(e => e.Id);
 		m.Entity<Item_cs>().HasKey(e => e.ItemId);
 		m.Entity<ItemUOMConversion_cs>().HasKey(e => e.Id);
 		m.Entity<UOMConversionFactor_cs>().HasKey(e => e.Id);
@@ -82,6 +82,10 @@ public class MerkDbContext : DbContext
 
 		m.Entity<UOM_cs>()
 			.Property(e => e.InternalCode).HasColumnType("nvarchar(50)");
+		m.Entity<UOM_cs>()
+			.Property(e => e.Name_EN).HasColumnType("nvarchar(200)");
+		m.Entity<UOM_cs>()
+			.Property(e => e.Name_AR).HasColumnType("nvarchar(200)");
 
 		m.Entity<UOMConversionGroup_cs>()
 			.Property(e => e.InternalCode).HasColumnType("nvarchar(50)");

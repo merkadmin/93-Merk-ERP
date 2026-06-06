@@ -49,11 +49,12 @@ public class UOMsController(MerkDbContext db) : ControllerBase
 	[HttpPut("{id:long}")]
 	public async Task<IActionResult> Update(long id, UOM_cs e)
 	{
-		if (id != e.UOMId) return BadRequest();
+		if (id != e.Id) return BadRequest();
 		var existing = await db.UOM_cs.FindAsync(id);
 		if (existing is null) return NotFound();
 		existing.InternalCode      = e.InternalCode;
-		existing.Name              = e.Name;
+		existing.Name_EN           = e.Name_EN;
+		existing.Name_AR           = e.Name_AR;
 		existing.MustBeWholeNumber = e.MustBeWholeNumber;
 		existing.IsActive          = e.IsActive;
 		existing.IsFavorite        = e.IsFavorite;
@@ -95,7 +96,7 @@ public class UOMsController(MerkDbContext db) : ControllerBase
 	public async Task<IActionResult> BulkSetActive([FromBody] BulkUomActiveDto dto)
 	{
 		var entities = await db.UOM_cs
-			.Where(u => dto.Ids.Contains(u.UOMId))
+			.Where(u => dto.Ids.Contains(u.Id))
 			.ToListAsync();
 		entities.ForEach(e => e.IsActive = dto.IsActive);
 		await db.SaveChangesAsync();
@@ -106,7 +107,7 @@ public class UOMsController(MerkDbContext db) : ControllerBase
 	public async Task<IActionResult> DeleteBulk([FromBody] List<long> ids)
 	{
 		var entities = await db.UOM_cs
-			.Where(u => ids.Contains(u.UOMId))
+			.Where(u => ids.Contains(u.Id))
 			.ToListAsync();
 		db.UOM_cs.RemoveRange(entities);
 		await db.SaveChangesAsync();

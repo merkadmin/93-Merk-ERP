@@ -8,9 +8,10 @@ import { RegularOperationHeaderComponent } from '../../../shared/components/card
 import { RegularOperationActionsComponent } from '../../../shared/components/cards/regular-operation-actions/regular-operation-actions.component';
 
 interface UOM {
-  uomId: number;
+  id: number;
   internalCode: string;
-  name: string;
+  name_EN: string;
+  name_AR: string;
   mustBeWholeNumber: boolean;
   isActive: boolean;
   isFavorite: boolean;
@@ -53,7 +54,7 @@ export class UomsOperationComponent implements OnInit {
   }
 
   private blank(): Partial<UOM> {
-    return { uomId: 0, internalCode: '', name: '', mustBeWholeNumber: false, isActive: true, isFavorite: false };
+    return { id: 0, internalCode: '', name_EN: '', name_AR: '', mustBeWholeNumber: false, isActive: true, isFavorite: false };
   }
 
   private validate(): boolean {
@@ -62,8 +63,11 @@ export class UomsOperationComponent implements OnInit {
     if (!this.form.internalCode?.trim())
       missing.push(this.translate.instant('uoms.internal_code'));
 
-    if (!this.form.name?.trim())
-      missing.push(this.translate.instant('common.name'));
+    if (!this.form.name_EN?.trim())
+      missing.push(`${this.translate.instant('common.name')} (EN)`);
+
+    if (!this.form.name_AR?.trim())
+      missing.push(`${this.translate.instant('common.name')} (AR)`);
 
     if (missing.length) {
       this.toastr.error(
@@ -82,7 +86,7 @@ export class UomsOperationComponent implements OnInit {
     andNew ? this.savingNew.set(true) : this.saving.set(true);
 
     const req = this.isEdit()
-      ? this.api.put<UOM>(`uoms/${this.form.uomId}`, this.form)
+      ? this.api.put<UOM>(`uoms/${this.form.id}`, this.form)
       : this.api.post<UOM>('uoms', this.form);
 
     req.subscribe({

@@ -2,9 +2,10 @@ namespace MerkERP.Core.Models;
 
 public class UOM_cs
 {
-	public long UOMId { get; set; }
+	public long Id { get; set; }
 	public string? InternalCode { get; set; }
-	public string Name { get; set; } = string.Empty;
+	public string Name_EN { get; set; } = string.Empty;
+	public string? Name_AR { get; set; }
 	public bool MustBeWholeNumber { get; set; }
 	public bool IsActive { get; set; } = true;
 	public long? InsertedBy { get; set; }

@@ -27,7 +27,7 @@ export class SidebarService {
       getChildren: () => [
         { route: '/items',                   icon: 'ki-outline ki-package',     labelKey: 'nav.items' },
         { route: '/item-groups',             icon: 'ki-outline ki-category',    labelKey: 'nav.item_groups' },
-        { route: '/uoms',                    icon: 'ki-outline ki-ruler',        labelKey: 'nav.uoms' },
+        { route: '/uoms',                    icon: 'ki-outline ki-abstract-26',  labelKey: 'nav.uoms' },
         { route: '/uom-conversion-groups',   icon: 'ki-outline ki-abstract-14', labelKey: 'nav.uom_conversion_groups' },
         { route: '/uom-conversion-factors',  icon: 'ki-outline ki-arrows-circle',labelKey: 'nav.uom_conversion_factors' },
       ],

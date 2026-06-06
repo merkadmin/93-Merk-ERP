@@ -6,9 +6,10 @@ import Swal from 'sweetalert2';
 import { ApiService } from '../../core/api.service';
 
 interface UOM {
-  uomId: number;
+  id: number;
   internalCode: string;
-  name: string;
+  name_EN: string;
+  name_AR: string;
   mustBeWholeNumber: boolean;
   isActive: boolean;
   isFavorite: boolean;
@@ -35,7 +36,9 @@ export class UomsComponent implements OnInit {
   get sortedUoms(): UOM[] {
     return [...this.uoms()].sort((a, b) => {
       if (a.isFavorite !== b.isFavorite) return a.isFavorite ? -1 : 1;
-      return a.name.localeCompare(b.name);
+      const nameA = this.isRtl ? (a.name_AR ?? '') : (a.name_EN ?? '');
+      const nameB = this.isRtl ? (b.name_AR ?? '') : (b.name_EN ?? '');
+      return nameA.localeCompare(nameB);
     });
   }
 
@@ -54,7 +57,7 @@ export class UomsComponent implements OnInit {
 
   get isAllSelected() {
     const u = this.uoms();
-    return u.length > 0 && u.every(item => this.selectedIds().has(item.uomId));
+    return u.length > 0 && u.every(item => this.selectedIds().has(item.id));
   }
 
   get isIndeterminate() {
@@ -71,7 +74,7 @@ export class UomsComponent implements OnInit {
     if (this.isAllSelected) {
       this.selectedIds.set(new Set());
     } else {
-      this.selectedIds.set(new Set(this.uoms().map(u => u.uomId)));
+      this.selectedIds.set(new Set(this.uoms().map(u => u.id)));
     }
   }
 
@@ -98,14 +101,14 @@ export class UomsComponent implements OnInit {
   }
 
   toggleFavorite(uom: UOM) {
-    this.api.patch<UOM>(`uoms/${uom.uomId}/toggle-favorite`).subscribe(updated => {
-      this.uoms.update(list => list.map(u => u.uomId === updated.uomId ? updated : u));
+    this.api.patch<UOM>(`uoms/${uom.id}/toggle-favorite`).subscribe(updated => {
+      this.uoms.update(list => list.map(u => u.id === updated.id ? updated : u));
     });
   }
 
   toggleActive(uom: UOM) {
-    this.api.patch<UOM>(`uoms/${uom.uomId}/toggle-active`).subscribe(updated => {
-      this.uoms.update(list => list.map(u => u.uomId === updated.uomId ? updated : u));
+    this.api.patch<UOM>(`uoms/${uom.id}/toggle-active`).subscribe(updated => {
+      this.uoms.update(list => list.map(u => u.id === updated.id ? updated : u));
     });
   }
 

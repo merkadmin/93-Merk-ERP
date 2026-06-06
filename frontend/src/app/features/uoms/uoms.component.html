@@ -34,21 +34,33 @@
               (change)="toggleAll()">
           </th>
           <th>{{ 'uoms.internal_code' | translate }}</th>
-          <th>{{ 'common.name' | translate }}</th>
+          @if (isRtl) {
+            <th>{{ 'common.name' | translate }} (AR)</th>
+            <th>{{ 'common.name' | translate }} (EN)</th>
+          } @else {
+            <th>{{ 'common.name' | translate }} (EN)</th>
+            <th>{{ 'common.name' | translate }} (AR)</th>
+          }
           <th>{{ 'uoms.whole_number' | translate }}</th>
           <th [class.text-end]="!isRtl" [class.text-start]="isRtl">{{ 'common.actions' | translate }}</th>
         </tr>
       </thead>
       <tbody>
-        @for (u of sortedUoms; track u.uomId) {
-          <tr [class.table-active]="isSelected(u.uomId)">
+        @for (u of sortedUoms; track u.id) {
+          <tr [class.table-active]="isSelected(u.id)">
             <td>
               <input type="checkbox" class="form-check-input"
-                [checked]="isSelected(u.uomId)"
-                (change)="toggleOne(u.uomId)">
+                [checked]="isSelected(u.id)"
+                (change)="toggleOne(u.id)">
             </td>
             <td>{{ u.internalCode }}</td>
-            <td>{{ u.name }}</td>
+            @if (isRtl) {
+              <td>{{ u.name_AR }}</td>
+              <td>{{ u.name_EN }}</td>
+            } @else {
+              <td>{{ u.name_EN }}</td>
+              <td>{{ u.name_AR }}</td>
+            }
             <td>
               <span class="badge"
                 [class.badge-light-info]="u.mustBeWholeNumber"
@@ -68,7 +80,7 @@
                     <i class="ki-outline ki-heart fs-4"></i>
                   }
                 </button>
-                <button class="btn btn-icon btn-sm btn-light-primary" (click)="edit(u.uomId)"
+                <button class="btn btn-icon btn-sm btn-light-primary" (click)="edit(u.id)"
                   [title]="'common.edit' | translate">
                   <i class="ki-outline ki-pencil fs-4"></i>
                 </button>
@@ -83,7 +95,7 @@
                     {{ 'common.activate' | translate }}
                   </button>
                 }
-                <button class="btn btn-icon btn-sm btn-light-danger" (click)="delete(u.uomId)"
+                <button class="btn btn-icon btn-sm btn-light-danger" (click)="delete(u.id)"
                   [title]="'common.delete' | translate">
                   <i class="ki-outline ki-trash fs-4"></i>
                 </button>
@@ -92,7 +104,7 @@
           </tr>
         } @empty {
           <tr>
-            <td colspan="5" class="text-center text-muted py-6">—</td>
+            <td colspan="6" class="text-center text-muted py-6">—</td>
           </tr>
         }
       </tbody>
