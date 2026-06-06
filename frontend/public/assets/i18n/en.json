@@ -66,10 +66,13 @@
     "internal_code": "Internal Code"
   },
   "uom_conversion_factors": {
+    "add_title": "New UOM Conversion Factor",
+    "edit_title": "Edit UOM Conversion Factor",
     "from_uom": "From UOM",
     "to_uom": "To UOM",
     "value": "Factor",
-    "delete_confirm": "Delete this conversion factor?"
+    "delete_confirm": "Delete this conversion factor?",
+    "delete_selected_confirm": "Delete {{count}} selected factor(s)?"
   },
   "uoms": {
     "title": "Units of Measure",

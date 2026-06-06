@@ -1,0 +1,52 @@
+<app-regular-operation-header
+  [title]="(isEdit() ? 'uom_conversion_factors.edit_title' : 'uom_conversion_factors.add_title') | translate"
+  icon="ki-outline ki-arrows-circle"
+  color="success" />
+
+<!-- Form card -->
+<div class="card">
+  <div class="card-body">
+    <div class="row g-4">
+
+      <div class="col-4">
+        <label class="form-label required">{{ 'uom_conversion_factors.from_uom' | translate }}</label>
+        <select class="form-select" [(ngModel)]="form.uomFromId" name="uomFromId">
+          <option [ngValue]="undefined">{{ 'common.select' | translate }}</option>
+          @for (u of uoms(); track u.id) {
+            <option [ngValue]="u.id">{{ uomLabel(u) }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="col-4">
+        <label class="form-label required">{{ 'uom_conversion_factors.to_uom' | translate }}</label>
+        <select class="form-select" [(ngModel)]="form.uomToId" name="uomToId">
+          <option [ngValue]="undefined">{{ 'common.select' | translate }}</option>
+          @for (u of uoms(); track u.id) {
+            <option [ngValue]="u.id">{{ uomLabel(u) }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="col-4">
+        <label class="form-label required">{{ 'uom_conversion_factors.value' | translate }}</label>
+        <input class="form-control" type="text" inputmode="decimal"
+          [(ngModel)]="valueExpression" name="value"
+          (blur)="evaluateExpression()"
+          placeholder="e.g. 1/12">
+        @if (form.value && form.value.toString() !== valueExpression) {
+          <div class="text-muted fs-7 mt-1">= {{ form.value }}</div>
+        }
+      </div>
+
+    </div>
+  </div>
+
+  <app-regular-operation-actions
+    [saving]="saving()"
+    [savingNew]="savingNew()"
+    (save)="save()"
+    (saveAndNew)="saveAndNew()"
+    (reset)="resetForm()"
+    (cancel)="back()" />
+</div>
