@@ -12,7 +12,7 @@ builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<StockService>();
 
 builder.Services.AddCors(o => o.AddPolicy("Angular", p =>
-    p.WithOrigins("http://localhost:4200").AllowAnyHeader().AllowAnyMethod()));
+    p.WithOrigins("http://localhost:4200", "http://localhost:7710").AllowAnyHeader().AllowAnyMethod()));
 
 builder.Services.AddControllers().AddJsonOptions(o =>
     o.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles);
