@@ -1,0 +1,60 @@
+<div class="csi-wrap">
+
+  <!-- Trigger -->
+  <button type="button" class="csi-btn" (click)="toggle()" [disabled]="disabled()">
+    @if (value() !== null && value() !== 0) {
+      <span class="csi-selected fw-semibold flex-grow-1">{{ selectedLabel }}</span>
+    } @else {
+      <span class="csi-placeholder flex-grow-1">{{ placeholder() }}</span>
+    }
+    <i class="ki-outline ki-down csi-arrow" [class.rotated]="isOpen"></i>
+  </button>
+
+  <!-- Clear × -->
+  @if (value() !== null && value() !== 0 && !disabled()) {
+    <button type="button" class="csi-clear-x" (mousedown)="$event.preventDefault(); clear()">
+      <i class="ki-outline ki-cross fs-8"></i>
+    </button>
+  }
+
+  <!-- Dropdown panel -->
+  @if (isOpen) {
+    <div class="csi-panel">
+
+      <!-- Sticky search bar -->
+      <div class="csi-search">
+        <i class="ki-outline ki-magnifier fs-5 text-muted"></i>
+        <input type="text" class="csi-search-input"
+          [(ngModel)]="searchQuery"
+          [placeholder]="searchPlaceholder()"
+          autocomplete="off">
+        @if (searchQuery) {
+          <button type="button" class="csi-search-clear" (mousedown)="$event.preventDefault(); searchQuery = ''">
+            <i class="ki-outline ki-cross fs-8"></i>
+          </button>
+        }
+      </div>
+
+      <!-- Options -->
+      @if (filtered.length === 0) {
+        <div class="csi-empty">{{ noMatchText() }}</div>
+      } @else {
+        @for (opt of filtered; track opt.value) {
+          <div class="csi-item"
+            [class.csi-item--active]="opt.value === value()"
+            (mousedown)="pick(opt)">
+            <span class="csi-item-label flex-grow-1">{{ opt.label }}</span>
+            @if (opt.sublabel) {
+              <span class="csi-item-sub">{{ opt.sublabel }}</span>
+            }
+            @if (opt.value === value()) {
+              <i class="ki-outline ki-check fs-5 text-primary"></i>
+            }
+          </div>
+        }
+      }
+
+    </div>
+  }
+
+</div>
