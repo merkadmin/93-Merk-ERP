@@ -73,6 +73,7 @@
     "from_uom": "من وحدة القياس",
     "to_uom": "إلى وحدة القياس",
     "value": "معامل التحويل",
+    "conversion_group": "مجموعة التحويل",
     "delete_confirm": "حذف معامل التحويل هذا؟",
     "delete_selected_confirm": "حذف {{count}} معامل محدد؟"
   },

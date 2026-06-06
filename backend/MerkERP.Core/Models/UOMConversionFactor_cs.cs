@@ -6,6 +6,7 @@ public class UOMConversionFactor_cs
 	public long UOMFromId { get; set; }
 	public long UOMToId { get; set; }
 	public double Value { get; set; }
+	public int? UOMConversionGroupId { get; set; }
 	public bool IsActive { get; set; } = true;
 	public bool IsFavorite { get; set; } = false;
 	public long? InsertedBy { get; set; }
@@ -13,4 +14,5 @@ public class UOMConversionFactor_cs
 
 	public UOM_cs? UOMFrom { get; set; }
 	public UOM_cs? UOMTo { get; set; }
+	public UOMConversionGroup_cs? UOMConversionGroup { get; set; }
 }

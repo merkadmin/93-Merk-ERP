@@ -16,6 +16,7 @@ public class UOMConversionFactorsController(MerkDbContext db) : ControllerBase
 		Ok(await db.UOMConversionFactor_cs
 			.Include(f => f.UOMFrom)
 			.Include(f => f.UOMTo)
+			.Include(f => f.UOMConversionGroup)
 			.OrderBy(f => f.UOMFrom.Name_EN)
 			.ToListAsync());
 
@@ -24,14 +25,16 @@ public class UOMConversionFactorsController(MerkDbContext db) : ControllerBase
 		await db.UOMConversionFactor_cs
 			.Include(f => f.UOMFrom)
 			.Include(f => f.UOMTo)
+			.Include(f => f.UOMConversionGroup)
 			.FirstOrDefaultAsync(f => f.Id == id) is { } e ? Ok(e) : NotFound();
 
 	[HttpPost]
 	public async Task<IActionResult> Create(UOMConversionFactor_cs e)
 	{
-		e.UOMFrom      = null;
-		e.UOMTo        = null;
-		e.InsertedDate = DateTime.UtcNow;
+		e.UOMFrom            = null;
+		e.UOMTo              = null;
+		e.UOMConversionGroup = null;
+		e.InsertedDate       = DateTime.UtcNow;
 		db.UOMConversionFactor_cs.Add(e);
 		await db.SaveChangesAsync();
 		return Ok(e);
@@ -43,11 +46,12 @@ public class UOMConversionFactorsController(MerkDbContext db) : ControllerBase
 		if (id != e.Id) return BadRequest();
 		var existing = await db.UOMConversionFactor_cs.FindAsync(id);
 		if (existing is null) return NotFound();
-		existing.UOMFromId  = e.UOMFromId;
-		existing.UOMToId    = e.UOMToId;
-		existing.Value      = e.Value;
-		existing.IsActive   = e.IsActive;
-		existing.IsFavorite = e.IsFavorite;
+		existing.UOMFromId             = e.UOMFromId;
+		existing.UOMToId               = e.UOMToId;
+		existing.Value                 = e.Value;
+		existing.UOMConversionGroupId  = e.UOMConversionGroupId;
+		existing.IsActive              = e.IsActive;
+		existing.IsFavorite            = e.IsFavorite;
 		await db.SaveChangesAsync();
 		return Ok(existing);
 	}

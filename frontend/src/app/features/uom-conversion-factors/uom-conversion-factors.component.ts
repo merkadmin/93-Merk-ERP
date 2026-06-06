@@ -7,17 +7,20 @@ import { ApiService } from '../../core/api.service';
 import { RegularListSearchActionsComponent, SearchField } from '../../shared/components/cards/regular-list-search-actions/regular-list-search-actions.component';
 import { RegularListHeaderWithActionsComponent } from '../../shared/components/cards/regular-list-header-with-actions/regular-list-header-with-actions.component';
 
-interface UOM { id: number; name_EN: string; name_AR: string; }
+interface UOM   { id: number; name_EN: string; name_AR: string; }
+interface Group { id: number; name_EN: string; name_AR: string; }
 
 interface UomConversionFactor {
   id: number;
   uomFromId: number;
   uomToId: number;
   value: number;
+  uomConversionGroupId: number | null;
   isActive: boolean;
   isFavorite: boolean;
   uomFrom?: UOM;
   uomTo?: UOM;
+  uomConversionGroup?: Group;
 }
 
 @Component({
@@ -44,22 +47,33 @@ export class UomConversionFactorsComponent implements OnInit {
     return this.isRtl ? (uom.name_AR || uom.name_EN) : (uom.name_EN || uom.name_AR);
   }
 
+  groupLabel(g?: Group): string {
+    if (!g) return '—';
+    return this.isRtl ? (g.name_AR || g.name_EN) : (g.name_EN || g.name_AR);
+  }
+
   get searchFields(): SearchField[] {
     const factors = this.factors();
-    const fromMap = new Map<number, UOM>();
-    const toMap   = new Map<number, UOM>();
+    const fromMap  = new Map<number, UOM>();
+    const toMap    = new Map<number, UOM>();
+    const groupMap = new Map<number, Group>();
     for (const f of factors) {
-      if (f.uomFrom) fromMap.set(f.uomFromId, f.uomFrom);
-      if (f.uomTo)   toMap.set(f.uomToId,   f.uomTo);
+      if (f.uomFrom)            fromMap.set(f.uomFromId, f.uomFrom);
+      if (f.uomTo)              toMap.set(f.uomToId, f.uomTo);
+      if (f.uomConversionGroup && f.uomConversionGroupId != null)
+        groupMap.set(f.uomConversionGroupId, f.uomConversionGroup);
     }
-    const toOpts = (map: Map<number, UOM>) =>
-      [...map.values()]
-        .map(u => ({ value: u.id, label: this.uomLabel(u) }))
+    const uomOpts = (map: Map<number, UOM>) =>
+      [...map.values()].map(u => ({ value: u.id, label: this.uomLabel(u) }))
         .sort((a, b) => a.label.localeCompare(b.label));
+    const grpOpts = [...groupMap.values()]
+      .map(g => ({ value: g.id, label: this.groupLabel(g) }))
+      .sort((a, b) => a.label.localeCompare(b.label));
 
     return [
-      { key: 'uomFrom', label: this.translate.instant('uom_conversion_factors.from_uom'), type: 'select', options: toOpts(fromMap) },
-      { key: 'uomTo',   label: this.translate.instant('uom_conversion_factors.to_uom'),   type: 'select', options: toOpts(toMap)   },
+      { key: 'uomFrom',  label: this.translate.instant('uom_conversion_factors.from_uom'),         type: 'select', options: uomOpts(fromMap) },
+      { key: 'uomTo',    label: this.translate.instant('uom_conversion_factors.to_uom'),            type: 'select', options: uomOpts(toMap)   },
+      { key: 'groupId',  label: this.translate.instant('uom_conversion_factors.conversion_group'),  type: 'select', options: grpOpts           },
     ];
   }
 
@@ -73,8 +87,9 @@ export class UomConversionFactorsComponent implements OnInit {
   get filteredFactors(): UomConversionFactor[] {
     const f = this.activeFilter();
     return this.sortedFactors.filter(x => {
-      if (f['uomFrom'] != null && x.uomFromId !== f['uomFrom']) return false;
-      if (f['uomTo']   != null && x.uomToId   !== f['uomTo'])   return false;
+      if (f['uomFrom'] != null && x.uomFromId           !== f['uomFrom']) return false;
+      if (f['uomTo']   != null && x.uomToId             !== f['uomTo'])   return false;
+      if (f['groupId'] != null && x.uomConversionGroupId !== f['groupId']) return false;
       return true;
     });
   }
@@ -144,13 +159,13 @@ export class UomConversionFactorsComponent implements OnInit {
 
   toggleFavorite(f: UomConversionFactor) {
     this.api.patch<UomConversionFactor>(`uomconversionfactors/${f.id}/toggle-favorite`).subscribe(updated => {
-      this.factors.update(list => list.map(x => x.id === updated.id ? { ...updated, uomFrom: x.uomFrom, uomTo: x.uomTo } : x));
+      this.factors.update(list => list.map(x => x.id === updated.id ? { ...updated, uomFrom: x.uomFrom, uomTo: x.uomTo, uomConversionGroup: x.uomConversionGroup } : x));
     });
   }
 
   toggleActive(f: UomConversionFactor) {
     this.api.patch<UomConversionFactor>(`uomconversionfactors/${f.id}/toggle-active`).subscribe(updated => {
-      this.factors.update(list => list.map(x => x.id === updated.id ? { ...updated, uomFrom: x.uomFrom, uomTo: x.uomTo } : x));
+      this.factors.update(list => list.map(x => x.id === updated.id ? { ...updated, uomFrom: x.uomFrom, uomTo: x.uomTo, uomConversionGroup: x.uomConversionGroup } : x));
     });
   }
 

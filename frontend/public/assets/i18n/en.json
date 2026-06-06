@@ -73,6 +73,7 @@
     "from_uom": "From UOM",
     "to_uom": "To UOM",
     "value": "Factor",
+    "conversion_group": "Conversion Group",
     "delete_confirm": "Delete this conversion factor?",
     "delete_selected_confirm": "Delete {{count}} selected factor(s)?"
   },

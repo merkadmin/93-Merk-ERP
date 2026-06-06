@@ -8,13 +8,15 @@ import { ApiService } from '../../../core/api.service';
 import { RegularOperationHeaderComponent } from '../../../shared/components/cards/regular-operation-header/regular-operation-header.component';
 import { RegularOperationActionsComponent } from '../../../shared/components/cards/regular-operation-actions/regular-operation-actions.component';
 
-interface UOM { id: number; name_EN: string; name_AR: string; }
+interface UOM   { id: number; name_EN: string; name_AR: string; }
+interface Group { id: number; name_EN: string; name_AR: string; }
 
 interface UomConversionFactor {
   id: number;
   uomFromId: number;
   uomToId: number;
   value: number;
+  uomConversionGroupId: number | null;
   isActive: boolean;
   isFavorite: boolean;
 }
@@ -40,12 +42,14 @@ export class UomConversionFactorsOperationComponent implements OnInit {
   saving    = signal(false);
   savingNew = signal(false);
   uoms      = signal<UOM[]>([]);
+  groups    = signal<Group[]>([]);
 
   form: Partial<UomConversionFactor> = this.blank();
   valueExpression = '1';
 
   ngOnInit() {
     this.api.get<UOM[]>('uoms').subscribe(u => this.uoms.set(u));
+    this.api.get<Group[]>('uomconversiongroups').subscribe(g => this.groups.set(g));
 
     const id = Number(this.route.snapshot.paramMap.get('id'));
     if (id) {
@@ -77,18 +81,23 @@ export class UomConversionFactorsOperationComponent implements OnInit {
     return this.isRtl ? (uom.name_AR || uom.name_EN) : (uom.name_EN || uom.name_AR);
   }
 
+  groupLabel(g: Group): string {
+    return this.isRtl ? (g.name_AR || g.name_EN) : (g.name_EN || g.name_AR);
+  }
+
   private blank(): Partial<UomConversionFactor> {
-    return { id: 0, uomFromId: 0, uomToId: 0, value: 1, isActive: true, isFavorite: false };
+    return { id: 0, uomFromId: 0, uomToId: 0, value: 1, uomConversionGroupId: null, isActive: true, isFavorite: false };
   }
 
   private resetAll() {
-    this.form.id         = 0;
-    this.form.uomFromId  = 0;
-    this.form.uomToId    = 0;
-    this.form.value      = 1;
-    this.form.isActive   = true;
-    this.form.isFavorite = false;
-    this.valueExpression = '1';
+    this.form.id                   = 0;
+    this.form.uomFromId            = 0;
+    this.form.uomToId              = 0;
+    this.form.value                = 1;
+    this.form.uomConversionGroupId = null;
+    this.form.isActive             = true;
+    this.form.isFavorite           = false;
+    this.valueExpression           = '1';
   }
 
   private validate(): boolean {
@@ -102,6 +111,9 @@ export class UomConversionFactorsOperationComponent implements OnInit {
 
     if (!this.form.value || this.form.value <= 0)
       missing.push(this.translate.instant('uom_conversion_factors.value'));
+
+    if (!this.form.uomConversionGroupId)
+      missing.push(this.translate.instant('uom_conversion_factors.conversion_group'));
 
     if (missing.length) {
       this.toastr.error(
