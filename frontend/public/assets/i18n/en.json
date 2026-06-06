@@ -36,7 +36,8 @@
     "favorite": "Favorite",
     "validation_error": "Missing required fields",
     "save_success": "Saved successfully",
-    "save_and_new": "Save & New"
+    "save_and_new": "Save & New",
+    "reset": "Reset"
   },
   "items": {
     "title": "Items",

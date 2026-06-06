@@ -1,0 +1,35 @@
+<div class="card-footer d-flex align-items-center justify-content-end gap-3">
+
+  <button class="btn btn-info btn-reset" (click)="reset.emit()" [disabled]="saving() || savingNew()">
+    <i class="ki-outline ki-arrows-circle fs-4 me-1"></i>
+    {{ 'common.reset' | translate }}
+  </button>
+
+  <div class="d-flex gap-3 actions-group">
+
+    <button class="btn btn-primary" (click)="save.emit()" [disabled]="saving() || savingNew()">
+      @if (saving()) {
+        <span class="spinner-border spinner-border-sm me-2"></span>
+      } @else {
+        <i class="ki-outline ki-check fs-4 me-1"></i>
+      }
+      {{ 'common.save' | translate }}
+    </button>
+
+    <button class="btn btn-success" (click)="saveAndNew.emit()" [disabled]="saving() || savingNew()">
+      @if (savingNew()) {
+        <span class="spinner-border spinner-border-sm me-2"></span>
+      } @else {
+        <i class="ki-outline ki-plus fs-4 me-1"></i>
+      }
+      {{ 'common.save_and_new' | translate }}
+    </button>
+
+    <button class="btn btn-light" (click)="cancel.emit()" [disabled]="saving() || savingNew()">
+      <i class="ki-outline ki-arrow-left fs-4 me-1"></i>
+      {{ 'common.cancel' | translate }}
+    </button>
+
+  </div>
+
+</div>

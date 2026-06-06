@@ -17,9 +17,3 @@
 :host-context([dir=rtl]) .col-name-ar { order: 2; }
 :host-context([dir=rtl]) .col-name-en { order: 3; }
 
-// RTL: row-reverse puts Save leftmost (left→right order),
-// !important overrides Bootstrap's justify-content-end !important
-:host-context([dir=rtl]) .card-footer {
-  flex-direction: row-reverse;
-  justify-content: flex-start !important;
-}

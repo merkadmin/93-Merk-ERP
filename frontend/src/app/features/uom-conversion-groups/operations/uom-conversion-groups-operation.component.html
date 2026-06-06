@@ -26,26 +26,11 @@
     </div>
   </div>
 
-  <div class="card-footer d-flex justify-content-end gap-3">
-    <button class="btn btn-primary" (click)="save()" [disabled]="saving() || savingNew()">
-      @if (saving()) {
-        <span class="spinner-border spinner-border-sm me-2"></span>
-      } @else {
-        <i class="ki-outline ki-check fs-4 me-1"></i>
-      }
-      {{ 'common.save' | translate }}
-    </button>
-    <button class="btn btn-success" (click)="saveAndNew()" [disabled]="saving() || savingNew()">
-      @if (savingNew()) {
-        <span class="spinner-border spinner-border-sm me-2"></span>
-      } @else {
-        <i class="ki-outline ki-plus fs-4 me-1"></i>
-      }
-      {{ 'common.save_and_new' | translate }}
-    </button>
-    <button class="btn btn-light" (click)="back()" [disabled]="saving() || savingNew()">
-      <i class="ki-outline ki-arrow-left fs-4 me-1"></i>
-      {{ 'common.cancel' | translate }}
-    </button>
-  </div>
+  <app-regular-operation-actions
+    [saving]="saving()"
+    [savingNew]="savingNew()"
+    (save)="save()"
+    (saveAndNew)="saveAndNew()"
+    (reset)="resetForm()"
+    (cancel)="back()" />
 </div>

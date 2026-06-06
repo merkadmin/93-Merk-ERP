@@ -36,7 +36,8 @@
     "favorite": "مفضلة",
     "validation_error": "حقول مطلوبة مفقودة",
     "save_success": "تم الحفظ بنجاح",
-    "save_and_new": "حفظ وجديد"
+    "save_and_new": "حفظ وجديد",
+    "reset": "مسح"
   },
   "items": {
     "title": "الأصناف",

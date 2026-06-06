@@ -5,6 +5,7 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { ApiService } from '../../../core/api.service';
 import { RegularOperationHeaderComponent } from '../../../shared/components/cards/regular-operation-header/regular-operation-header.component';
+import { RegularOperationActionsComponent } from '../../../shared/components/cards/regular-operation-actions/regular-operation-actions.component';
 
 interface UomConversionGroup {
   id: number;
@@ -18,7 +19,7 @@ interface UomConversionGroup {
 @Component({
   selector: 'app-uom-conversion-groups-operation',
   standalone: true,
-  imports: [FormsModule, TranslatePipe, RegularOperationHeaderComponent],
+  imports: [FormsModule, TranslatePipe, RegularOperationHeaderComponent, RegularOperationActionsComponent],
   templateUrl: './uom-conversion-groups-operation.component.html',
   styleUrl: './uom-conversion-groups-operation.component.less',
 })
@@ -108,6 +109,11 @@ export class UomConversionGroupsOperationComponent implements OnInit {
 
   save()       { this.submit(false); }
   saveAndNew() { this.submit(true);  }
+
+  resetForm() {
+    this.form = this.blank();
+    this.loadNextCode();
+  }
 
   back() {
     this.router.navigate(['/uom-conversion-groups']);
