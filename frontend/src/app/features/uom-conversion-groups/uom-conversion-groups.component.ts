@@ -32,6 +32,15 @@ export class UomConversionGroupsComponent implements OnInit {
   groups      = signal<UomConversionGroup[]>([]);
   selectedIds = signal<Set<number>>(new Set());
 
+  get sortedGroups(): UomConversionGroup[] {
+    return [...this.groups()].sort((a, b) => {
+      if (a.isFavorite !== b.isFavorite) return a.isFavorite ? -1 : 1;
+      const nameA = this.isRtl ? (a.name_AR ?? '') : (a.name_EN ?? '');
+      const nameB = this.isRtl ? (b.name_AR ?? '') : (b.name_EN ?? '');
+      return nameA.localeCompare(nameB);
+    });
+  }
+
   ngOnInit() { this.load(); }
 
   load() {
@@ -87,6 +96,12 @@ export class UomConversionGroupsComponent implements OnInit {
     }).then(result => {
       if (result.isConfirmed)
         this.api.delete(`uomconversiongroups/${id}`).subscribe(() => this.load());
+    });
+  }
+
+  toggleFavorite(group: UomConversionGroup) {
+    this.api.patch<UomConversionGroup>(`uomconversiongroups/${group.id}/toggle-favorite`).subscribe(updated => {
+      this.groups.update(list => list.map(g => g.id === updated.id ? updated : g));
     });
   }
 

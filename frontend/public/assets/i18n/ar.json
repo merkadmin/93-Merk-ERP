@@ -33,6 +33,7 @@
     "activate": "تفعيل",
     "deactivate": "تعطيل",
     "swal_delete_title": "هل أنت متأكد؟",
+    "favorite": "مفضلة",
     "validation_error": "حقول مطلوبة مفقودة",
     "save_success": "تم الحفظ بنجاح",
     "save_and_new": "حفظ وجديد"

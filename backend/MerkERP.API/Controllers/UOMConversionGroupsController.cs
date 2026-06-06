@@ -13,7 +13,7 @@ public class UOMConversionGroupsController(MerkDbContext db) : ControllerBase
 {
 	[HttpGet]
 	public async Task<IActionResult> GetAll() =>
-		Ok(await db.UOMConversionGroup_cs.OrderBy(g => g.Name_EN).ToListAsync());
+		Ok(await db.UOMConversionGroup_cs.ToListAsync());
 
 	[HttpGet("nextcode")]
 	public async Task<IActionResult> NextCode()
@@ -61,6 +61,16 @@ public class UOMConversionGroupsController(MerkDbContext db) : ControllerBase
 		db.UOMConversionGroup_cs.Remove(e);
 		await db.SaveChangesAsync();
 		return NoContent();
+	}
+
+	[HttpPatch("{id:int}/toggle-favorite")]
+	public async Task<IActionResult> ToggleFavorite(int id)
+	{
+		var e = await db.UOMConversionGroup_cs.FindAsync(id);
+		if (e is null) return NotFound();
+		e.IsFavorite = !e.IsFavorite;
+		await db.SaveChangesAsync();
+		return Ok(e);
 	}
 
 	[HttpPatch("{id:int}/toggle-active")]

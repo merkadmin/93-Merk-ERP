@@ -11,6 +11,9 @@
         {{ 'common.delete' | translate }} ({{ selectedIds().size }})
       </button>
     }
+    <button class="btn btn-light-primary btn-sm" (click)="load()" [title]="'common.refresh' | translate">
+      <i class="ki-outline ki-arrows-circle fs-4"></i>
+    </button>
     <button class="btn btn-primary btn-sm" (click)="addNew()">
       <i class="ki-outline ki-plus fs-4 me-1"></i>
       {{ 'common.add' | translate }}
@@ -42,7 +45,7 @@
         </tr>
       </thead>
       <tbody>
-        @for (g of groups(); track g.id) {
+        @for (g of sortedGroups; track g.id) {
           <tr [class.table-active]="isSelected(g.id)">
             <td>
               <input type="checkbox" class="form-check-input"
@@ -59,6 +62,16 @@
             }
             <td class="text-nowrap" [class.text-end]="!isRtl" [class.text-start]="isRtl">
               <div class="d-inline-flex align-items-center gap-2">
+                <button class="btn btn-icon btn-sm" (click)="toggleFavorite(g)"
+                  [class.btn-danger]="g.isFavorite"
+                  [class.btn-light]="!g.isFavorite"
+                  [title]="'common.favorite' | translate">
+                  @if (g.isFavorite) {
+                    <i class="ki-solid ki-heart fs-4"></i>
+                  } @else {
+                    <i class="ki-outline ki-heart fs-4"></i>
+                  }
+                </button>
                 <button class="btn btn-icon btn-sm btn-light-primary" (click)="edit(g.id)"
                   [title]="'common.edit' | translate">
                   <i class="ki-outline ki-pencil fs-4"></i>
