@@ -73,9 +73,13 @@
   },
   "uoms": {
     "title": "Units of Measure",
+    "add_title": "New Unit of Measure",
+    "edit_title": "Edit Unit of Measure",
+    "internal_code": "Internal Code",
     "whole_number": "Whole Number",
     "whole_number_only": "Whole Number Only",
-    "delete_confirm": "Delete this UOM?"
+    "delete_confirm": "Delete this UOM?",
+    "delete_selected_confirm": "Delete {{count}} selected UOM(s)?"
   },
   "warehouses": {
     "title": "Warehouses",

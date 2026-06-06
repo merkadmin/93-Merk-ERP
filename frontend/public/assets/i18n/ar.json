@@ -73,9 +73,13 @@
   },
   "uoms": {
     "title": "وحدات القياس",
+    "add_title": "وحدة قياس جديدة",
+    "edit_title": "تعديل وحدة القياس",
+    "internal_code": "الكود الداخلي",
     "whole_number": "عدد صحيح",
     "whole_number_only": "عدد صحيح فقط",
-    "delete_confirm": "حذف وحدة القياس؟"
+    "delete_confirm": "حذف وحدة القياس؟",
+    "delete_selected_confirm": "حذف {{count}} وحدة قياس محددة؟"
   },
   "warehouses": {
     "title": "المستودعات",

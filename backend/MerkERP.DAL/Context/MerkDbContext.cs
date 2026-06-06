@@ -80,6 +80,9 @@ public class MerkDbContext : DbContext
 			.HasIndex(i => i.ItemCode)
 			.IsUnique();
 
+		m.Entity<UOM_cs>()
+			.Property(e => e.InternalCode).HasColumnType("nvarchar(50)");
+
 		m.Entity<UOMConversionGroup_cs>()
 			.Property(e => e.InternalCode).HasColumnType("nvarchar(50)");
 		m.Entity<UOMConversionGroup_cs>()

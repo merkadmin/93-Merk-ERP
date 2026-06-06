@@ -1,49 +1,101 @@
-<div class="d-flex justify-content-between align-items-center mb-3">
-  <h5 class="mb-0"><i class="ki-outline ki-ruler fs-2 me-2"></i>{{ 'uoms.title' | translate }}</h5>
-  <button class="btn btn-sm btn-primary" (click)="openNew()"><i class="ki-outline ki-plus fs-4"></i> {{ 'common.add' | translate }}</button>
-</div>
-
-<div *ngIf="showForm" class="card mb-3 border-primary">
-  <div class="card-body">
-    <form (ngSubmit)="save()">
-      <div class="row g-2 align-items-end">
-        <div class="col-md-4">
-          <label class="form-label">{{ 'common.name' | translate }}</label>
-          <input class="form-control form-control-sm" [(ngModel)]="form.name" name="name" required>
-        </div>
-        <div class="col-auto pt-4">
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" [(ngModel)]="form.mustBeWholeNumber" name="whole" id="whole">
-            <label class="form-check-label" for="whole">{{ 'uoms.whole_number_only' | translate }}</label>
-          </div>
-        </div>
-        <div class="col-auto">
-          <button type="submit" class="btn btn-sm btn-success me-1">{{ 'common.save' | translate }}</button>
-          <button type="button" class="btn btn-sm btn-secondary" (click)="cancel()">{{ 'common.cancel' | translate }}</button>
-        </div>
-      </div>
-    </form>
+<!-- Page title -->
+<div class="d-flex align-items-center bg-light-primary border border-dashed border-primary rounded py-4 px-6 mb-8">
+  <i class="ki-outline ki-ruler fs-2tx text-primary me-4"></i>
+  <div class="d-flex flex-column flex-grow-1">
+    <h2 class="fw-bold text-gray-900 fs-3 mb-0">{{ 'uoms.title' | translate }}</h2>
+  </div>
+  <div class="d-flex gap-2 flex-wrap">
+    @if (selectedIds().size > 0) {
+      <button class="btn btn-danger btn-sm" (click)="deleteSelected()">
+        <i class="ki-outline ki-trash fs-4 me-1"></i>
+        {{ 'common.delete' | translate }} ({{ selectedIds().size }})
+      </button>
+    }
+    <button class="btn btn-light-primary btn-sm" (click)="load()" [title]="'common.refresh' | translate">
+      <i class="ki-outline ki-arrows-circle fs-4"></i>
+    </button>
+    <button class="btn btn-primary btn-sm" (click)="addNew()">
+      <i class="ki-outline ki-plus fs-4 me-1"></i>
+      {{ 'common.add' | translate }}
+    </button>
   </div>
 </div>
 
-<table class="table table-sm table-hover table-bordered">
-  <thead class="table-dark">
-    <tr>
-      <th>#</th>
-      <th>{{ 'common.name' | translate }}</th>
-      <th>{{ 'uoms.whole_number' | translate }}</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let u of uoms()">
-      <td>{{ u.uomId }}</td>
-      <td>{{ u.name }}</td>
-      <td><span class="badge" [class]="u.mustBeWholeNumber ? 'bg-info' : 'bg-secondary'">{{ (u.mustBeWholeNumber ? 'common.yes' : 'common.no') | translate }}</span></td>
-      <td>
-        <button class="btn btn-sm btn-outline-primary me-1" (click)="edit(u)">{{ 'common.edit' | translate }}</button>
-        <button class="btn btn-sm btn-outline-danger" (click)="delete(u.uomId)">{{ 'common.delete' | translate }}</button>
-      </td>
-    </tr>
-  </tbody>
-</table>
+<!-- Table -->
+<div class="card">
+  <div class="card-body p-0">
+    <table class="table table-row-dashed table-row-gray-300 align-middle gs-4 gy-3 mb-0">
+      <thead>
+        <tr class="fw-bold text-primary bg-light-primary">
+          <th class="w-40px">
+            <input type="checkbox" class="form-check-input"
+              [checked]="isAllSelected"
+              [indeterminate]="isIndeterminate"
+              (change)="toggleAll()">
+          </th>
+          <th>{{ 'uoms.internal_code' | translate }}</th>
+          <th>{{ 'common.name' | translate }}</th>
+          <th>{{ 'uoms.whole_number' | translate }}</th>
+          <th [class.text-end]="!isRtl" [class.text-start]="isRtl">{{ 'common.actions' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (u of sortedUoms; track u.uomId) {
+          <tr [class.table-active]="isSelected(u.uomId)">
+            <td>
+              <input type="checkbox" class="form-check-input"
+                [checked]="isSelected(u.uomId)"
+                (change)="toggleOne(u.uomId)">
+            </td>
+            <td>{{ u.internalCode }}</td>
+            <td>{{ u.name }}</td>
+            <td>
+              <span class="badge"
+                [class.badge-light-info]="u.mustBeWholeNumber"
+                [class.badge-light-secondary]="!u.mustBeWholeNumber">
+                {{ (u.mustBeWholeNumber ? 'common.yes' : 'common.no') | translate }}
+              </span>
+            </td>
+            <td class="text-nowrap" [class.text-end]="!isRtl" [class.text-start]="isRtl">
+              <div class="d-inline-flex align-items-center gap-2">
+                <button class="btn btn-icon btn-sm" (click)="toggleFavorite(u)"
+                  [class.btn-danger]="u.isFavorite"
+                  [class.btn-light]="!u.isFavorite"
+                  [title]="'common.favorite' | translate">
+                  @if (u.isFavorite) {
+                    <i class="ki-solid ki-heart fs-4"></i>
+                  } @else {
+                    <i class="ki-outline ki-heart fs-4"></i>
+                  }
+                </button>
+                <button class="btn btn-icon btn-sm btn-light-primary" (click)="edit(u.uomId)"
+                  [title]="'common.edit' | translate">
+                  <i class="ki-outline ki-pencil fs-4"></i>
+                </button>
+                @if (u.isActive) {
+                  <button class="btn btn-sm btn-light-warning" (click)="toggleActive(u)">
+                    <i class="ki-outline ki-minus-circle fs-4 me-1"></i>
+                    {{ 'common.deactivate' | translate }}
+                  </button>
+                } @else {
+                  <button class="btn btn-sm btn-light-success" (click)="toggleActive(u)">
+                    <i class="ki-outline ki-check-circle fs-4 me-1"></i>
+                    {{ 'common.activate' | translate }}
+                  </button>
+                }
+                <button class="btn btn-icon btn-sm btn-light-danger" (click)="delete(u.uomId)"
+                  [title]="'common.delete' | translate">
+                  <i class="ki-outline ki-trash fs-4"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="5" class="text-center text-muted py-6">—</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
