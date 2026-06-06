@@ -146,5 +146,5 @@ export class UomConversionFactorsOperationComponent implements OnInit {
 
   resetForm() { this.resetAll(); }
 
-  back() { this.router.navigate(['/uom-conversion-factors']); }
+  back() { this.router.navigate(['/stock/uom-conversion-factors']); }
 }

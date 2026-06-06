@@ -1,0 +1,26 @@
+<div [class]="'d-flex align-items-center bg-light-' + color() + ' border border-dashed border-' + color() + ' rounded py-4 px-6 mb-8'">
+
+  <i [class]="icon() + ' fs-2tx text-' + color() + ' me-4'"></i>
+
+  <div class="d-flex flex-column flex-grow-1">
+    <h2 class="fw-bold text-gray-900 fs-3 mb-0">{{ title() }}</h2>
+  </div>
+
+  <div class="d-flex gap-2 flex-wrap">
+    @if (selectedCount() > 0) {
+      <button class="btn btn-danger btn-sm" (click)="deleteSelected.emit()">
+        <i class="ki-outline ki-trash fs-4 me-1"></i>
+        {{ 'common.delete' | translate }} ({{ selectedCount() }})
+      </button>
+    }
+    <button [class]="'btn btn-light-' + color() + ' btn-sm'" (click)="refresh.emit()"
+      [title]="'common.refresh' | translate">
+      <i class="ki-outline ki-arrows-circle fs-4"></i>
+    </button>
+    <button class="btn btn-primary btn-sm" (click)="add.emit()">
+      <i class="ki-outline ki-plus fs-4 me-1"></i>
+      {{ 'common.add' | translate }}
+    </button>
+  </div>
+
+</div>

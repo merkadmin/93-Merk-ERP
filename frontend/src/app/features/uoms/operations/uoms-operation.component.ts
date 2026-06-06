@@ -117,6 +117,6 @@ export class UomsOperationComponent implements OnInit {
   }
 
   back() {
-    this.router.navigate(['/uoms']);
+    this.router.navigate(['/stock/uoms']);
   }
 }

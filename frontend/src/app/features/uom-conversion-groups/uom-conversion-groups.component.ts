@@ -79,9 +79,9 @@ export class UomConversionGroupsComponent implements OnInit {
 
   // ── CRUD ───────────────────────────────────────────────────────────────────
 
-  addNew() { this.router.navigate(['/uom-conversion-groups/operation']); }
+  addNew() { this.router.navigate(['/stock/uom-conversion-groups/operation']); }
 
-  edit(id: number) { this.router.navigate(['/uom-conversion-groups/operation', id]); }
+  edit(id: number) { this.router.navigate(['/stock/uom-conversion-groups/operation', id]); }
 
   delete(id: number) {
     Swal.fire({

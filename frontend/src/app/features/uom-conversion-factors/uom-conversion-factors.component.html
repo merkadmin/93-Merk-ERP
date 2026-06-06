@@ -1,25 +1,11 @@
-<!-- Page title -->
-<div class="d-flex align-items-center bg-light-primary border border-dashed border-primary rounded py-4 px-6 mb-8">
-  <i class="ki-outline ki-arrows-circle fs-2tx text-primary me-4"></i>
-  <div class="d-flex flex-column flex-grow-1">
-    <h2 class="fw-bold text-gray-900 fs-3 mb-0">{{ 'nav.uom_conversion_factors' | translate }}</h2>
-  </div>
-  <div class="d-flex gap-2 flex-wrap">
-    @if (selectedIds().size > 0) {
-      <button class="btn btn-danger btn-sm" (click)="deleteSelected()">
-        <i class="ki-outline ki-trash fs-4 me-1"></i>
-        {{ 'common.delete' | translate }} ({{ selectedIds().size }})
-      </button>
-    }
-    <button class="btn btn-light-primary btn-sm" (click)="load()" [title]="'common.refresh' | translate">
-      <i class="ki-outline ki-arrows-circle fs-4"></i>
-    </button>
-    <button class="btn btn-primary btn-sm" (click)="addNew()">
-      <i class="ki-outline ki-plus fs-4 me-1"></i>
-      {{ 'common.add' | translate }}
-    </button>
-  </div>
-</div>
+<app-regular-list-header-with-actions
+  [title]="'nav.uom_conversion_factors' | translate"
+  icon="ki-outline ki-arrows-circle"
+  color="primary"
+  [selectedCount]="selectedIds().size"
+  (add)="addNew()"
+  (refresh)="load()"
+  (deleteSelected)="deleteSelected()" />
 
 <!-- Search -->
 <app-regular-list-search-actions

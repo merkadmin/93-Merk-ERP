@@ -80,9 +80,9 @@ export class UomsComponent implements OnInit {
 
   // ── CRUD ───────────────────────────────────────────────────────────────────
 
-  addNew() { this.router.navigate(['/uoms/operation']); }
+  addNew() { this.router.navigate(['/stock/uoms/operation']); }
 
-  edit(id: number) { this.router.navigate(['/uoms/operation', id]); }
+  edit(id: number) { this.router.navigate(['/stock/uoms/operation', id]); }
 
   delete(id: number) {
     Swal.fire({

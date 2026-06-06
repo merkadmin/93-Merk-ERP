@@ -25,11 +25,11 @@ export class SidebarService {
       iconColor: 'text-primary',
       isVisible: () => true,
       getChildren: () => [
-        { route: '/items',                   icon: 'ki-outline ki-package',     labelKey: 'nav.items' },
-        { route: '/item-groups',             icon: 'ki-outline ki-category',    labelKey: 'nav.item_groups' },
-        { route: '/uoms',                    icon: 'ki-outline ki-abstract-26',  labelKey: 'nav.uoms' },
-        { route: '/uom-conversion-groups',   icon: 'ki-outline ki-abstract-14', labelKey: 'nav.uom_conversion_groups' },
-        { route: '/uom-conversion-factors',  icon: 'ki-outline ki-arrows-circle',labelKey: 'nav.uom_conversion_factors' },
+        { route: '/stock/items',                   icon: 'ki-outline ki-package',      labelKey: 'nav.items' },
+        { route: '/stock/item-groups',             icon: 'ki-outline ki-category',     labelKey: 'nav.item_groups' },
+        { route: '/stock/uoms',                    icon: 'ki-outline ki-abstract-26',  labelKey: 'nav.uoms' },
+        { route: '/stock/uom-conversion-groups',   icon: 'ki-outline ki-abstract-14',  labelKey: 'nav.uom_conversion_groups' },
+        { route: '/stock/uom-conversion-factors',  icon: 'ki-outline ki-arrows-circle',labelKey: 'nav.uom_conversion_factors' },
       ],
     },
     {
@@ -39,9 +39,9 @@ export class SidebarService {
       iconColor: 'text-success',
       isVisible: () => true,
       getChildren: () => [
-        { route: '/warehouses',     icon: 'ki-outline ki-home-2',       labelKey: 'nav.warehouses' },
-        { route: '/stock',          icon: 'ki-outline ki-chart-simple', labelKey: 'nav.current_stock' },
-        { route: '/stock-movement', icon: 'ki-outline ki-arrows-loop',  labelKey: 'nav.stock_movement' },
+        { route: '/stock/warehouses',     icon: 'ki-outline ki-home-2',       labelKey: 'nav.warehouses' },
+        { route: '/stock/current-stock',  icon: 'ki-outline ki-chart-simple', labelKey: 'nav.current_stock' },
+        { route: '/stock/stock-movement', icon: 'ki-outline ki-arrows-loop',  labelKey: 'nav.stock_movement' },
       ],
     },
   ];

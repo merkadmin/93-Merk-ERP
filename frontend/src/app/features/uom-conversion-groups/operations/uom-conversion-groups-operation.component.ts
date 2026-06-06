@@ -116,6 +116,6 @@ export class UomConversionGroupsOperationComponent implements OnInit {
   }
 
   back() {
-    this.router.navigate(['/uom-conversion-groups']);
+    this.router.navigate(['/stock/uom-conversion-groups']);
   }
 }

@@ -5,6 +5,7 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import Swal from 'sweetalert2';
 import { ApiService } from '../../core/api.service';
 import { RegularListSearchActionsComponent, SearchField } from '../../shared/components/cards/regular-list-search-actions/regular-list-search-actions.component';
+import { RegularListHeaderWithActionsComponent } from '../../shared/components/cards/regular-list-header-with-actions/regular-list-header-with-actions.component';
 
 interface UOM { id: number; name_EN: string; name_AR: string; }
 
@@ -22,7 +23,7 @@ interface UomConversionFactor {
 @Component({
   selector: 'app-uom-conversion-factors',
   standalone: true,
-  imports: [TranslatePipe, RegularListSearchActionsComponent],
+  imports: [TranslatePipe, RegularListSearchActionsComponent, RegularListHeaderWithActionsComponent],
   templateUrl: './uom-conversion-factors.component.html',
   styleUrl: './uom-conversion-factors.component.less',
 })
@@ -121,9 +122,9 @@ export class UomConversionFactorsComponent implements OnInit {
 
   // ── CRUD ───────────────────────────────────────────────────────────────────
 
-  addNew() { this.router.navigate(['/uom-conversion-factors/operation']); }
+  addNew() { this.router.navigate(['/stock/uom-conversion-factors/operation']); }
 
-  edit(id: number) { this.router.navigate(['/uom-conversion-factors/operation', id]); }
+  edit(id: number) { this.router.navigate(['/stock/uom-conversion-factors/operation', id]); }
 
   delete(id: number) {
     Swal.fire({
