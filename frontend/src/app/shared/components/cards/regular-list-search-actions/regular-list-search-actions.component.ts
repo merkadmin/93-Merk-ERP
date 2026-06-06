@@ -1,6 +1,7 @@
 import { Component, input, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
+import { CustomSelectInputComponent } from '../../custom-controls/custom-select-input/custom-select-input.component';
 
 export interface SearchField {
   key: string;
@@ -13,12 +14,12 @@ export interface SearchField {
 @Component({
   selector: 'app-regular-list-search-actions',
   standalone: true,
-  imports: [FormsModule, TranslatePipe],
+  imports: [FormsModule, TranslatePipe, CustomSelectInputComponent],
   templateUrl: './regular-list-search-actions.component.html',
   styleUrl: './regular-list-search-actions.component.less',
 })
 export class RegularListSearchActionsComponent {
-  fields       = input<SearchField[]>([]);
+  fields = input<SearchField[]>([]);
   filterChange = output<Record<string, string | number | null>>();
 
   values: Record<string, string | number | null> = {};

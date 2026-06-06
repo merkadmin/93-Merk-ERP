@@ -7,6 +7,7 @@ import { ToastrService } from 'ngx-toastr';
 import { ApiService } from '../../../core/api.service';
 import { RegularOperationHeaderComponent } from '../../../shared/components/cards/regular-operation-header/regular-operation-header.component';
 import { RegularOperationActionsComponent } from '../../../shared/components/cards/regular-operation-actions/regular-operation-actions.component';
+import { CustomSelectInputComponent, SelectOption } from '../../../shared/components/custom-controls/custom-select-input/custom-select-input.component';
 
 interface UOM   { id: number; name_EN: string; name_AR: string; }
 interface Group { id: number; name_EN: string; name_AR: string; }
@@ -24,7 +25,7 @@ interface UomConversionFactor {
 @Component({
   selector: 'app-uom-conversion-factors-operation',
   standalone: true,
-  imports: [FormsModule, TranslatePipe, RegularOperationHeaderComponent, RegularOperationActionsComponent],
+  imports: [FormsModule, TranslatePipe, RegularOperationHeaderComponent, RegularOperationActionsComponent, CustomSelectInputComponent],
   templateUrl: './uom-conversion-factors-operation.component.html',
   styleUrl: './uom-conversion-factors-operation.component.less',
 })
@@ -83,6 +84,14 @@ export class UomConversionFactorsOperationComponent implements OnInit {
 
   groupLabel(g: Group): string {
     return this.isRtl ? (g.name_AR || g.name_EN) : (g.name_EN || g.name_AR);
+  }
+
+  get uomOptions(): SelectOption[] {
+    return this.uoms().map(u => ({ value: u.id, label: this.uomLabel(u) }));
+  }
+
+  get groupOptions(): SelectOption[] {
+    return this.groups().map(g => ({ value: g.id, label: this.groupLabel(g) }));
   }
 
   private blank(): Partial<UomConversionFactor> {

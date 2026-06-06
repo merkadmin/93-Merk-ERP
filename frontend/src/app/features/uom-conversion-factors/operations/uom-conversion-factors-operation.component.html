@@ -11,12 +11,12 @@
     <div class="row g-4 mb-4">
       <div class="col-4">
         <label class="form-label required">{{ 'uom_conversion_factors.conversion_group' | translate }}</label>
-        <select class="form-select" [(ngModel)]="form.uomConversionGroupId" name="uomConversionGroupId">
-          <option [ngValue]="null">{{ 'common.none' | translate }}</option>
-          @for (g of groups(); track g.id) {
-            <option [ngValue]="g.id">{{ groupLabel(g) }}</option>
-          }
-        </select>
+        <app-custom-select-input
+          [options]="groupOptions"
+          [value]="form.uomConversionGroupId ?? null"
+          (valueChange)="form.uomConversionGroupId = $event !== null ? +$event : null"
+          [placeholder]="'common.select' | translate"
+          [searchPlaceholder]="'common.search' | translate" />
       </div>
     </div>
 
@@ -25,22 +25,22 @@
 
       <div class="col-4">
         <label class="form-label required">{{ 'uom_conversion_factors.from_uom' | translate }}</label>
-        <select class="form-select" [(ngModel)]="form.uomFromId" name="uomFromId">
-          <option [ngValue]="0">{{ 'common.select' | translate }}</option>
-          @for (u of uoms(); track u.id) {
-            <option [ngValue]="u.id">{{ uomLabel(u) }}</option>
-          }
-        </select>
+        <app-custom-select-input
+          [options]="uomOptions"
+          [value]="form.uomFromId || null"
+          (valueChange)="form.uomFromId = +($event ?? 0)"
+          [placeholder]="'common.select' | translate"
+          [searchPlaceholder]="'common.search' | translate" />
       </div>
 
       <div class="col-4">
         <label class="form-label required">{{ 'uom_conversion_factors.to_uom' | translate }}</label>
-        <select class="form-select" [(ngModel)]="form.uomToId" name="uomToId">
-          <option [ngValue]="0">{{ 'common.select' | translate }}</option>
-          @for (u of uoms(); track u.id) {
-            <option [ngValue]="u.id">{{ uomLabel(u) }}</option>
-          }
-        </select>
+        <app-custom-select-input
+          [options]="uomOptions"
+          [value]="form.uomToId || null"
+          (valueChange)="form.uomToId = +($event ?? 0)"
+          [placeholder]="'common.select' | translate"
+          [searchPlaceholder]="'common.search' | translate" />
       </div>
 
       <div class="col-4">

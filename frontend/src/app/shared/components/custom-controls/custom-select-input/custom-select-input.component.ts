@@ -25,27 +25,27 @@ function normalize(text: string): string {
   styleUrl: './custom-select-input.component.less',
 })
 export class CustomSelectInputComponent {
-  private el  = inject(ElementRef);
+  private el = inject(ElementRef);
   private doc = inject(DOCUMENT);
 
-  options           = input<SelectOption[]>([]);
-  value             = input<number | string | null>(null);
-  placeholder       = input<string>('— Select —');
+  options = input<SelectOption[]>([]);
+  value = input<number | string | null>(null);
+  placeholder = input<string>('— Select —');
   searchPlaceholder = input<string>('Search...');
-  noMatchText       = input<string>('No results found.');
-  disabled          = input<boolean>(false);
+  noMatchText = input<string>('No results found.');
+  disabled = input<boolean>(false);
 
   valueChange = output<number | string | null>();
 
   searchQuery = '';
-  isOpen      = false;
+  isOpen = false;
 
   get isRtl() { return this.doc.documentElement.dir === 'rtl'; }
 
   @HostListener('document:click', ['$event.target'])
   onDocumentClick(target: EventTarget | null): void {
     if (!this.el.nativeElement.contains(target)) {
-      this.isOpen      = false;
+      this.isOpen = false;
       this.searchQuery = '';
     }
   }
@@ -69,13 +69,13 @@ export class CustomSelectInputComponent {
   }
 
   pick(option: SelectOption): void {
-    this.isOpen      = false;
+    this.isOpen = false;
     this.searchQuery = '';
     this.valueChange.emit(option.value);
   }
 
   clear(): void {
-    this.isOpen      = false;
+    this.isOpen = false;
     this.searchQuery = '';
     this.valueChange.emit(null);
   }
