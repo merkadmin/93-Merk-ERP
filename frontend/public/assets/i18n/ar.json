@@ -6,7 +6,7 @@
     "inventory": "المخزون",
     "items": "الأصناف",
     "item_groups": "مجموعات الأصناف",
-    "uom_conversion_groups": "مجموعات تحويل وحدات القياس",
+    "uom_conversion_groups": "مجموعات وحدات القياس",
     "uoms": "وحدات القياس",
     "uom_conversion_factors": "معاملات وحدات القياس",
     "warehousing": "المستودعات",
@@ -32,6 +32,7 @@
     "actions": "إجراءات",
     "activate": "تفعيل",
     "deactivate": "تعطيل",
+    "swal_delete_title": "هل أنت متأكد؟",
     "validation_error": "حقول مطلوبة مفقودة",
     "save_success": "تم الحفظ بنجاح",
     "save_and_new": "حفظ وجديد"

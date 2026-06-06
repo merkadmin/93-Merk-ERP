@@ -5,6 +5,8 @@ using MerkERP.DAL.Context;
 
 namespace MerkERP.API.Controllers;
 
+public record BulkActiveDto(List<int> Ids, bool IsActive);
+
 [ApiController]
 [Route("api/[controller]")]
 public class UOMConversionGroupsController(MerkDbContext db) : ControllerBase
@@ -69,6 +71,17 @@ public class UOMConversionGroupsController(MerkDbContext db) : ControllerBase
 		e.IsActive = !e.IsActive;
 		await db.SaveChangesAsync();
 		return Ok(e);
+	}
+
+	[HttpPatch("bulk-active")]
+	public async Task<IActionResult> BulkSetActive([FromBody] BulkActiveDto dto)
+	{
+		var entities = await db.UOMConversionGroup_cs
+			.Where(g => dto.Ids.Contains(g.Id))
+			.ToListAsync();
+		entities.ForEach(e => e.IsActive = dto.IsActive);
+		await db.SaveChangesAsync();
+		return NoContent();
 	}
 
 	[HttpDelete("bulk")]

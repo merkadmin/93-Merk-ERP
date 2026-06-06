@@ -9,8 +9,8 @@ import { LoadingService } from '../../../services/loading.service';
   template: `
     @if (loading.loading()) {
       <div class="loading-overlay">
-        <div class="spinner-border text-primary" role="status" style="width:3rem;height:3rem;">
-          <span class="visually-hidden">Loading...</span>
+        <div class="loading-card">
+          <span class="spinner-border text-primary" role="status" style="width:2.5rem;height:2.5rem;"></span>
         </div>
       </div>
     }
@@ -19,7 +19,17 @@ import { LoadingService } from '../../../services/loading.service';
     .loading-overlay {
       position: fixed; inset: 0; z-index: 9999;
       display: flex; align-items: center; justify-content: center;
-      background: rgba(0,0,0,.25);
+      background: rgba(0, 0, 0, 0.35);
+      backdrop-filter: blur(2px);
+    }
+    .loading-card {
+      background: var(--bs-body-bg);
+      border-radius: 1rem;
+      padding: 1.75rem 2.25rem;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
   `]
 })

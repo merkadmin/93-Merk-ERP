@@ -2,6 +2,7 @@ import { DOCUMENT } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import Swal from 'sweetalert2';
 import { ApiService } from '../../core/api.service';
 
 interface UomConversionGroup {
@@ -42,7 +43,7 @@ export class UomConversionGroupsComponent implements OnInit {
 
   // ── Selection ──────────────────────────────────────────────────────────────
 
-  isSelected(id: number)  { return this.selectedIds().has(id); }
+  isSelected(id: number) { return this.selectedIds().has(id); }
 
   get isAllSelected() {
     const g = this.groups();
@@ -74,8 +75,19 @@ export class UomConversionGroupsComponent implements OnInit {
   edit(id: number) { this.router.navigate(['/uom-conversion-groups/operation', id]); }
 
   delete(id: number) {
-    if (!confirm(this.translate.instant('uom_conversion_groups.delete_confirm'))) return;
-    this.api.delete(`uomconversiongroups/${id}`).subscribe(() => this.load());
+    Swal.fire({
+      title: this.translate.instant('common.swal_delete_title'),
+      text:  this.translate.instant('uom_conversion_groups.delete_confirm'),
+      icon:  'warning',
+      showCancelButton:  true,
+      confirmButtonText: this.translate.instant('common.delete'),
+      cancelButtonText:  this.translate.instant('common.cancel'),
+      confirmButtonColor: '#f1416c',
+      reverseButtons: this.isRtl,
+    }).then(result => {
+      if (result.isConfirmed)
+        this.api.delete(`uomconversiongroups/${id}`).subscribe(() => this.load());
+    });
   }
 
   toggleActive(group: UomConversionGroup) {
@@ -84,10 +96,35 @@ export class UomConversionGroupsComponent implements OnInit {
     });
   }
 
+  activateSelected() {
+    const ids = [...this.selectedIds()];
+    if (!ids.length) return;
+    this.api.patchBulk<void>('uomconversiongroups/bulk-active', { ids, isActive: true })
+      .subscribe(() => this.load());
+  }
+
+  deactivateSelected() {
+    const ids = [...this.selectedIds()];
+    if (!ids.length) return;
+    this.api.patchBulk<void>('uomconversiongroups/bulk-active', { ids, isActive: false })
+      .subscribe(() => this.load());
+  }
+
   deleteSelected() {
     const ids = [...this.selectedIds()];
     if (!ids.length) return;
-    if (!confirm(this.translate.instant('uom_conversion_groups.delete_selected_confirm', { count: ids.length }))) return;
-    this.api.deleteBulk('uomconversiongroups/bulk', ids).subscribe(() => this.load());
+    Swal.fire({
+      title: this.translate.instant('common.swal_delete_title'),
+      text:  this.translate.instant('uom_conversion_groups.delete_selected_confirm', { count: ids.length }),
+      icon:  'warning',
+      showCancelButton:  true,
+      confirmButtonText: this.translate.instant('common.delete'),
+      cancelButtonText:  this.translate.instant('common.cancel'),
+      confirmButtonColor: '#f1416c',
+      reverseButtons: this.isRtl,
+    }).then(result => {
+      if (result.isConfirmed)
+        this.api.deleteBulk('uomconversiongroups/bulk', ids).subscribe(() => this.load());
+    });
   }
 }

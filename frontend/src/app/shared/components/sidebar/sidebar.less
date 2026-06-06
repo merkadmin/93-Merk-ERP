@@ -1,6 +1,62 @@
-// ── Section accordion sub-items ──────────────────────────────────────────────
-.app-sidebar .menu-sub .menu-link .menu-title {
-  color: var(--bs-primary) !important;
+// ── Section header title: uniform bold color ──────────────────────────────────
+.app-sidebar .menu-item.menu-accordion > .menu-link .menu-title {
+  color: var(--bs-gray-800) !important;
+  font-weight: 700 !important;
+}
+
+// ── Section header: Metronic bg-light-primary background ─────────────────────
+.app-sidebar .menu-item.menu-accordion > .menu-link {
+  background-color: rgba(var(--bs-primary-rgb), 0.08) !important;
+  border-radius: 0.475rem;
+  margin-bottom: 2px;
+
+  &:hover {
+    background-color: rgba(var(--bs-primary-rgb), 0.15) !important;
+  }
+}
+
+// ── Children: indent with a soft primary border line ─────────────────────────
+.app-sidebar .menu-sub-accordion {
+  border-inline-start: 2px solid rgba(var(--bs-primary-rgb), 0.2);
+  margin-inline-start: 1.25rem;
+  padding-inline-start: 0.5rem;
+  margin-bottom: 4px;
+}
+
+// ── Sub-item default text ─────────────────────────────────────────────────────
+.app-sidebar .menu-sub .menu-link {
+  border-radius: 0.475rem;
+  transition: background-color 0.15s ease;
+
+  .menu-title {
+    color: var(--bs-gray-700) !important;
+  }
+
+  .menu-icon i {
+    color: var(--bs-gray-500) !important;
+  }
+
+  // hover (non-active)
+  &:not(.active):hover {
+    background-color: rgba(var(--bs-primary-rgb), 0.05) !important;
+
+    .menu-title { color: var(--bs-primary) !important; }
+    .menu-icon i { color: var(--bs-primary) !important; }
+  }
+}
+
+// ── Active sub-item ───────────────────────────────────────────────────────────
+.app-sidebar .menu-sub .menu-link.active {
+  background-color: rgba(var(--bs-primary-rgb), 0.12) !important;
+
+  .menu-title {
+    color: var(--bs-primary) !important;
+    font-weight: 600;
+  }
+
+  .menu-icon i {
+    color: var(--bs-primary) !important;
+  }
 }
 
 // ── Active sub-item bullet ────────────────────────────────────────────────────

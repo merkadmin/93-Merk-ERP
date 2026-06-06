@@ -14,12 +14,14 @@ import { SidebarService } from './sidebar.service';
 })
 export class SidebarComponent {
   sidebarOpen = false;
-  expandedSections = new Set<string>();
+  expandedSections: Set<string>;
 
   constructor(
     public themeService: ThemeService,
     public sidebarService: SidebarService,
-  ) {}
+  ) {
+    this.expandedSections = new Set(sidebarService.sections.map(s => s.id));
+  }
 
   openSidebar()  { this.sidebarOpen = true; }
   closeSidebar() { this.sidebarOpen = false; }
