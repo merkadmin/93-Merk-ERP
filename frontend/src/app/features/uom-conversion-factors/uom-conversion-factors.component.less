@@ -6,3 +6,7 @@ tbody tr {
   transition: background-color 0.15s ease;
   &:hover td { background-color: rgba(var(--bs-primary-rgb), 0.06) !important; }
 }
+
+:host-context([dir=rtl]) .col-factor {
+  text-align: left;
+}

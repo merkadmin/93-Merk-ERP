@@ -24,10 +24,10 @@
               [indeterminate]="isIndeterminate"
               (change)="toggleAll()">
           </th>
+          <th>{{ 'uom_conversion_factors.conversion_group' | translate }}</th>
           <th>{{ 'uom_conversion_factors.from_uom' | translate }}</th>
           <th>{{ 'uom_conversion_factors.to_uom' | translate }}</th>
-          <th>{{ 'uom_conversion_factors.value' | translate }}</th>
-          <th>{{ 'uom_conversion_factors.conversion_group' | translate }}</th>
+          <th class="col-factor">{{ 'uom_conversion_factors.value' | translate }}</th>
           <th [class.text-end]="!isRtl" [class.text-start]="isRtl">{{ 'common.actions' | translate }}</th>
         </tr>
       </thead>
@@ -39,10 +39,10 @@
                 [checked]="isSelected(f.id)"
                 (change)="toggleOne(f.id)">
             </td>
+            <td>{{ groupLabel(f.uomConversionGroup) }}</td>
             <td>{{ uomLabel(f.uomFrom) }}</td>
             <td>{{ uomLabel(f.uomTo) }}</td>
-            <td class="fw-semibold">{{ f.value }}</td>
-            <td>{{ groupLabel(f.uomConversionGroup) }}</td>
+            <td class="fw-semibold col-factor">{{ f.value }}</td>
             <td class="text-nowrap" [class.text-end]="!isRtl" [class.text-start]="isRtl">
               <div class="d-inline-flex align-items-center gap-2">
                 <button class="btn btn-icon btn-sm" (click)="toggleFavorite(f)"

@@ -71,9 +71,9 @@ export class UomConversionFactorsComponent implements OnInit {
       .sort((a, b) => a.label.localeCompare(b.label));
 
     return [
-      { key: 'uomFrom',  label: this.translate.instant('uom_conversion_factors.from_uom'),         type: 'select', options: uomOpts(fromMap) },
-      { key: 'uomTo',    label: this.translate.instant('uom_conversion_factors.to_uom'),            type: 'select', options: uomOpts(toMap)   },
       { key: 'groupId',  label: this.translate.instant('uom_conversion_factors.conversion_group'),  type: 'select', options: grpOpts           },
+      { key: 'uomFrom',  label: this.translate.instant('uom_conversion_factors.from_uom'),          type: 'select', options: uomOpts(fromMap) },
+      { key: 'uomTo',    label: this.translate.instant('uom_conversion_factors.to_uom'),            type: 'select', options: uomOpts(toMap)   },
     ];
   }
 
