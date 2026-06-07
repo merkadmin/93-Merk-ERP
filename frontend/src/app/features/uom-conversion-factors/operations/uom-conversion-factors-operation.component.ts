@@ -12,6 +12,14 @@ import { CustomSelectInputComponent, SelectOption } from '../../../shared/compon
 interface UOM   { id: number; name_EN: string; name_AR: string; }
 interface Group { id: number; name_EN: string; name_AR: string; }
 
+interface SavedRow {
+  internalCode: string;
+  groupLabel: string;
+  fromUomLabel: string;
+  toUomLabel: string;
+  value: number;
+}
+
 interface UomConversionFactor {
   id: number;
   uomFromId: number;
@@ -45,6 +53,7 @@ export class UomConversionFactorsOperationComponent implements OnInit {
   savingNew = signal(false);
   uoms      = signal<UOM[]>([]);
   groups    = signal<Group[]>([]);
+  savedRows = signal<SavedRow[]>([]);
 
   form: Partial<UomConversionFactor> = this.blank();
   valueExpression = '1';
@@ -161,6 +170,16 @@ export class UomConversionFactorsOperationComponent implements OnInit {
       next: () => {
         this.toastr.success(this.translate.instant('common.save_success'));
         if (andNew) {
+          const fromUom = this.uoms().find(u => u.id === this.form.uomFromId);
+          const toUom   = this.uoms().find(u => u.id === this.form.uomToId);
+          const group   = this.groups().find(g => g.id === this.form.uomConversionGroupId);
+          this.savedRows.update(rows => [...rows, {
+            internalCode: this.form.internalCode ?? '',
+            groupLabel:   group   ? this.groupLabel(group)   : '—',
+            fromUomLabel: fromUom ? this.uomLabel(fromUom)   : '—',
+            toUomLabel:   toUom   ? this.uomLabel(toUom)     : '—',
+            value:        this.form.value ?? 0,
+          }]);
           this.resetAll();
           this.isEdit.set(false);
           this.savingNew.set(false);

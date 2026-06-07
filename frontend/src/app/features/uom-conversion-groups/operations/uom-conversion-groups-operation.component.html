@@ -1,7 +1,8 @@
 <app-regular-operation-header
   [title]="(isEdit() ? 'uom_conversion_groups.edit_title' : 'uom_conversion_groups.add_title') | translate"
   icon="ki-outline ki-abstract-14"
-  color="success" />
+  color="success"
+  (cancel)="back()" />
 
 <!-- Form card -->
 <div class="card">
@@ -31,6 +32,5 @@
     [savingNew]="savingNew()"
     (save)="save()"
     (saveAndNew)="saveAndNew()"
-    (reset)="resetForm()"
-    (cancel)="back()" />
+    (reset)="resetForm()" />
 </div>

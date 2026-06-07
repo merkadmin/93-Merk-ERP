@@ -19,6 +19,7 @@
     "no": "لا",
     "save": "حفظ",
     "cancel": "إلغاء",
+    "back": "رجوع",
     "edit": "تعديل",
     "delete": "حذف",
     "add": "إضافة",
@@ -76,6 +77,8 @@
     "value": "معامل التحويل",
     "conversion_group": "مجموعة التحويل",
     "internal_code": "الكود الداخلي",
+    "saved_rows_title_single": "سجل تم حفظه في هذه الجلسة",
+    "saved_rows_title": "سجلات تم حفظها في هذه الجلسة",
     "delete_confirm": "حذف معامل التحويل هذا؟",
     "delete_selected_confirm": "حذف {{count}} معامل محدد؟"
   },

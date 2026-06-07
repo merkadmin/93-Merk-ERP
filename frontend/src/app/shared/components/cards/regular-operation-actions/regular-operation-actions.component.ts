@@ -15,5 +15,4 @@ export class RegularOperationActionsComponent {
   save       = output<void>();
   saveAndNew = output<void>();
   reset      = output<void>();
-  cancel     = output<void>();
 }

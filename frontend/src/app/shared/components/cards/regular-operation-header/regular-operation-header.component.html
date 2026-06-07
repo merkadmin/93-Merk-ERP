@@ -1,6 +1,10 @@
-<div [class]="'d-flex align-items-center rounded py-4 px-6 mb-8 border border-dashed bg-light-' + color() + ' border-' + color()">
-  <i [class]="'fs-2tx me-4 ' + icon() + ' text-' + color()"></i>
-  <div class="d-flex flex-column">
+<div [class]="'op-header-wrap d-flex align-items-center justify-content-between rounded py-4 px-6 mb-8 border border-dashed bg-light-' + color() + ' border-' + color()">
+  <div class="d-flex align-items-center gap-4">
+    <i [class]="'fs-2tx ' + icon() + ' text-' + color()"></i>
     <h2 class="fw-bold text-gray-900 fs-3 mb-0">{{ title() }}</h2>
   </div>
+  <button type="button" class="btn btn-secondary btn-sm" (click)="cancel.emit()">
+    <i class="ki-outline ki-arrow-left fs-5 me-1"></i>
+    {{ 'common.back' | translate }}
+  </button>
 </div>
