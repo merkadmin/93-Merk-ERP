@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using MerkERP.API.Services;
 using MerkERP.Core.Models;
 using MerkERP.DAL.Context;
 
@@ -9,7 +10,7 @@ public record BulkActiveDto(List<int> Ids, bool IsActive);
 
 [ApiController]
 [Route("api/[controller]")]
-public class UOMConversionGroupsController(MerkDbContext db) : ControllerBase
+public class UOMConversionGroupsController(MerkDbContext db, ExcelService excel) : ControllerBase
 {
 	[HttpGet]
 	public async Task<IActionResult> GetAll() =>
@@ -30,6 +31,71 @@ public class UOMConversionGroupsController(MerkDbContext db) : ControllerBase
 			.Max();
 
 		return Ok(new { code = $"{prefix}{(maxNum + 1):D3}" });
+	}
+
+	[HttpGet("export-template")]
+	public IActionResult ExportTemplate()
+	{
+		var columns = new (string Label, int Width)[]
+		{
+			("Internal Code", 18),
+			("Name EN",       28),
+			("Name AR",       28),
+		};
+
+		var bytes = excel.BuildTemplate(columns);
+
+		return File(bytes,
+			"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+			"uom-conversion-groups-template.xlsx");
+	}
+
+	[HttpPost("import")]
+	public async Task<IActionResult> Import(IFormFile file)
+	{
+		if (file is null || file.Length == 0)
+			return BadRequest("No file uploaded.");
+
+		var created = 0;
+		var errors  = new List<string>();
+
+		var rows = excel.ReadRows(file.OpenReadStream());
+
+		for (int i = 0; i < rows.Count; i++)
+		{
+			var row          = rows[i];
+			var rowNum       = i + 2;
+			var internalCode = row.Length > 0 ? row[0] : "";
+			var nameEN       = row.Length > 1 ? row[1] : "";
+			var nameAR       = row.Length > 2 ? row[2] : "";
+
+			if (string.IsNullOrWhiteSpace(internalCode) && string.IsNullOrWhiteSpace(nameEN) && string.IsNullOrWhiteSpace(nameAR))
+				continue;
+
+			if (string.IsNullOrWhiteSpace(internalCode))
+			{ errors.Add($"Row {rowNum}: Internal Code is required."); continue; }
+
+			if (string.IsNullOrWhiteSpace(nameEN))
+			{ errors.Add($"Row {rowNum}: Name EN is required."); continue; }
+
+			if (string.IsNullOrWhiteSpace(nameAR))
+			{ errors.Add($"Row {rowNum}: Name AR is required."); continue; }
+
+			db.UOMConversionGroup_cs.Add(new UOMConversionGroup_cs
+			{
+				InternalCode = internalCode,
+				Name_EN      = nameEN,
+				Name_AR      = nameAR,
+				IsActive     = true,
+				IsFavorite   = false,
+				InsertedDate = DateTime.UtcNow,
+			});
+			created++;
+		}
+
+		if (created > 0) await db.SaveChangesAsync();
+
+		return Ok(new { created, errors });
 	}
 
 	[HttpGet("{id:int}")]

@@ -73,7 +73,9 @@
     "edit_title": "Edit UOM Conversion Group",
     "delete_confirm": "Delete this UOM Conversion Group?",
     "delete_selected_confirm": "Delete {{count}} selected group(s)?",
-    "internal_code": "Internal Code"
+    "internal_code": "Internal Code",
+    "saved_rows_title_single": "record saved in this session",
+    "saved_rows_title": "records saved in this session"
   },
   "uom_conversion_factors": {
     "add_title": "New UOM Conversion Factor",

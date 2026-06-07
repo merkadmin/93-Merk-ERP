@@ -16,6 +16,12 @@ interface UomConversionGroup {
   isFavorite: boolean;
 }
 
+interface SavedRow {
+  internalCode: string;
+  name_EN: string;
+  name_AR: string;
+}
+
 @Component({
   selector: 'app-uom-conversion-groups-operation',
   standalone: true,
@@ -30,9 +36,10 @@ export class UomConversionGroupsOperationComponent implements OnInit {
   private translate = inject(TranslateService);
   private toastr    = inject(ToastrService);
 
-  isEdit     = signal(false);
-  saving     = signal(false);
-  savingNew  = signal(false);
+  isEdit    = signal(false);
+  saving    = signal(false);
+  savingNew = signal(false);
+  savedRows = signal<SavedRow[]>([]);
 
   form: Partial<UomConversionGroup> = this.blank();
 
@@ -92,6 +99,11 @@ export class UomConversionGroupsOperationComponent implements OnInit {
       next: () => {
         this.toastr.success(this.translate.instant('common.save_success'));
         if (andNew) {
+          this.savedRows.update(rows => [...rows, {
+            internalCode: this.form.internalCode ?? '',
+            name_EN:      this.form.name_EN ?? '',
+            name_AR:      this.form.name_AR ?? '',
+          }]);
           this.form = this.blank();
           this.isEdit.set(false);
           this.savingNew.set(false);

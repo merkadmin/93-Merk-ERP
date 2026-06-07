@@ -73,7 +73,9 @@
     "edit_title": "تعديل مجموعة تحويل وحدة القياس",
     "delete_confirm": "حذف مجموعة تحويل وحدة القياس؟",
     "delete_selected_confirm": "حذف {{count}} مجموعة محددة؟",
-    "internal_code": "الكود الداخلي"
+    "internal_code": "الكود الداخلي",
+    "saved_rows_title_single": "سجل تم حفظه في هذه الجلسة",
+    "saved_rows_title": "سجلات تم حفظها في هذه الجلسة"
   },
   "uom_conversion_factors": {
     "add_title": "معامل تحويل جديد",
