@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using MerkERP.API.Services;
 using MerkERP.Core.Interfaces;
 using MerkERP.DAL.Context;
 using MerkERP.DAL.Repositories;
@@ -11,6 +12,7 @@ builder.Services.AddDbContext<MerkDbContext>(o =>
 
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<StockService>();
+builder.Services.AddSingleton<ExcelService>();
 
 builder.Services.AddCors(o => o.AddPolicy("Angular", p =>
     p.WithOrigins("http://localhost:4200", "http://localhost:7710").AllowAnyHeader().AllowAnyMethod()));

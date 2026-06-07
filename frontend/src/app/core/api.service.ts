@@ -13,4 +13,5 @@ export class ApiService {
   deleteBulk(path: string, ids: number[]) { return this.http.delete(`${this.base}/${path}`, { body: ids }); }
   patch<T>(path: string)                 { return this.http.patch<T>(`${this.base}/${path}`, null); }
   patchBulk<T>(path: string, body: unknown) { return this.http.patch<T>(`${this.base}/${path}`, body); }
+  getBlob(path: string)                  { return this.http.get(`${this.base}/${path}`, { responseType: 'blob' }); }
 }

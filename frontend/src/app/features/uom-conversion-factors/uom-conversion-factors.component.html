@@ -3,9 +3,12 @@
   icon="ki-outline ki-arrows-circle"
   color="primary"
   [selectedCount]="selectedIds().size"
+  [showImportExport]="true"
   (add)="addNew()"
   (refresh)="load()"
-  (deleteSelected)="deleteSelected()" />
+  (deleteSelected)="deleteSelected()"
+  (exportTemplate)="exportTemplate()"
+  (importFile)="importExcel($event)" />
 
 <!-- Search -->
 <app-regular-list-search-actions

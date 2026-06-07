@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { Component, ElementRef, input, output, ViewChild } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
@@ -9,12 +9,27 @@ import { TranslatePipe } from '@ngx-translate/core';
   styleUrl: './regular-list-header-with-actions.component.less',
 })
 export class RegularListHeaderWithActionsComponent {
-  title         = input<string>('');
-  icon          = input<string>('');
-  color         = input<string>('primary');
-  selectedCount = input<number>(0);
+  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
+
+  title              = input<string>('');
+  icon               = input<string>('');
+  color              = input<string>('primary');
+  selectedCount      = input<number>(0);
+  showImportExport   = input<boolean>(false);
 
   add            = output<void>();
   refresh        = output<void>();
   deleteSelected = output<void>();
+  exportTemplate = output<void>();
+  importFile     = output<File>();
+
+  triggerImport() {
+    this.fileInput.nativeElement.value = '';
+    this.fileInput.nativeElement.click();
+  }
+
+  onFileSelected(event: Event) {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (file) this.importFile.emit(file);
+  }
 }

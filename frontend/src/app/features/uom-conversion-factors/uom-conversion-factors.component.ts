@@ -2,6 +2,7 @@ import { DOCUMENT } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2';
 import { ApiService } from '../../core/api.service';
 import { RegularListSearchActionsComponent, SearchField } from '../../shared/components/cards/regular-list-search-actions/regular-list-search-actions.component';
@@ -35,6 +36,7 @@ export class UomConversionFactorsComponent implements OnInit {
   private api       = inject(ApiService);
   private router    = inject(Router);
   private translate = inject(TranslateService);
+  private toastr    = inject(ToastrService);
   private doc       = inject(DOCUMENT);
 
   get isRtl() { return this.doc.documentElement.dir === 'rtl'; }
@@ -141,6 +143,37 @@ export class UomConversionFactorsComponent implements OnInit {
   // ── CRUD ───────────────────────────────────────────────────────────────────
 
   addNew() { this.router.navigate(['/stock/uom-conversion-factors/operation']); }
+
+  exportTemplate() {
+    this.api.getBlob('uomconversionfactors/export-template').subscribe(blob => {
+      const url = URL.createObjectURL(blob);
+      const a   = document.createElement('a');
+      a.href     = url;
+      a.download = 'uom-conversion-factors-template.xlsx';
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+  }
+
+  importExcel(file: File) {
+    const fd = new FormData();
+    fd.append('file', file);
+    this.api.post<{ created: number; errors: string[] }>('uomconversionfactors/import', fd).subscribe({
+      next: result => {
+        if (result.errors.length === 0) {
+          this.toastr.success(
+            this.translate.instant('common.import_success_count', { count: result.created })
+          );
+        } else {
+          const msg = `${this.translate.instant('common.import_success_count', { count: result.created })}<br>`
+            + result.errors.map(e => `• ${e}`).join('<br>');
+          this.toastr.warning(msg, this.translate.instant('common.import_partial'), { enableHtml: true, timeOut: 8000 });
+        }
+        this.load();
+      },
+      error: () => this.toastr.error(this.translate.instant('common.import_error')),
+    });
+  }
 
   edit(id: number) { this.router.navigate(['/stock/uom-conversion-factors/operation', id]); }
 

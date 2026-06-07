@@ -1,5 +1,7 @@
+using System.Globalization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using MerkERP.API.Services;
 using MerkERP.Core.Models;
 using MerkERP.DAL.Context;
 
@@ -9,7 +11,7 @@ public record BulkFactorActiveDto(List<long> Ids, bool IsActive);
 
 [ApiController]
 [Route("api/[controller]")]
-public class UOMConversionFactorsController(MerkDbContext db) : ControllerBase
+public class UOMConversionFactorsController(MerkDbContext db, ExcelService excel) : ControllerBase
 {
 	[HttpGet]
 	public async Task<IActionResult> GetAll() =>
@@ -35,6 +37,108 @@ public class UOMConversionFactorsController(MerkDbContext db) : ControllerBase
 			.Max();
 
 		return Ok(new { code = $"{prefix}{(maxNum + 1):D3}" });
+	}
+
+	[HttpGet("export-template")]
+	public async Task<IActionResult> ExportTemplate()
+	{
+		var groups = await db.UOMConversionGroup_cs.OrderBy(g => g.Name_EN).ToListAsync();
+		var uoms   = await db.UOM_cs.OrderBy(u => u.Name_EN).ToListAsync();
+
+		var columns = new (string Label, int Width)[]
+		{
+			("Internal Code",                18),
+			("Conversion Group (Name EN)",   32),
+			("From UOM (Name EN)",           28),
+			("To UOM (Name EN)",             28),
+			("Factor",                       12),
+		};
+
+		var referenceSheets = new ReferenceSheet[]
+		{
+			new("ConversionGroups",
+				["Internal Code", "Name EN", "Name AR"],
+				groups.Select(g => new[] { g.InternalCode ?? "", g.Name_EN, g.Name_AR ?? "" })),
+
+			new("UOMs",
+				["Internal Code", "Name EN", "Name AR"],
+				uoms.Select(u => new[] { u.InternalCode ?? "", u.Name_EN, u.Name_AR ?? "" })),
+		};
+
+		var bytes = excel.BuildTemplate(columns, referenceSheets);
+
+		return File(bytes,
+			"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+			"uom-conversion-factors-template.xlsx");
+	}
+
+	[HttpPost("import")]
+	public async Task<IActionResult> Import(IFormFile file)
+	{
+		if (file is null || file.Length == 0)
+			return BadRequest("No file uploaded.");
+
+		var groups = await db.UOMConversionGroup_cs.ToListAsync();
+		var uoms   = await db.UOM_cs.ToListAsync();
+
+		var created = 0;
+		var errors  = new List<string>();
+
+		var rows = excel.ReadRows(file.OpenReadStream());
+
+		for (int i = 0; i < rows.Count; i++)
+		{
+			var row          = rows[i];
+			var rowNum       = i + 2; // 1-based, skipping header
+			var internalCode = row.Length > 0 ? row[0] : "";
+			var groupName    = row.Length > 1 ? row[1] : "";
+			var fromName     = row.Length > 2 ? row[2] : "";
+			var toName       = row.Length > 3 ? row[3] : "";
+			var factorStr    = row.Length > 4 ? row[4] : "";
+
+			if (string.IsNullOrWhiteSpace(groupName) && string.IsNullOrWhiteSpace(fromName) && string.IsNullOrWhiteSpace(toName))
+				continue;
+
+			var group = groups.FirstOrDefault(g =>
+				string.Equals(g.Name_EN,      groupName, StringComparison.OrdinalIgnoreCase) ||
+				string.Equals(g.Name_AR,      groupName, StringComparison.OrdinalIgnoreCase) ||
+				string.Equals(g.InternalCode, groupName, StringComparison.OrdinalIgnoreCase));
+
+			if (group is null) { errors.Add($"Row {rowNum}: Conversion Group \"{groupName}\" not found."); continue; }
+
+			var fromUom = uoms.FirstOrDefault(u =>
+				string.Equals(u.Name_EN,      fromName, StringComparison.OrdinalIgnoreCase) ||
+				string.Equals(u.Name_AR,      fromName, StringComparison.OrdinalIgnoreCase) ||
+				string.Equals(u.InternalCode, fromName, StringComparison.OrdinalIgnoreCase));
+
+			if (fromUom is null) { errors.Add($"Row {rowNum}: From UOM \"{fromName}\" not found."); continue; }
+
+			var toUom = uoms.FirstOrDefault(u =>
+				string.Equals(u.Name_EN,      toName, StringComparison.OrdinalIgnoreCase) ||
+				string.Equals(u.Name_AR,      toName, StringComparison.OrdinalIgnoreCase) ||
+				string.Equals(u.InternalCode, toName, StringComparison.OrdinalIgnoreCase));
+
+			if (toUom is null) { errors.Add($"Row {rowNum}: To UOM \"{toName}\" not found."); continue; }
+
+			if (!double.TryParse(factorStr, NumberStyles.Any, CultureInfo.InvariantCulture, out var factor) || factor <= 0)
+			{ errors.Add($"Row {rowNum}: Invalid factor \"{factorStr}\". Must be a positive number."); continue; }
+
+			db.UOMConversionFactor_cs.Add(new UOMConversionFactor_cs
+			{
+				InternalCode         = string.IsNullOrWhiteSpace(internalCode) ? null : internalCode,
+				UOMConversionGroupId = group.Id,
+				UOMFromId            = fromUom.Id,
+				UOMToId              = toUom.Id,
+				Value                = factor,
+				IsActive             = true,
+				InsertedDate         = DateTime.UtcNow,
+			});
+			created++;
+		}
+
+		if (created > 0) await db.SaveChangesAsync();
+
+		return Ok(new { created, errors });
 	}
 
 	[HttpGet("{id:long}")]
