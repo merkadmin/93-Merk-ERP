@@ -18,8 +18,8 @@
   </thead>
   <tbody>
     <tr *ngFor="let b of bins()">
-      <td class="fw-semibold">{{ b.item.itemCode }}</td>
-      <td>{{ b.item.itemName }}</td>
+      <td class="fw-semibold">{{ b.item.internalCode }}</td>
+      <td>{{ b.item.name_EN }}</td>
       <td>{{ b.warehouse.name }}</td>
       <td class="text-end" [class.text-danger]="b.actualQty < 0">{{ b.actualQty | number:'1.2-2' }}</td>
       <td class="text-end text-warning">{{ b.reservedQty | number:'1.2-2' }}</td>

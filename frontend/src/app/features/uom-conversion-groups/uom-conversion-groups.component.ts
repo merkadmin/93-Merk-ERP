@@ -43,7 +43,7 @@ export class UomConversionGroupsComponent implements OnInit {
 
   get searchFields(): SearchField[] {
     return [
-      { key: 'internalCode', label: this.translate.instant('uom_conversion_groups.internal_code'), type: 'text' },
+      { key: 'internalCode', label: this.translate.instant('common.internal_code'), type: 'text' },
       { key: 'name',         label: this.translate.instant('common.name'),                         type: 'text' },
     ];
   }

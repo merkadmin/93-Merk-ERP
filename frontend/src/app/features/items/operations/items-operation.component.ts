@@ -14,13 +14,21 @@ interface ItemType  { itemTypeId: number;  name: string; }
 interface ItemUOM   { id: number; name_EN: string; name_AR?: string; }
 
 interface Item {
-  itemId: number;
-  itemCode: string;
-  itemName: string;
+  id: number;
+  internalCode: string;
+  name_EN: string;
+  name_AR?: string;
   itemGroupId: number;
   itemTypeId: number;
   defaultUOMId: number;
+  defaultPurchaseUOMId?: number;
+  acceptSelling: boolean;
+  defaultSellingUOMId?: number;
   description?: string;
+  openingStock?: number;
+  expirationDate?: string;
+  minOrderQuantity?: number;
+  safetyStock?: number;
   hasBatch: boolean;
   hasSerial: boolean;
   isActive: boolean;
@@ -28,8 +36,8 @@ interface Item {
 }
 
 interface SavedRow {
-  itemCode: string;
-  itemName: string;
+  internalCode: string;
+  name_EN: string;
   groupName: string;
   typeName: string;
   uomName: string;
@@ -72,7 +80,15 @@ export class ItemsOperationComponent implements OnInit {
     if (id) {
       this.isEdit.set(true);
       this.api.get<Item>(`items/${id}`).subscribe(item => this.form = { ...item });
+    } else {
+      this.loadNextCode();
     }
+  }
+
+  private loadNextCode() {
+    this.api.get<{ code: string }>('items/nextcode').subscribe(r => {
+      this.form.internalCode = r.code;
+    });
   }
 
   uomLabel(uom: ItemUOM): string {
@@ -96,17 +112,25 @@ export class ItemsOperationComponent implements OnInit {
   }
 
   private blank(): Partial<Item> {
-    return { itemId: 0, itemCode: '', itemName: '', itemGroupId: 0, itemTypeId: 1, defaultUOMId: 0, description: '', hasBatch: false, hasSerial: false, isActive: true, isFavorite: false };
+    return {
+      id: 0, internalCode: '', name_EN: '', name_AR: '',
+      itemGroupId: 0, itemTypeId: 1,
+      defaultUOMId: 0, defaultPurchaseUOMId: undefined, defaultSellingUOMId: undefined,
+      acceptSelling: true,
+      description: '', openingStock: undefined, expirationDate: undefined,
+      minOrderQuantity: undefined, safetyStock: undefined,
+      hasBatch: false, hasSerial: false, isActive: true, isFavorite: false,
+    };
   }
 
   private validate(): boolean {
     const missing: string[] = [];
 
-    if (!this.form.itemCode?.trim())
-      missing.push(this.translate.instant('items.code'));
+    if (!this.form.internalCode?.trim())
+      missing.push(this.translate.instant('common.internal_code'));
 
-    if (!this.form.itemName?.trim())
-      missing.push(this.translate.instant('items.name'));
+    if (!this.form.name_EN?.trim())
+      missing.push(`${this.translate.instant('common.name')} (EN)`);
 
     if (!this.form.itemGroupId)
       missing.push(this.translate.instant('items.group'));
@@ -134,7 +158,7 @@ export class ItemsOperationComponent implements OnInit {
     andNew ? this.savingNew.set(true) : this.saving.set(true);
 
     const req = this.isEdit()
-      ? this.api.put<Item>(`items/${this.form.itemId}`, this.form)
+      ? this.api.put<Item>(`items/${this.form.id}`, this.form)
       : this.api.post<Item>('items', this.form);
 
     req.subscribe({
@@ -145,15 +169,16 @@ export class ItemsOperationComponent implements OnInit {
           const type  = this.types().find(t => t.itemTypeId  === this.form.itemTypeId);
           const uom   = this.uoms().find(u => u.id           === this.form.defaultUOMId);
           this.savedRows.update(rows => [...rows, {
-            itemCode:  this.form.itemCode  ?? '',
-            itemName:  this.form.itemName  ?? '',
-            groupName: group ? this.groupLabel(group) : '—',
-            typeName:  type?.name          ?? '—',
-            uomName:   uom ? this.uomLabel(uom) : '—',
+            internalCode: this.form.internalCode ?? '',
+            name_EN:      this.form.name_EN      ?? '',
+            groupName:    group ? this.groupLabel(group) : '—',
+            typeName:     type?.name             ?? '—',
+            uomName:      uom ? this.uomLabel(uom) : '—',
           }]);
           this.form = this.blank();
           this.isEdit.set(false);
           this.savingNew.set(false);
+          this.loadNextCode();
         } else {
           this.back();
         }
@@ -168,7 +193,7 @@ export class ItemsOperationComponent implements OnInit {
   save()       { this.submit(false); }
   saveAndNew() { this.submit(true);  }
 
-  resetForm() { this.form = this.blank(); }
+  resetForm() { this.form = this.blank(); this.loadNextCode(); }
 
   back() { this.router.navigate(['/stock/items']); }
 }

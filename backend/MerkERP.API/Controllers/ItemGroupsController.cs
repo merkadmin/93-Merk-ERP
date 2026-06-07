@@ -16,6 +16,23 @@ public class ItemGroupsController(MerkDbContext db, ExcelService excel) : Contro
 	public async Task<IActionResult> GetAll() =>
 		Ok(await db.ItemGroup_cs.OrderBy(g => g.Name_EN).ToListAsync());
 
+	[HttpGet("nextcode")]
+	public async Task<IActionResult> NextCode()
+	{
+		const string prefix = "GRP-";
+		var codes = await db.ItemGroup_cs
+			.Where(g => g.InternalCode != null && g.InternalCode.StartsWith(prefix))
+			.Select(g => g.InternalCode!)
+			.ToListAsync();
+
+		var maxNum = codes
+			.Select(c => int.TryParse(c[prefix.Length..], out var n) ? n : 0)
+			.DefaultIfEmpty(0)
+			.Max();
+
+		return Ok(new { code = $"{prefix}{(maxNum + 1):D3}" });
+	}
+
 	[HttpGet("export-template")]
 	public IActionResult ExportTemplate()
 	{

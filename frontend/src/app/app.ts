@@ -4,6 +4,7 @@ import { RouterOutlet, RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ThemeService } from './services/theme.service';
 import { LanguageService } from './services/language.service';
+import { ServerStatusService } from './services/server-status.service';
 import { SidebarComponent } from './shared/components/sidebar/sidebar';
 import { LoadingSpinnerComponent } from './shared/components/loading-spinner/loading-spinner';
 
@@ -20,9 +21,12 @@ export class App {
   userMenuOpen = false;
 
   constructor(
-    public themeService:  ThemeService,
-    public langService:   LanguageService,
+    public themeService:   ThemeService,
+    public langService:    LanguageService,
+    public serverStatus:   ServerStatusService,
   ) {}
+
+  retry() { window.location.reload(); }
 
   @HostListener('document:click')
   closeMenus() { this.userMenuOpen = false; }

@@ -5,7 +5,7 @@ import { ApiService } from '../../core/api.service';
 
 interface StockBin {
   binId: number;
-  item: { itemCode: string; itemName: string };
+  item: { internalCode: string; name_EN: string; name_AR?: string };
   warehouse: { name: string };
   actualQty: number;
   reservedQty: number;

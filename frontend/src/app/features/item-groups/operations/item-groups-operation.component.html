@@ -10,42 +10,47 @@
     <div class="row g-4">
 
       <div class="col-3">
-        <label class="form-label">{{ 'item_groups.internal_code' | translate }}</label>
+        <label class="form-label required">{{ 'common.internal_code' | translate }}</label>
         <input class="form-control" [(ngModel)]="form.internalCode" name="internalCode"
-          [placeholder]="'item_groups.internal_code' | translate">
+          [placeholder]="'common.internal_code' | translate">
       </div>
 
-      <div class="col-4">
-        <label class="form-label required">{{ 'common.name_en' | translate }}</label>
-        <input class="form-control" [(ngModel)]="form.name_EN" name="name_EN"
-          [placeholder]="'common.name_en' | translate">
-      </div>
-
-      <div class="col-5">
-        <label class="form-label">{{ 'common.name_ar' | translate }}</label>
+      <div class="col-3">
+        <label class="form-label">{{ 'common.name' | translate }} (AR)</label>
         <input class="form-control" [(ngModel)]="form.name_AR" name="name_AR"
-          [placeholder]="'common.name_ar' | translate" dir="rtl">
+          [placeholder]="'common.name' | translate" dir="rtl">
       </div>
 
-      <div class="col-5">
-        <label class="form-label">{{ 'item_groups.parent_group' | translate }}</label>
-        <app-custom-select-input
-          [options]="parentGroupOptions"
-          [value]="form.parentItemGroupId ?? null"
-          (valueChange)="form.parentItemGroupId = $event !== null ? +$event : null"
-          [placeholder]="'common.none' | translate"
-          [searchPlaceholder]="'common.search' | translate" />
+      <div class="col-3">
+        <label class="form-label required">{{ 'common.name' | translate }} (EN)</label>
+        <input class="form-control" [(ngModel)]="form.name_EN" name="name_EN"
+          [placeholder]="'common.name' | translate">
       </div>
 
-      <div class="col-4 d-flex align-items-end pb-2 gap-6">
+      <div class="w-100"></div>
+
+      <div class="col-3 d-flex align-items-end pb-2">
         <div class="form-check form-check-custom form-check-solid">
           <input class="form-check-input" type="checkbox"
-            [(ngModel)]="form.isMain" name="isMain" id="isMain">
+            [(ngModel)]="form.isMain" name="isMain" id="isMain"
+            (change)="form.isMain && (form.parentItemGroupId = null)">
           <label class="form-check-label fw-semibold" for="isMain">
             {{ 'common.is_main' | translate }}
           </label>
         </div>
       </div>
+
+      @if (!form.isMain) {
+        <div class="col-5">
+          <label class="form-label">{{ 'item_groups.parent_group' | translate }}</label>
+          <app-custom-select-input
+            [options]="parentGroupOptions"
+            [value]="form.parentItemGroupId ?? null"
+            (valueChange)="form.parentItemGroupId = $event !== null ? +$event : null"
+            [placeholder]="'common.none' | translate"
+            [searchPlaceholder]="'common.search' | translate" />
+        </div>
+      }
 
     </div>
   </div>
@@ -73,9 +78,9 @@
         <thead>
           <tr class="fw-bold text-success bg-light-success fs-7">
             <th class="w-40px">#</th>
-            <th>{{ 'item_groups.internal_code' | translate }}</th>
-            <th>{{ 'common.name_en' | translate }}</th>
-            <th>{{ 'common.name_ar' | translate }}</th>
+            <th>{{ 'common.internal_code' | translate }}</th>
+            <th>{{ 'common.name' | translate }} (EN)</th>
+            <th>{{ 'common.name' | translate }} (AR)</th>
             <th>{{ 'item_groups.parent_group' | translate }}</th>
             <th>{{ 'common.is_main' | translate }}</th>
           </tr>

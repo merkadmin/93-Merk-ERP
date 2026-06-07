@@ -60,7 +60,15 @@ export class ItemGroupsOperationComponent implements OnInit {
     if (id) {
       this.isEdit.set(true);
       this.api.get<ItemGroup>(`itemgroups/${id}`).subscribe(g => this.form = { ...g });
+    } else {
+      this.loadNextCode();
     }
+  }
+
+  private loadNextCode() {
+    this.api.get<{ code: string }>('itemgroups/nextcode').subscribe(r => {
+      this.form.internalCode = r.code;
+    });
   }
 
   groupLabel(g: ItemGroup): string {
@@ -81,8 +89,11 @@ export class ItemGroupsOperationComponent implements OnInit {
   private validate(): boolean {
     const missing: string[] = [];
 
+    if (!this.form.internalCode?.trim())
+      missing.push(this.translate.instant('common.internal_code'));
+
     if (!this.form.name_EN?.trim())
-      missing.push(this.translate.instant('common.name_en'));
+      missing.push(`${this.translate.instant('common.name')} (EN)`);
 
     if (missing.length) {
       this.toastr.error(
@@ -119,6 +130,7 @@ export class ItemGroupsOperationComponent implements OnInit {
           this.form = this.blank();
           this.isEdit.set(false);
           this.savingNew.set(false);
+          this.loadNextCode();
           this.api.get<ItemGroup[]>('itemgroups').subscribe(g => this.allGroups.set(g));
         } else {
           this.back();
@@ -134,7 +146,10 @@ export class ItemGroupsOperationComponent implements OnInit {
   save()       { this.submit(false); }
   saveAndNew() { this.submit(true);  }
 
-  resetForm() { this.form = this.blank(); }
+  resetForm() {
+    this.form = this.blank();
+    this.loadNextCode();
+  }
 
   back() { this.router.navigate(['/stock/item-groups']); }
 }

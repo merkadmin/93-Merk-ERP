@@ -75,7 +75,7 @@ export class UomConversionFactorsComponent implements OnInit {
 
     return [
       { key: 'groupId',      label: this.translate.instant('uom_conversion_factors.conversion_group'), type: 'select', options: grpOpts           },
-      { key: 'internalCode', label: this.translate.instant('uom_conversion_factors.internal_code'),    type: 'text'                              },
+      { key: 'internalCode', label: this.translate.instant('common.internal_code'),    type: 'text'                              },
       { key: 'uomFrom',      label: this.translate.instant('uom_conversion_factors.from_uom'),         type: 'select', options: uomOpts(fromMap) },
       { key: 'uomTo',        label: this.translate.instant('uom_conversion_factors.to_uom'),           type: 'select', options: uomOpts(toMap)   },
     ];

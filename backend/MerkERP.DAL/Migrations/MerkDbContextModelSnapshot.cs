@@ -157,17 +157,29 @@ namespace MerkERP.DAL.Migrations
 
             modelBuilder.Entity("MerkERP.Core.Models.Item_cs", b =>
                 {
-                    b.Property<long>("ItemId")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("ItemId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<bool>("AcceptSelling")
+                        .HasColumnType("bit");
+
+                    b.Property<long?>("DefaultPurchaseUOMId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("DefaultSellingUOMId")
+                        .HasColumnType("bigint");
 
                     b.Property<long>("DefaultUOMId")
                         .HasColumnType("bigint");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ExpirationDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<bool>("HasBatch")
                         .HasColumnType("bit");
@@ -181,31 +193,47 @@ namespace MerkERP.DAL.Migrations
                     b.Property<DateTime?>("InsertedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("InternalCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(50)");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsFavorite")
                         .HasColumnType("bit");
 
-                    b.Property<string>("ItemCode")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<long>("ItemGroupId")
                         .HasColumnType("bigint");
-
-                    b.Property<string>("ItemName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<long>("ItemTypeId")
                         .HasColumnType("bigint");
 
-                    b.HasKey("ItemId");
+                    b.Property<int?>("MinOrderQuantity")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name_AR")
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("Name_EN")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<long?>("OpeningStock")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("SafetyStock")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DefaultPurchaseUOMId");
+
+                    b.HasIndex("DefaultSellingUOMId");
 
                     b.HasIndex("DefaultUOMId");
 
-                    b.HasIndex("ItemCode")
+                    b.HasIndex("InternalCode")
                         .IsUnique();
 
                     b.HasIndex("ItemGroupId");
@@ -518,6 +546,16 @@ namespace MerkERP.DAL.Migrations
 
             modelBuilder.Entity("MerkERP.Core.Models.Item_cs", b =>
                 {
+                    b.HasOne("MerkERP.Core.Models.UOM_cs", "DefaultPurchaseUOM")
+                        .WithMany()
+                        .HasForeignKey("DefaultPurchaseUOMId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("MerkERP.Core.Models.UOM_cs", "DefaultSellingUOM")
+                        .WithMany()
+                        .HasForeignKey("DefaultSellingUOMId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("MerkERP.Core.Models.UOM_cs", "DefaultUOM")
                         .WithMany("DefaultForItems")
                         .HasForeignKey("DefaultUOMId")
@@ -535,6 +573,10 @@ namespace MerkERP.DAL.Migrations
                         .HasForeignKey("ItemTypeId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("DefaultPurchaseUOM");
+
+                    b.Navigation("DefaultSellingUOM");
 
                     b.Navigation("DefaultUOM");
 

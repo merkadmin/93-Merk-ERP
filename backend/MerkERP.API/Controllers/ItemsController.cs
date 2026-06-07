@@ -12,13 +12,32 @@ public record BulkItemActiveDto(List<long> Ids, bool IsActive);
 [Route("api/[controller]")]
 public class ItemsController(MerkDbContext db, ExcelService excel) : ControllerBase
 {
+	[HttpGet("nextcode")]
+	public async Task<IActionResult> NextCode()
+	{
+		const string prefix = "ITM-";
+		var codes = await db.Item_cs
+			.Where(i => i.InternalCode != null && i.InternalCode.StartsWith(prefix))
+			.Select(i => i.InternalCode)
+			.ToListAsync();
+
+		var maxNum = codes
+			.Select(c => int.TryParse(c[prefix.Length..], out var n) ? n : 0)
+			.DefaultIfEmpty(0)
+			.Max();
+
+		return Ok(new { code = $"{prefix}{(maxNum + 1):D3}" });
+	}
+
 	[HttpGet]
 	public async Task<IActionResult> GetAll() =>
 		Ok(await db.Item_cs
 			.Include(i => i.ItemGroup)
 			.Include(i => i.ItemType)
 			.Include(i => i.DefaultUOM)
-			.OrderBy(i => i.ItemCode)
+			.Include(i => i.DefaultPurchaseUOM)
+			.Include(i => i.DefaultSellingUOM)
+			.OrderBy(i => i.InternalCode)
 			.ToListAsync());
 
 	[HttpGet("export-template")]
@@ -30,8 +49,9 @@ public class ItemsController(MerkDbContext db, ExcelService excel) : ControllerB
 
 		var columns = new (string Label, int Width)[]
 		{
-			("Item Code",              18),
-			("Item Name",              32),
+			("Internal Code",          18),
+			("Item Name EN",           32),
+			("Item Name AR",           32),
 			("Item Group Name",        28),
 			("Item Type Name",         22),
 			("Default UOM (Name EN)",  22),
@@ -81,24 +101,25 @@ public class ItemsController(MerkDbContext db, ExcelService excel) : ControllerB
 
 		for (int i = 0; i < rows.Count; i++)
 		{
-			var row       = rows[i];
-			var rowNum    = i + 2;
-			var itemCode  = row.Length > 0 ? row[0] : "";
-			var itemName  = row.Length > 1 ? row[1] : "";
-			var groupName = row.Length > 2 ? row[2] : "";
-			var typeName  = row.Length > 3 ? row[3] : "";
-			var uomName   = row.Length > 4 ? row[4] : "";
-			var desc      = row.Length > 5 ? row[5] : "";
-			var batchStr  = row.Length > 6 ? row[6] : "";
-			var serialStr = row.Length > 7 ? row[7] : "";
+			var row           = rows[i];
+			var rowNum        = i + 2;
+			var internalCode  = row.Length > 0 ? row[0] : "";
+			var nameEn        = row.Length > 1 ? row[1] : "";
+			var nameAr        = row.Length > 2 ? row[2] : "";
+			var groupName     = row.Length > 3 ? row[3] : "";
+			var typeName      = row.Length > 4 ? row[4] : "";
+			var uomName       = row.Length > 5 ? row[5] : "";
+			var desc          = row.Length > 6 ? row[6] : "";
+			var batchStr      = row.Length > 7 ? row[7] : "";
+			var serialStr     = row.Length > 8 ? row[8] : "";
 
-			if (string.IsNullOrWhiteSpace(itemCode) && string.IsNullOrWhiteSpace(itemName)) continue;
+			if (string.IsNullOrWhiteSpace(internalCode) && string.IsNullOrWhiteSpace(nameEn)) continue;
 
-			if (string.IsNullOrWhiteSpace(itemCode))
-			{ errors.Add($"Row {rowNum}: Item Code is required."); continue; }
+			if (string.IsNullOrWhiteSpace(internalCode))
+			{ errors.Add($"Row {rowNum}: Internal Code is required."); continue; }
 
-			if (string.IsNullOrWhiteSpace(itemName))
-			{ errors.Add($"Row {rowNum}: Item Name is required."); continue; }
+			if (string.IsNullOrWhiteSpace(nameEn))
+			{ errors.Add($"Row {rowNum}: Item Name EN is required."); continue; }
 
 			var group = groups.FirstOrDefault(g =>
 				string.Equals(g.Name_EN, groupName, StringComparison.OrdinalIgnoreCase) ||
@@ -123,8 +144,9 @@ public class ItemsController(MerkDbContext db, ExcelService excel) : ControllerB
 
 			db.Item_cs.Add(new Item_cs
 			{
-				ItemCode     = itemCode,
-				ItemName     = itemName,
+				InternalCode = internalCode,
+				Name_EN      = nameEn,
+				Name_AR      = string.IsNullOrWhiteSpace(nameAr) ? null : nameAr,
 				ItemGroupId  = group?.ItemGroupId ?? 0,
 				ItemTypeId   = type.ItemTypeId,
 				DefaultUOMId = uom.Id,
@@ -147,7 +169,9 @@ public class ItemsController(MerkDbContext db, ExcelService excel) : ControllerB
 			.Include(i => i.ItemGroup)
 			.Include(i => i.ItemType)
 			.Include(i => i.DefaultUOM)
-			.FirstOrDefaultAsync(i => i.ItemId == id) is { } e ? Ok(e) : NotFound();
+			.Include(i => i.DefaultPurchaseUOM)
+			.Include(i => i.DefaultSellingUOM)
+			.FirstOrDefaultAsync(i => i.Id == id) is { } e ? Ok(e) : NotFound();
 
 	[HttpPost]
 	public async Task<IActionResult> Create(Item_cs e)
@@ -161,19 +185,27 @@ public class ItemsController(MerkDbContext db, ExcelService excel) : ControllerB
 	[HttpPut("{id:long}")]
 	public async Task<IActionResult> Update(long id, Item_cs e)
 	{
-		if (id != e.ItemId) return BadRequest();
+		if (id != e.Id) return BadRequest();
 		var existing = await db.Item_cs.FindAsync(id);
 		if (existing is null) return NotFound();
-		existing.ItemCode     = e.ItemCode;
-		existing.ItemName     = e.ItemName;
-		existing.ItemGroupId  = e.ItemGroupId;
-		existing.ItemTypeId   = e.ItemTypeId;
-		existing.DefaultUOMId = e.DefaultUOMId;
-		existing.Description  = e.Description;
-		existing.HasBatch     = e.HasBatch;
-		existing.HasSerial    = e.HasSerial;
-		existing.IsActive     = e.IsActive;
-		existing.IsFavorite   = e.IsFavorite;
+		existing.InternalCode          = e.InternalCode;
+		existing.Name_EN               = e.Name_EN;
+		existing.Name_AR               = e.Name_AR;
+		existing.ItemGroupId           = e.ItemGroupId;
+		existing.ItemTypeId            = e.ItemTypeId;
+		existing.DefaultUOMId          = e.DefaultUOMId;
+		existing.DefaultPurchaseUOMId  = e.DefaultPurchaseUOMId;
+		existing.AcceptSelling         = e.AcceptSelling;
+		existing.DefaultSellingUOMId   = e.DefaultSellingUOMId;
+		existing.Description           = e.Description;
+		existing.OpeningStock          = e.OpeningStock;
+		existing.ExpirationDate        = e.ExpirationDate;
+		existing.MinOrderQuantity      = e.MinOrderQuantity;
+		existing.SafetyStock           = e.SafetyStock;
+		existing.HasBatch              = e.HasBatch;
+		existing.HasSerial             = e.HasSerial;
+		existing.IsActive              = e.IsActive;
+		existing.IsFavorite            = e.IsFavorite;
 		await db.SaveChangesAsync();
 		return Ok(existing);
 	}
@@ -212,7 +244,7 @@ public class ItemsController(MerkDbContext db, ExcelService excel) : ControllerB
 	public async Task<IActionResult> BulkSetActive([FromBody] BulkItemActiveDto dto)
 	{
 		var entities = await db.Item_cs
-			.Where(i => dto.Ids.Contains(i.ItemId))
+			.Where(i => dto.Ids.Contains(i.Id))
 			.ToListAsync();
 		entities.ForEach(e => e.IsActive = dto.IsActive);
 		await db.SaveChangesAsync();
@@ -223,7 +255,7 @@ public class ItemsController(MerkDbContext db, ExcelService excel) : ControllerB
 	public async Task<IActionResult> DeleteBulk([FromBody] List<long> ids)
 	{
 		var entities = await db.Item_cs
-			.Where(i => ids.Contains(i.ItemId))
+			.Where(i => ids.Contains(i.Id))
 			.ToListAsync();
 		db.Item_cs.RemoveRange(entities);
 		await db.SaveChangesAsync();

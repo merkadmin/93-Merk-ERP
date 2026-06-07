@@ -24,7 +24,7 @@ public class MerkDbContext : DbContext
 		m.Entity<ItemType_s>().HasKey(e => e.ItemTypeId);
 		m.Entity<ItemGroup_cs>().HasKey(e => e.ItemGroupId);
 		m.Entity<UOM_cs>().HasKey(e => e.Id);
-		m.Entity<Item_cs>().HasKey(e => e.ItemId);
+		m.Entity<Item_cs>().HasKey(e => e.Id);
 		m.Entity<ItemUOMConversion_cs>().HasKey(e => e.Id);
 		m.Entity<UOMConversionFactor_cs>().HasKey(e => e.Id);
 		m.Entity<UOMConversionGroup_cs>().HasKey(e => e.Id);
@@ -51,6 +51,10 @@ public class MerkDbContext : DbContext
 			.HasOne(i => i.ItemType).WithMany(t => t.Items).HasForeignKey(i => i.ItemTypeId).OnDelete(DeleteBehavior.Restrict);
 		m.Entity<Item_cs>()
 			.HasOne(i => i.DefaultUOM).WithMany(u => u.DefaultForItems).HasForeignKey(i => i.DefaultUOMId).OnDelete(DeleteBehavior.Restrict);
+		m.Entity<Item_cs>()
+			.HasOne(i => i.DefaultPurchaseUOM).WithMany().HasForeignKey(i => i.DefaultPurchaseUOMId).OnDelete(DeleteBehavior.Restrict);
+		m.Entity<Item_cs>()
+			.HasOne(i => i.DefaultSellingUOM).WithMany().HasForeignKey(i => i.DefaultSellingUOMId).OnDelete(DeleteBehavior.Restrict);
 
 		m.Entity<ItemUOMConversion_cs>()
 			.HasOne(c => c.Item).WithMany(i => i.UOMConversions).HasForeignKey(c => c.ItemId).OnDelete(DeleteBehavior.Cascade);
@@ -79,8 +83,15 @@ public class MerkDbContext : DbContext
 			.IsUnique();
 
 		m.Entity<Item_cs>()
-			.HasIndex(i => i.ItemCode)
+			.HasIndex(i => i.InternalCode)
 			.IsUnique();
+
+		m.Entity<Item_cs>()
+			.Property(e => e.InternalCode).HasColumnType("nvarchar(50)");
+		m.Entity<Item_cs>()
+			.Property(e => e.Name_EN).HasColumnType("nvarchar(200)");
+		m.Entity<Item_cs>()
+			.Property(e => e.Name_AR).HasColumnType("nvarchar(200)");
 
 		m.Entity<UOM_cs>()
 			.Property(e => e.InternalCode).HasColumnType("nvarchar(50)");

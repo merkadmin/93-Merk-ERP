@@ -38,15 +38,15 @@
         </tr>
       </thead>
       <tbody>
-        @for (item of filteredItems; track item.itemId) {
-          <tr [class.table-active]="isSelected(item.itemId)">
+        @for (item of filteredItems; track item.id) {
+          <tr [class.table-active]="isSelected(item.id)">
             <td>
               <input type="checkbox" class="form-check-input"
-                [checked]="isSelected(item.itemId)"
-                (change)="toggleOne(item.itemId)">
+                [checked]="isSelected(item.id)"
+                (change)="toggleOne(item.id)">
             </td>
-            <td class="fw-semibold">{{ item.itemCode }}</td>
-            <td>{{ item.itemName }}</td>
+            <td class="fw-semibold">{{ item.internalCode }}</td>
+            <td>{{ itemName(item) }}</td>
             <td>{{ groupLabel(item.itemGroup) }}</td>
             <td>{{ item.itemType?.name ?? '—' }}</td>
             <td>{{ uomLabel(item.defaultUOM) }}</td>
@@ -76,7 +76,7 @@
                     <i class="ki-outline ki-heart fs-4"></i>
                   }
                 </button>
-                <button class="btn btn-icon btn-sm btn-light-primary" (click)="edit(item.itemId)"
+                <button class="btn btn-icon btn-sm btn-light-primary" (click)="edit(item.id)"
                   [title]="'common.edit' | translate">
                   <i class="ki-outline ki-pencil fs-4"></i>
                 </button>
@@ -91,7 +91,7 @@
                     {{ 'common.activate' | translate }}
                   </button>
                 }
-                <button class="btn btn-icon btn-sm btn-light-danger" (click)="delete(item.itemId)"
+                <button class="btn btn-icon btn-sm btn-light-danger" (click)="delete(item.id)"
                   [title]="'common.delete' | translate">
                   <i class="ki-outline ki-trash fs-4"></i>
                 </button>

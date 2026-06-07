@@ -13,13 +13,21 @@ interface ItemType  { itemTypeId: number;  name: string; }
 interface ItemUOM   { id: number; name_EN: string; name_AR?: string; }
 
 interface Item {
-  itemId: number;
-  itemCode: string;
-  itemName: string;
+  id: number;
+  internalCode: string;
+  name_EN: string;
+  name_AR?: string;
   itemGroupId: number;
   itemTypeId: number;
   defaultUOMId: number;
+  defaultPurchaseUOMId?: number;
+  acceptSelling: boolean;
+  defaultSellingUOMId?: number;
   description?: string;
+  openingStock?: number;
+  expirationDate?: string;
+  minOrderQuantity?: number;
+  safetyStock?: number;
   hasBatch: boolean;
   hasSerial: boolean;
   isActive: boolean;
@@ -27,6 +35,8 @@ interface Item {
   itemGroup?: ItemGroup;
   itemType?: ItemType;
   defaultUOM?: ItemUOM;
+  defaultPurchaseUOM?: ItemUOM;
+  defaultSellingUOM?: ItemUOM;
 }
 
 @Component({
@@ -59,6 +69,10 @@ export class ItemsComponent implements OnInit {
     return this.isRtl ? (g.name_AR || g.name_EN) : (g.name_EN || g.name_AR || '');
   }
 
+  itemName(item: Item): string {
+    return this.isRtl ? (item.name_AR || item.name_EN) : (item.name_EN || item.name_AR || '');
+  }
+
   get searchFields(): SearchField[] {
     const groupMap = new Map<number, string>();
     const typeMap  = new Map<number, string>();
@@ -70,27 +84,27 @@ export class ItemsComponent implements OnInit {
     const typeOpts  = [...typeMap.entries()].map(([value, label])  => ({ value, label })).sort((a, b) => a.label.localeCompare(b.label));
 
     return [
-      { key: 'itemCode',  label: this.translate.instant('items.code'),  type: 'text'   },
-      { key: 'itemName',  label: this.translate.instant('items.name'),  type: 'text'   },
-      { key: 'groupId',   label: this.translate.instant('items.group'), type: 'select', options: groupOpts },
-      { key: 'typeId',    label: this.translate.instant('items.type'),  type: 'select', options: typeOpts  },
+      { key: 'internalCode', label: this.translate.instant('items.code'),  type: 'text'   },
+      { key: 'name_EN',      label: this.translate.instant('items.name'),  type: 'text'   },
+      { key: 'groupId',      label: this.translate.instant('items.group'), type: 'select', options: groupOpts },
+      { key: 'typeId',       label: this.translate.instant('items.type'),  type: 'select', options: typeOpts  },
     ];
   }
 
   get sortedItems(): Item[] {
     return [...this.items()].sort((a, b) => {
       if (a.isFavorite !== b.isFavorite) return a.isFavorite ? -1 : 1;
-      return a.itemCode.localeCompare(b.itemCode);
+      return a.internalCode.localeCompare(b.internalCode);
     });
   }
 
   get filteredItems(): Item[] {
     const f = this.activeFilter();
     return this.sortedItems.filter(item => {
-      if (f['itemCode'] != null && !item.itemCode.toLowerCase().includes((f['itemCode'] as string).toLowerCase())) return false;
-      if (f['itemName'] != null && !item.itemName.toLowerCase().includes((f['itemName'] as string).toLowerCase())) return false;
-      if (f['groupId']  != null && item.itemGroupId !== f['groupId'])  return false;
-      if (f['typeId']   != null && item.itemTypeId  !== f['typeId'])   return false;
+      if (f['internalCode'] != null && !item.internalCode.toLowerCase().includes((f['internalCode'] as string).toLowerCase())) return false;
+      if (f['name_EN']      != null && !item.name_EN.toLowerCase().includes((f['name_EN'] as string).toLowerCase())) return false;
+      if (f['groupId']      != null && item.itemGroupId !== f['groupId'])  return false;
+      if (f['typeId']       != null && item.itemTypeId  !== f['typeId'])   return false;
       return true;
     });
   }
@@ -113,7 +127,7 @@ export class ItemsComponent implements OnInit {
 
   get isAllSelected() {
     const items = this.filteredItems;
-    return items.length > 0 && items.every(item => this.selectedIds().has(item.itemId));
+    return items.length > 0 && items.every(item => this.selectedIds().has(item.id));
   }
 
   get isIndeterminate() {
@@ -130,7 +144,7 @@ export class ItemsComponent implements OnInit {
     if (this.isAllSelected) {
       this.selectedIds.set(new Set());
     } else {
-      this.selectedIds.set(new Set(this.filteredItems.map(i => i.itemId)));
+      this.selectedIds.set(new Set(this.filteredItems.map(i => i.id)));
     }
   }
 
@@ -184,15 +198,15 @@ export class ItemsComponent implements OnInit {
   }
 
   toggleFavorite(item: Item) {
-    this.api.patch<Item>(`items/${item.itemId}/toggle-favorite`).subscribe(updated => {
-      this.items.update(list => list.map(x => x.itemId === updated.itemId
+    this.api.patch<Item>(`items/${item.id}/toggle-favorite`).subscribe(updated => {
+      this.items.update(list => list.map(x => x.id === updated.id
         ? { ...updated, itemGroup: x.itemGroup, itemType: x.itemType, defaultUOM: x.defaultUOM } : x));
     });
   }
 
   toggleActive(item: Item) {
-    this.api.patch<Item>(`items/${item.itemId}/toggle-active`).subscribe(updated => {
-      this.items.update(list => list.map(x => x.itemId === updated.itemId
+    this.api.patch<Item>(`items/${item.id}/toggle-active`).subscribe(updated => {
+      this.items.update(list => list.map(x => x.id === updated.id
         ? { ...updated, itemGroup: x.itemGroup, itemType: x.itemType, defaultUOM: x.defaultUOM } : x));
     });
   }

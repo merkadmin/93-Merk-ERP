@@ -4,7 +4,7 @@ import { NgFor, NgIf } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ApiService } from '../../core/api.service';
 
-interface Item      { itemId: number; itemCode: string; itemName: string; }
+interface Item      { id: number; internalCode: string; name_EN: string; name_AR?: string; }
 interface Warehouse { warehouseId: number; name: string; }
 
 interface MovementForm {

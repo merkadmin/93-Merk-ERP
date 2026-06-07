@@ -9,7 +9,7 @@
           <label class="form-label">{{ 'stock_movement.item' | translate }} <span class="text-danger">*</span></label>
           <select class="form-select" [(ngModel)]="form.itemId" name="itemId" required>
             <option [ngValue]="0">{{ 'stock_movement.select_item' | translate }}</option>
-            <option *ngFor="let i of items()" [ngValue]="i.itemId">{{ i.itemCode }} — {{ i.itemName }}</option>
+            <option *ngFor="let i of items()" [ngValue]="i.id">{{ i.internalCode }} — {{ i.name_EN }}</option>
           </select>
         </div>
 

@@ -15,7 +15,7 @@ public class StockController(MerkDbContext db, StockService stockService) : Cont
 		Ok(await db.WarehouseTransaction
 			.Include(b => b.Item)
 			.Include(b => b.Warehouse)
-			.OrderBy(b => b.Item.ItemCode)
+			.OrderBy(b => b.Item.InternalCode)
 			.ToListAsync());
 
 	[HttpGet("ledger")]

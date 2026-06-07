@@ -1,4 +1,18 @@
 <app-loading-spinner />
+
+@if (serverStatus.isOffline()) {
+  <div class="server-offline-overlay">
+    <div class="server-offline-card">
+      <i class="ki-outline ki-wifi-home fs-5x text-danger mb-6"></i>
+      <h2 class="fw-bold text-gray-800 mb-3">{{ 'common.server_offline_title' | translate }}</h2>
+      <p class="text-muted fs-5 mb-8">{{ 'common.server_offline_message' | translate }}</p>
+      <button class="btn btn-primary px-8" (click)="retry()">
+        <i class="ki-outline ki-arrows-circle fs-4 me-2"></i>
+        {{ 'common.retry' | translate }}
+      </button>
+    </div>
+  </div>
+}
 <div class="d-flex flex-column flex-root app-root" id="kt_app_root">
   <div class="app-page flex-column flex-column-fluid" id="kt_app_page">
 

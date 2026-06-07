@@ -67,7 +67,7 @@ export class UomConversionGroupsOperationComponent implements OnInit {
     const missing: string[] = [];
 
     if (!this.form.internalCode?.trim())
-      missing.push(this.translate.instant('uom_conversion_groups.internal_code'));
+      missing.push(this.translate.instant('common.internal_code'));
 
     if (!this.form.name_EN?.trim())
       missing.push(`${this.translate.instant('common.name')} (EN)`);
