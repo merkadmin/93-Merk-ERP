@@ -9,7 +9,7 @@ import { RegularOperationHeaderComponent } from '../../../shared/components/card
 import { RegularOperationActionsComponent } from '../../../shared/components/cards/regular-operation-actions/regular-operation-actions.component';
 import { CustomSelectInputComponent, SelectOption } from '../../../shared/components/custom-controls/custom-select-input/custom-select-input.component';
 
-interface ItemGroup { itemGroupId: number; name: string; }
+interface ItemGroup { itemGroupId: number; name_EN: string; name_AR?: string; }
 interface ItemType  { itemTypeId: number;  name: string; }
 interface ItemUOM   { id: number; name_EN: string; name_AR?: string; }
 
@@ -79,8 +79,12 @@ export class ItemsOperationComponent implements OnInit {
     return this.isRtl ? (uom.name_AR || uom.name_EN) : (uom.name_EN || uom.name_AR || '');
   }
 
+  groupLabel(g: ItemGroup): string {
+    return this.isRtl ? (g.name_AR || g.name_EN) : (g.name_EN || g.name_AR || '');
+  }
+
   get groupOptions(): SelectOption[] {
-    return this.groups().map(g => ({ value: g.itemGroupId, label: g.name }));
+    return this.groups().map(g => ({ value: g.itemGroupId, label: this.groupLabel(g) }));
   }
 
   get typeOptions(): SelectOption[] {
@@ -143,7 +147,7 @@ export class ItemsOperationComponent implements OnInit {
           this.savedRows.update(rows => [...rows, {
             itemCode:  this.form.itemCode  ?? '',
             itemName:  this.form.itemName  ?? '',
-            groupName: group?.name         ?? '—',
+            groupName: group ? this.groupLabel(group) : '—',
             typeName:  type?.name          ?? '—',
             uomName:   uom ? this.uomLabel(uom) : '—',
           }]);

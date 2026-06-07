@@ -47,7 +47,7 @@
             </td>
             <td class="fw-semibold">{{ item.itemCode }}</td>
             <td>{{ item.itemName }}</td>
-            <td>{{ item.itemGroup?.name ?? '—' }}</td>
+            <td>{{ groupLabel(item.itemGroup) }}</td>
             <td>{{ item.itemType?.name ?? '—' }}</td>
             <td>{{ uomLabel(item.defaultUOM) }}</td>
             <td>

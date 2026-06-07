@@ -8,7 +8,7 @@ import { ApiService } from '../../core/api.service';
 import { RegularListSearchActionsComponent, SearchField } from '../../shared/components/cards/regular-list-search-actions/regular-list-search-actions.component';
 import { RegularListHeaderWithActionsComponent } from '../../shared/components/cards/regular-list-header-with-actions/regular-list-header-with-actions.component';
 
-interface ItemGroup { itemGroupId: number; name: string; }
+interface ItemGroup { itemGroupId: number; name_EN: string; name_AR?: string; }
 interface ItemType  { itemTypeId: number;  name: string; }
 interface ItemUOM   { id: number; name_EN: string; name_AR?: string; }
 
@@ -54,11 +54,16 @@ export class ItemsComponent implements OnInit {
     return this.isRtl ? (uom.name_AR || uom.name_EN) : (uom.name_EN || uom.name_AR || '');
   }
 
+  groupLabel(g?: ItemGroup): string {
+    if (!g) return '—';
+    return this.isRtl ? (g.name_AR || g.name_EN) : (g.name_EN || g.name_AR || '');
+  }
+
   get searchFields(): SearchField[] {
     const groupMap = new Map<number, string>();
     const typeMap  = new Map<number, string>();
     for (const item of this.items()) {
-      if (item.itemGroup) groupMap.set(item.itemGroupId, item.itemGroup.name);
+      if (item.itemGroup) groupMap.set(item.itemGroupId, this.groupLabel(item.itemGroup));
       if (item.itemType)  typeMap.set(item.itemTypeId,  item.itemType.name);
     }
     const groupOpts = [...groupMap.entries()].map(([value, label]) => ({ value, label })).sort((a, b) => a.label.localeCompare(b.label));

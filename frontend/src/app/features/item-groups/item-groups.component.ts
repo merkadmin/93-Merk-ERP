@@ -10,9 +10,11 @@ import { RegularListHeaderWithActionsComponent } from '../../shared/components/c
 
 interface ItemGroup {
   itemGroupId: number;
-  name: string;
+  internalCode?: string;
+  name_EN: string;
+  name_AR?: string;
   parentItemGroupId: number | null;
-  isGroup: boolean;
+  isMain: boolean;
   isActive: boolean;
   isFavorite: boolean;
 }
@@ -37,28 +39,35 @@ export class ItemGroupsComponent implements OnInit {
   selectedIds  = signal<Set<number>>(new Set());
   activeFilter = signal<Record<string, string | number | null>>({});
 
+  nameLabel(g: ItemGroup): string {
+    return this.isRtl ? (g.name_AR || g.name_EN) : (g.name_EN || g.name_AR || '');
+  }
+
   parentName(id: number | null): string {
     if (id == null) return '—';
-    return this.groups().find(g => g.itemGroupId === id)?.name ?? '—';
+    const g = this.groups().find(x => x.itemGroupId === id);
+    return g ? this.nameLabel(g) : '—';
   }
 
   get searchFields(): SearchField[] {
     return [
-      { key: 'name', label: this.translate.instant('common.name'), type: 'text' },
+      { key: 'name_EN', label: this.translate.instant('common.name_en'), type: 'text' },
+      { key: 'name_AR', label: this.translate.instant('common.name_ar'), type: 'text' },
     ];
   }
 
   get sortedGroups(): ItemGroup[] {
     return [...this.groups()].sort((a, b) => {
       if (a.isFavorite !== b.isFavorite) return a.isFavorite ? -1 : 1;
-      return a.name.localeCompare(b.name);
+      return a.name_EN.localeCompare(b.name_EN);
     });
   }
 
   get filteredGroups(): ItemGroup[] {
     const f = this.activeFilter();
     return this.sortedGroups.filter(g => {
-      if (f['name'] != null && !g.name.toLowerCase().includes((f['name'] as string).toLowerCase())) return false;
+      if (f['name_EN'] != null && !g.name_EN.toLowerCase().includes((f['name_EN'] as string).toLowerCase())) return false;
+      if (f['name_AR'] != null && !(g.name_AR ?? '').toLowerCase().includes((f['name_AR'] as string).toLowerCase())) return false;
       return true;
     });
   }
@@ -136,9 +145,14 @@ export class ItemGroupsComponent implements OnInit {
   edit(id: number) { this.router.navigate(['/stock/item-groups/operation', id]); }
 
   delete(id: number) {
+    const childCount = this.groups().filter(g => g.parentItemGroupId === id).length;
+    const text = childCount > 0
+      ? this.translate.instant('item_groups.delete_has_children_confirm', { count: childCount })
+      : this.translate.instant('item_groups.delete_confirm');
+
     Swal.fire({
       title: this.translate.instant('common.swal_delete_title'),
-      text:  this.translate.instant('item_groups.delete_confirm'),
+      text,
       icon:  'warning',
       showCancelButton:  true,
       confirmButtonText: this.translate.instant('common.delete'),

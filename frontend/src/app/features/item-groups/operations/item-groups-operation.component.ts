@@ -1,3 +1,4 @@
+import { DOCUMENT } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -10,17 +11,21 @@ import { CustomSelectInputComponent, SelectOption } from '../../../shared/compon
 
 interface ItemGroup {
   itemGroupId: number;
-  name: string;
+  internalCode?: string;
+  name_EN: string;
+  name_AR?: string;
   parentItemGroupId: number | null;
-  isGroup: boolean;
+  isMain: boolean;
   isActive: boolean;
   isFavorite: boolean;
 }
 
 interface SavedRow {
-  name: string;
+  internalCode: string;
+  name_EN: string;
+  name_AR: string;
   parentName: string;
-  isGroup: boolean;
+  isMain: boolean;
 }
 
 @Component({
@@ -36,6 +41,9 @@ export class ItemGroupsOperationComponent implements OnInit {
   private route     = inject(ActivatedRoute);
   private translate = inject(TranslateService);
   private toastr    = inject(ToastrService);
+  private doc       = inject(DOCUMENT);
+
+  get isRtl() { return this.doc.documentElement.dir === 'rtl'; }
 
   isEdit    = signal(false);
   saving    = signal(false);
@@ -55,22 +63,26 @@ export class ItemGroupsOperationComponent implements OnInit {
     }
   }
 
+  groupLabel(g: ItemGroup): string {
+    return this.isRtl ? (g.name_AR || g.name_EN) : (g.name_EN || g.name_AR || '');
+  }
+
   get parentGroupOptions(): SelectOption[] {
     const filtered = this.isEdit()
       ? this.allGroups().filter(g => g.itemGroupId !== this.form.itemGroupId)
       : this.allGroups();
-    return filtered.map(g => ({ value: g.itemGroupId, label: g.name }));
+    return filtered.map(g => ({ value: g.itemGroupId, label: this.groupLabel(g) }));
   }
 
   private blank(): Partial<ItemGroup> {
-    return { itemGroupId: 0, name: '', parentItemGroupId: null, isGroup: false, isActive: true, isFavorite: false };
+    return { itemGroupId: 0, internalCode: '', name_EN: '', name_AR: '', parentItemGroupId: null, isMain: false, isActive: true, isFavorite: false };
   }
 
   private validate(): boolean {
     const missing: string[] = [];
 
-    if (!this.form.name?.trim())
-      missing.push(this.translate.instant('common.name'));
+    if (!this.form.name_EN?.trim())
+      missing.push(this.translate.instant('common.name_en'));
 
     if (missing.length) {
       this.toastr.error(
@@ -98,9 +110,11 @@ export class ItemGroupsOperationComponent implements OnInit {
         if (andNew) {
           const parent = this.allGroups().find(g => g.itemGroupId === this.form.parentItemGroupId);
           this.savedRows.update(rows => [...rows, {
-            name:       this.form.name ?? '',
-            parentName: parent?.name ?? '—',
-            isGroup:    this.form.isGroup ?? false,
+            internalCode: this.form.internalCode ?? '',
+            name_EN:      this.form.name_EN ?? '',
+            name_AR:      this.form.name_AR ?? '',
+            parentName:   parent ? this.groupLabel(parent) : '—',
+            isMain:       this.form.isMain ?? false,
           }]);
           this.form = this.blank();
           this.isEdit.set(false);

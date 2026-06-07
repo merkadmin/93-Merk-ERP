@@ -14,16 +14,18 @@ public class ItemGroupsController(MerkDbContext db, ExcelService excel) : Contro
 {
 	[HttpGet]
 	public async Task<IActionResult> GetAll() =>
-		Ok(await db.ItemGroup_cs.OrderBy(g => g.Name).ToListAsync());
+		Ok(await db.ItemGroup_cs.OrderBy(g => g.Name_EN).ToListAsync());
 
 	[HttpGet("export-template")]
 	public IActionResult ExportTemplate()
 	{
 		var columns = new (string Label, int Width)[]
 		{
-			("Name",              28),
+			("Internal Code",     18),
+			("Name EN",           28),
+			("Name AR",           28),
 			("Parent Group Name", 28),
-			("Is Group (yes/no)", 20),
+			("Is Main (yes/no)",  20),
 		};
 
 		return File(excel.BuildTemplate(columns),
@@ -44,31 +46,36 @@ public class ItemGroupsController(MerkDbContext db, ExcelService excel) : Contro
 
 		for (int i = 0; i < rows.Count; i++)
 		{
-			var row        = rows[i];
-			var rowNum     = i + 2;
-			var name       = row.Length > 0 ? row[0] : "";
-			var parentName = row.Length > 1 ? row[1] : "";
-			var isGroupStr = row.Length > 2 ? row[2] : "";
+			var row          = rows[i];
+			var rowNum       = i + 2;
+			var internalCode = row.Length > 0 ? row[0] : "";
+			var nameEN       = row.Length > 1 ? row[1] : "";
+			var nameAR       = row.Length > 2 ? row[2] : "";
+			var parentName   = row.Length > 3 ? row[3] : "";
+			var isMainStr    = row.Length > 4 ? row[4] : "";
 
-			if (string.IsNullOrWhiteSpace(name)) continue;
+			if (string.IsNullOrWhiteSpace(nameEN)) continue;
 
 			long? parentId = null;
 			if (!string.IsNullOrWhiteSpace(parentName))
 			{
 				var parent = existing.FirstOrDefault(g =>
-					string.Equals(g.Name, parentName, StringComparison.OrdinalIgnoreCase));
+					string.Equals(g.Name_EN, parentName, StringComparison.OrdinalIgnoreCase) ||
+					string.Equals(g.Name_AR, parentName, StringComparison.OrdinalIgnoreCase));
 				if (parent is null)
 				{ errors.Add($"Row {rowNum}: Parent group \"{parentName}\" not found."); continue; }
 				parentId = parent.ItemGroupId;
 			}
 
-			var isGroup = isGroupStr.Trim().ToLowerInvariant() is "yes" or "true" or "1";
+			var isMain = isMainStr.Trim().ToLowerInvariant() is "yes" or "true" or "1";
 
 			db.ItemGroup_cs.Add(new ItemGroup_cs
 			{
-				Name              = name,
+				InternalCode      = string.IsNullOrWhiteSpace(internalCode) ? null : internalCode,
+				Name_EN           = nameEN,
+				Name_AR           = string.IsNullOrWhiteSpace(nameAR) ? null : nameAR,
 				ParentItemGroupId = parentId,
-				IsGroup           = isGroup,
+				IsMain            = isMain,
 				IsActive          = true,
 				InsertedDate      = DateTime.UtcNow,
 			});
@@ -98,9 +105,11 @@ public class ItemGroupsController(MerkDbContext db, ExcelService excel) : Contro
 		if (id != e.ItemGroupId) return BadRequest();
 		var existing = await db.ItemGroup_cs.FindAsync(id);
 		if (existing is null) return NotFound();
-		existing.Name              = e.Name;
+		existing.InternalCode      = e.InternalCode;
+		existing.Name_EN           = e.Name_EN;
+		existing.Name_AR           = e.Name_AR;
 		existing.ParentItemGroupId = e.ParentItemGroupId;
-		existing.IsGroup           = e.IsGroup;
+		existing.IsMain            = e.IsMain;
 		existing.IsActive          = e.IsActive;
 		existing.IsFavorite        = e.IsFavorite;
 		await db.SaveChangesAsync();
@@ -112,6 +121,12 @@ public class ItemGroupsController(MerkDbContext db, ExcelService excel) : Contro
 	{
 		var e = await db.ItemGroup_cs.FindAsync(id);
 		if (e is null) return NotFound();
+
+		var children = await db.ItemGroup_cs
+			.Where(g => g.ParentItemGroupId == id)
+			.ToListAsync();
+		children.ForEach(c => c.ParentItemGroupId = null);
+
 		db.ItemGroup_cs.Remove(e);
 		await db.SaveChangesAsync();
 		return NoContent();

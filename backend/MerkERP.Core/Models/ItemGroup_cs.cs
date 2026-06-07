@@ -3,9 +3,11 @@ namespace MerkERP.Core.Models;
 public class ItemGroup_cs
 {
 	public long ItemGroupId { get; set; }
-	public string Name { get; set; } = string.Empty;
+	public string? InternalCode { get; set; }
+	public string Name_EN { get; set; } = string.Empty;
+	public string? Name_AR { get; set; }
 	public long? ParentItemGroupId { get; set; }
-	public bool IsGroup { get; set; }
+	public bool IsMain { get; set; }
 	public bool IsActive { get; set; } = true;
 	public bool IsFavorite { get; set; } = false;
 	public long? InsertedBy { get; set; }

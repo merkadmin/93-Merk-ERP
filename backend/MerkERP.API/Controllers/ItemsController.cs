@@ -24,7 +24,7 @@ public class ItemsController(MerkDbContext db, ExcelService excel) : ControllerB
 	[HttpGet("export-template")]
 	public async Task<IActionResult> ExportTemplate()
 	{
-		var groups = await db.ItemGroup_cs.OrderBy(g => g.Name).ToListAsync();
+		var groups = await db.ItemGroup_cs.OrderBy(g => g.Name_EN).ToListAsync();
 		var types  = await db.ItemType_s.OrderBy(t => t.Name).ToListAsync();
 		var uoms   = await db.UOM_cs.OrderBy(u => u.Name_EN).ToListAsync();
 
@@ -43,11 +43,12 @@ public class ItemsController(MerkDbContext db, ExcelService excel) : ControllerB
 		var referenceSheets = new ReferenceSheet[]
 		{
 			new("ItemGroups",
-				["Name", "Parent Group"],
+				["Name EN", "Name AR", "Parent Group"],
 				groups.Select(g => new[]
 				{
-					g.Name,
-					groups.FirstOrDefault(p => p.ItemGroupId == g.ParentItemGroupId)?.Name ?? "",
+					g.Name_EN,
+					g.Name_AR ?? "",
+					groups.FirstOrDefault(p => p.ItemGroupId == g.ParentItemGroupId)?.Name_EN ?? "",
 				})),
 
 			new("ItemTypes",
@@ -100,7 +101,8 @@ public class ItemsController(MerkDbContext db, ExcelService excel) : ControllerB
 			{ errors.Add($"Row {rowNum}: Item Name is required."); continue; }
 
 			var group = groups.FirstOrDefault(g =>
-				string.Equals(g.Name, groupName, StringComparison.OrdinalIgnoreCase));
+				string.Equals(g.Name_EN, groupName, StringComparison.OrdinalIgnoreCase) ||
+				string.Equals(g.Name_AR, groupName, StringComparison.OrdinalIgnoreCase));
 			if (group is null && !string.IsNullOrWhiteSpace(groupName))
 			{ errors.Add($"Row {rowNum}: Item Group \"{groupName}\" not found."); continue; }
 

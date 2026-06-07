@@ -4,6 +4,7 @@ using MerkERP.DAL.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MerkERP.DAL.Migrations
 {
     [DbContext(typeof(MerkDbContext))]
-    partial class MerkDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260607022448_RenameIsGroupToIsMain")]
+    partial class RenameIsGroupToIsMain
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -36,9 +39,6 @@ namespace MerkERP.DAL.Migrations
                     b.Property<DateTime?>("InsertedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("InternalCode")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
@@ -48,10 +48,7 @@ namespace MerkERP.DAL.Migrations
                     b.Property<bool>("IsMain")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Name_AR")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name_EN")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

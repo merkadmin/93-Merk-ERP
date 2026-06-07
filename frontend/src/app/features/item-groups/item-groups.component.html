@@ -27,9 +27,11 @@
               [indeterminate]="isIndeterminate"
               (change)="toggleAll()">
           </th>
-          <th>{{ 'common.name' | translate }}</th>
+          <th>{{ 'item_groups.internal_code' | translate }}</th>
+          <th>{{ 'common.name_en' | translate }}</th>
+          <th>{{ 'common.name_ar' | translate }}</th>
           <th>{{ 'item_groups.parent_group' | translate }}</th>
-          <th>{{ 'common.is_group' | translate }}</th>
+          <th>{{ 'common.is_main' | translate }}</th>
           <th [class.text-end]="!isRtl" [class.text-start]="isRtl">{{ 'common.actions' | translate }}</th>
         </tr>
       </thead>
@@ -41,13 +43,15 @@
                 [checked]="isSelected(g.itemGroupId)"
                 (change)="toggleOne(g.itemGroupId)">
             </td>
-            <td class="fw-semibold">{{ g.name }}</td>
+            <td class="text-muted">{{ g.internalCode ?? '—' }}</td>
+            <td class="fw-semibold">{{ g.name_EN }}</td>
+            <td>{{ g.name_AR ?? '—' }}</td>
             <td>{{ parentName(g.parentItemGroupId) }}</td>
             <td>
               <span class="badge"
-                [class.badge-light-info]="g.isGroup"
-                [class.badge-light-secondary]="!g.isGroup">
-                {{ (g.isGroup ? 'common.yes' : 'common.no') | translate }}
+                [class.badge-light-info]="g.isMain"
+                [class.badge-light-secondary]="!g.isMain">
+                {{ (g.isMain ? 'common.yes' : 'common.no') | translate }}
               </span>
             </td>
             <td class="text-nowrap" [class.text-end]="!isRtl" [class.text-start]="isRtl">
@@ -86,7 +90,7 @@
           </tr>
         } @empty {
           <tr>
-            <td colspan="5" class="text-center text-muted py-6">—</td>
+            <td colspan="7" class="text-center text-muted py-6">—</td>
           </tr>
         }
       </tbody>
