@@ -287,3 +287,11 @@ backend/.vs/MerkERP/FileContentIndex/1d994bf7-7252-49d3-bf16-dd4b0f7de3c8.vsidx
 backend/.vs/MerkERP/FileContentIndex/06a3efb1-b68c-4cdf-9bf4-748f454a31c9.vsidx
 backend/.vs/MerkERP/FileContentIndex/877326f3-0614-442e-be3e-c084d0a15471.vsidx
 *.vsidx
+backend/MerkERP.API/bin/Debug/net9.0/ClosedXML.dll
+backend/MerkERP.API/bin/Debug/net9.0/ClosedXML.Parser.dll
+backend/MerkERP.API/bin/Debug/net9.0/DocumentFormat.OpenXml.dll
+backend/MerkERP.API/bin/Debug/net9.0/DocumentFormat.OpenXml.Framework.dll
+backend/MerkERP.API/bin/Debug/net9.0/ExcelNumberFormat.dll
+backend/MerkERP.API/bin/Debug/net9.0/RBush.dll
+backend/MerkERP.API/bin/Debug/net9.0/SixLabors.Fonts.dll
+backend/MerkERP.API/bin/Debug/net9.0/System.IO.Packaging.dll

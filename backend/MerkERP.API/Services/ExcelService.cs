@@ -47,7 +47,8 @@ public class ExcelService
 				for (int c = 0; c < refSheet.Headers.Length; c++)
 					wsRef.Cell(1, c + 1).Value = refSheet.Headers[c];
 				ApplyHeaderStyle(wsRef.Range(1, 1, 1, refSheet.Headers.Length));
-				wsRef.Columns(1, refSheet.Headers.Length).ForEach(col => col.Width = 28);
+				foreach (var col in wsRef.Columns(1, refSheet.Headers.Length))
+					col.Width = 28;
 
 				int row = 2;
 				foreach (var r in refSheet.Rows)
