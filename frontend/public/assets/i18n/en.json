@@ -51,6 +51,8 @@
   },
   "items": {
     "title": "Items",
+    "add_title": "New Item",
+    "edit_title": "Edit Item",
     "add": "Add Item",
     "code": "Code",
     "name": "Name",
@@ -61,12 +63,32 @@
     "batch": "Batch",
     "serial": "Serial",
     "description": "Description",
-    "delete_confirm": "Delete this item?"
+    "delete_confirm": "Delete this item?",
+    "delete_selected_confirm": "Delete {{count}} selected item(s)?",
+    "saved_rows_title_single": "record saved in this session",
+    "saved_rows_title": "records saved in this session"
   },
   "item_groups": {
     "title": "Item Groups",
+    "add_title": "New Item Group",
+    "edit_title": "Edit Item Group",
     "parent_group": "Parent Group",
-    "delete_confirm": "Delete this group?"
+    "delete_confirm": "Delete this group?",
+    "delete_selected_confirm": "Delete {{count}} selected group(s)?",
+    "saved_rows_title_single": "record saved in this session",
+    "saved_rows_title": "records saved in this session"
+  },
+  "uoms": {
+    "title": "Units of Measure",
+    "add_title": "New Unit of Measure",
+    "edit_title": "Edit Unit of Measure",
+    "internal_code": "Internal Code",
+    "whole_number": "Whole Number",
+    "whole_number_only": "Whole Number Only",
+    "delete_confirm": "Delete this UOM?",
+    "delete_selected_confirm": "Delete {{count}} selected UOM(s)?",
+    "saved_rows_title_single": "record saved in this session",
+    "saved_rows_title": "records saved in this session"
   },
   "uom_conversion_groups": {
     "add_title": "New UOM Conversion Group",
@@ -89,16 +111,6 @@
     "saved_rows_title": "records saved in this session",
     "delete_confirm": "Delete this conversion factor?",
     "delete_selected_confirm": "Delete {{count}} selected factor(s)?"
-  },
-  "uoms": {
-    "title": "Units of Measure",
-    "add_title": "New Unit of Measure",
-    "edit_title": "Edit Unit of Measure",
-    "internal_code": "Internal Code",
-    "whole_number": "Whole Number",
-    "whole_number_only": "Whole Number Only",
-    "delete_confirm": "Delete this UOM?",
-    "delete_selected_confirm": "Delete {{count}} selected UOM(s)?"
   },
   "warehouses": {
     "title": "Warehouses",

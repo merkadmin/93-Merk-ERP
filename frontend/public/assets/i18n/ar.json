@@ -31,7 +31,7 @@
     "add": "إضافة",
     "name": "الاسم",
     "active": "نشط",
-    "is_group": "مجموعة",
+    "is_group": "هل هي مجموعة",
     "parent": "الأصل",
     "select": "— اختر —",
     "none": "— لا شيء —",
@@ -51,6 +51,8 @@
   },
   "items": {
     "title": "الأصناف",
+    "add_title": "صنف جديد",
+    "edit_title": "تعديل الصنف",
     "add": "إضافة صنف",
     "code": "الكود",
     "name": "الاسم",
@@ -61,12 +63,32 @@
     "batch": "دفعة",
     "serial": "تسلسلي",
     "description": "الوصف",
-    "delete_confirm": "حذف هذا الصنف؟"
+    "delete_confirm": "حذف هذا الصنف؟",
+    "delete_selected_confirm": "حذف {{count}} صنف محدد؟",
+    "saved_rows_title_single": "سجل تم حفظه في هذه الجلسة",
+    "saved_rows_title": "سجلات تم حفظها في هذه الجلسة"
   },
   "item_groups": {
     "title": "مجموعات الأصناف",
+    "add_title": "مجموعة صنف جديدة",
+    "edit_title": "تعديل مجموعة الصنف",
     "parent_group": "المجموعة الأصل",
-    "delete_confirm": "حذف هذه المجموعة؟"
+    "delete_confirm": "حذف هذه المجموعة؟",
+    "delete_selected_confirm": "حذف {{count}} مجموعة محددة؟",
+    "saved_rows_title_single": "سجل تم حفظه في هذه الجلسة",
+    "saved_rows_title": "سجلات تم حفظها في هذه الجلسة"
+  },
+  "uoms": {
+    "title": "وحدات القياس",
+    "add_title": "وحدة قياس جديدة",
+    "edit_title": "تعديل وحدة القياس",
+    "internal_code": "الكود الداخلي",
+    "whole_number": "عدد صحيح",
+    "whole_number_only": "عدد صحيح فقط",
+    "delete_confirm": "حذف وحدة القياس؟",
+    "delete_selected_confirm": "حذف {{count}} وحدة قياس محددة؟",
+    "saved_rows_title_single": "سجل تم حفظه في هذه الجلسة",
+    "saved_rows_title": "سجلات تم حفظها في هذه الجلسة"
   },
   "uom_conversion_groups": {
     "add_title": "مجموعة تحويل وحدة قياس جديدة",
@@ -89,16 +111,6 @@
     "saved_rows_title": "سجلات تم حفظها في هذه الجلسة",
     "delete_confirm": "حذف معامل التحويل هذا؟",
     "delete_selected_confirm": "حذف {{count}} معامل محدد؟"
-  },
-  "uoms": {
-    "title": "وحدات القياس",
-    "add_title": "وحدة قياس جديدة",
-    "edit_title": "تعديل وحدة القياس",
-    "internal_code": "الكود الداخلي",
-    "whole_number": "عدد صحيح",
-    "whole_number_only": "عدد صحيح فقط",
-    "delete_confirm": "حذف وحدة القياس؟",
-    "delete_selected_confirm": "حذف {{count}} وحدة قياس محددة؟"
   },
   "warehouses": {
     "title": "المستودعات",

@@ -1,0 +1,88 @@
+<app-regular-operation-header
+  [title]="(isEdit() ? 'item_groups.edit_title' : 'item_groups.add_title') | translate"
+  icon="ki-outline ki-category"
+  color="success"
+  (cancel)="back()" />
+
+<!-- Form card -->
+<div class="card">
+  <div class="card-body">
+    <div class="row g-4">
+
+      <div class="col-4">
+        <label class="form-label required">{{ 'common.name' | translate }}</label>
+        <input class="form-control" [(ngModel)]="form.name" name="name"
+          [placeholder]="'common.name' | translate">
+      </div>
+
+      <div class="col-4">
+        <label class="form-label">{{ 'item_groups.parent_group' | translate }}</label>
+        <app-custom-select-input
+          [options]="parentGroupOptions"
+          [value]="form.parentItemGroupId ?? null"
+          (valueChange)="form.parentItemGroupId = $event !== null ? +$event : null"
+          [placeholder]="'common.none' | translate"
+          [searchPlaceholder]="'common.search' | translate" />
+      </div>
+
+      <div class="col-4 d-flex align-items-end pb-2 gap-6">
+        <div class="form-check form-check-custom form-check-solid">
+          <input class="form-check-input" type="checkbox"
+            [(ngModel)]="form.isGroup" name="isGroup" id="isGroup">
+          <label class="form-check-label fw-semibold" for="isGroup">
+            {{ 'common.is_group' | translate }}
+          </label>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <app-regular-operation-actions
+    [saving]="saving()"
+    [savingNew]="savingNew()"
+    (save)="save()"
+    (saveAndNew)="saveAndNew()"
+    (reset)="resetForm()" />
+</div>
+
+<!-- Saved rows -->
+@if (savedRows().length > 0) {
+  <div class="card mt-6">
+    <div class="card-header min-h-50px">
+      <h3 class="card-title fs-6 fw-bold text-success">
+        <i class="ki-outline ki-check-circle fs-4 text-success me-2"></i>
+        {{ savedRows().length }}
+        {{ (savedRows().length === 1 ? 'item_groups.saved_rows_title_single' : 'item_groups.saved_rows_title') | translate }}
+      </h3>
+    </div>
+    <div class="card-body p-0">
+      <table class="table table-row-dashed table-row-gray-300 align-middle gs-4 gy-2 mb-0">
+        <thead>
+          <tr class="fw-bold text-success bg-light-success fs-7">
+            <th class="w-40px">#</th>
+            <th>{{ 'common.name' | translate }}</th>
+            <th>{{ 'item_groups.parent_group' | translate }}</th>
+            <th>{{ 'common.is_group' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of savedRows(); track $index) {
+            <tr>
+              <td class="text-muted">{{ $index + 1 }}</td>
+              <td class="fw-semibold">{{ row.name }}</td>
+              <td>{{ row.parentName }}</td>
+              <td>
+                <span class="badge"
+                  [class.badge-light-info]="row.isGroup"
+                  [class.badge-light-secondary]="!row.isGroup">
+                  {{ (row.isGroup ? 'common.yes' : 'common.no') | translate }}
+                </span>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+}

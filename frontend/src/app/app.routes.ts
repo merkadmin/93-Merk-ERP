@@ -3,8 +3,13 @@ import { Routes } from '@angular/router';
 export const routes: Routes = [
   { path: '', redirectTo: 'stock/items', pathMatch: 'full' },
 
-  { path: 'stock/items',       loadComponent: () => import('./features/items/items.component').then(m => m.ItemsComponent) },
-  { path: 'stock/item-groups', loadComponent: () => import('./features/item-groups/item-groups.component').then(m => m.ItemGroupsComponent) },
+  { path: 'stock/items',            loadComponent: () => import('./features/items/items.component').then(m => m.ItemsComponent) },
+  { path: 'stock/items/operation',  loadComponent: () => import('./features/items/operations/items-operation.component').then(m => m.ItemsOperationComponent) },
+  { path: 'stock/items/operation/:id', loadComponent: () => import('./features/items/operations/items-operation.component').then(m => m.ItemsOperationComponent) },
+
+  { path: 'stock/item-groups',             loadComponent: () => import('./features/item-groups/item-groups.component').then(m => m.ItemGroupsComponent) },
+  { path: 'stock/item-groups/operation',   loadComponent: () => import('./features/item-groups/operations/item-groups-operation.component').then(m => m.ItemGroupsOperationComponent) },
+  { path: 'stock/item-groups/operation/:id', loadComponent: () => import('./features/item-groups/operations/item-groups-operation.component').then(m => m.ItemGroupsOperationComponent) },
 
   { path: 'stock/uoms',                loadComponent: () => import('./features/uoms/uoms.component').then(m => m.UomsComponent) },
   { path: 'stock/uoms/operation',      loadComponent: () => import('./features/uoms/operations/uoms-operation.component').then(m => m.UomsOperationComponent) },

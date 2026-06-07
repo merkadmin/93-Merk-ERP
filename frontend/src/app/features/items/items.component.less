@@ -3,6 +3,14 @@
 
   .table {
     td, th { vertical-align: middle; }
+
+    tbody tr {
+      transition: background-color 0.15s ease;
+
+      &:hover td {
+        background-color: rgba(var(--bs-primary-rgb), 0.06) !important;
+      }
+    }
   }
 
   .badge { font-size: .75rem; }

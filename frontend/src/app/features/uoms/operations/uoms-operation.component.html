@@ -47,3 +47,46 @@
     (saveAndNew)="saveAndNew()"
     (reset)="resetForm()" />
 </div>
+
+<!-- Saved rows (visible only after at least one Save & New) -->
+@if (savedRows().length > 0) {
+  <div class="card mt-6">
+    <div class="card-header min-h-50px">
+      <h3 class="card-title fs-6 fw-bold text-success">
+        <i class="ki-outline ki-check-circle fs-4 text-success me-2"></i>
+        {{ savedRows().length }}
+        {{ (savedRows().length === 1 ? 'uoms.saved_rows_title_single' : 'uoms.saved_rows_title') | translate }}
+      </h3>
+    </div>
+    <div class="card-body p-0">
+      <table class="table table-row-dashed table-row-gray-300 align-middle gs-4 gy-2 mb-0">
+        <thead>
+          <tr class="fw-bold text-success bg-light-success fs-7">
+            <th class="w-40px">#</th>
+            <th>{{ 'uoms.internal_code' | translate }}</th>
+            <th>{{ 'common.name' | translate }} (EN)</th>
+            <th>{{ 'common.name' | translate }} (AR)</th>
+            <th>{{ 'uoms.whole_number' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of savedRows(); track $index) {
+            <tr>
+              <td class="text-muted">{{ $index + 1 }}</td>
+              <td class="fw-semibold">{{ row.internalCode }}</td>
+              <td>{{ row.name_EN }}</td>
+              <td>{{ row.name_AR }}</td>
+              <td>
+                <span class="badge"
+                  [class.badge-light-info]="row.mustBeWholeNumber"
+                  [class.badge-light-secondary]="!row.mustBeWholeNumber">
+                  {{ (row.mustBeWholeNumber ? 'common.yes' : 'common.no') | translate }}
+                </span>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+}

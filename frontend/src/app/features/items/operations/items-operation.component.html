@@ -1,0 +1,124 @@
+<app-regular-operation-header
+  [title]="(isEdit() ? 'items.edit_title' : 'items.add_title') | translate"
+  icon="ki-outline ki-package"
+  color="success"
+  (cancel)="back()" />
+
+<!-- Form card -->
+<div class="card">
+  <div class="card-body">
+
+    <!-- Row 1: Code · Name · Group · Type -->
+    <div class="row g-4 mb-4">
+      <div class="col-2">
+        <label class="form-label required">{{ 'items.code' | translate }}</label>
+        <input class="form-control" [(ngModel)]="form.itemCode" name="itemCode"
+          [placeholder]="'items.code' | translate">
+      </div>
+      <div class="col-4">
+        <label class="form-label required">{{ 'items.name' | translate }}</label>
+        <input class="form-control" [(ngModel)]="form.itemName" name="itemName"
+          [placeholder]="'items.name' | translate">
+      </div>
+      <div class="col-3">
+        <label class="form-label required">{{ 'items.group' | translate }}</label>
+        <app-custom-select-input
+          [options]="groupOptions"
+          [value]="form.itemGroupId || null"
+          (valueChange)="form.itemGroupId = +($event ?? 0)"
+          [placeholder]="'common.select' | translate"
+          [searchPlaceholder]="'common.search' | translate" />
+      </div>
+      <div class="col-3">
+        <label class="form-label required">{{ 'items.type' | translate }}</label>
+        <app-custom-select-input
+          [options]="typeOptions"
+          [value]="form.itemTypeId || null"
+          (valueChange)="form.itemTypeId = +($event ?? 0)"
+          [placeholder]="'common.select' | translate"
+          [searchPlaceholder]="'common.search' | translate" />
+      </div>
+    </div>
+
+    <!-- Row 2: Default UOM · Description · Flags -->
+    <div class="row g-4">
+      <div class="col-3">
+        <label class="form-label required">{{ 'items.default_uom' | translate }}</label>
+        <app-custom-select-input
+          [options]="uomOptions"
+          [value]="form.defaultUOMId || null"
+          (valueChange)="form.defaultUOMId = +($event ?? 0)"
+          [placeholder]="'common.select' | translate"
+          [searchPlaceholder]="'common.search' | translate" />
+      </div>
+      <div class="col-5">
+        <label class="form-label">{{ 'items.description' | translate }}</label>
+        <input class="form-control" [(ngModel)]="form.description" name="description"
+          [placeholder]="'items.description' | translate">
+      </div>
+      <div class="col-4 d-flex align-items-end pb-2 gap-6 flex-wrap">
+        <div class="form-check form-check-custom form-check-solid">
+          <input class="form-check-input" type="checkbox"
+            [(ngModel)]="form.hasBatch" name="hasBatch" id="hasBatch">
+          <label class="form-check-label fw-semibold" for="hasBatch">
+            {{ 'items.batch' | translate }}
+          </label>
+        </div>
+        <div class="form-check form-check-custom form-check-solid">
+          <input class="form-check-input" type="checkbox"
+            [(ngModel)]="form.hasSerial" name="hasSerial" id="hasSerial">
+          <label class="form-check-label fw-semibold" for="hasSerial">
+            {{ 'items.serial' | translate }}
+          </label>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <app-regular-operation-actions
+    [saving]="saving()"
+    [savingNew]="savingNew()"
+    (save)="save()"
+    (saveAndNew)="saveAndNew()"
+    (reset)="resetForm()" />
+</div>
+
+<!-- Saved rows -->
+@if (savedRows().length > 0) {
+  <div class="card mt-6">
+    <div class="card-header min-h-50px">
+      <h3 class="card-title fs-6 fw-bold text-success">
+        <i class="ki-outline ki-check-circle fs-4 text-success me-2"></i>
+        {{ savedRows().length }}
+        {{ (savedRows().length === 1 ? 'items.saved_rows_title_single' : 'items.saved_rows_title') | translate }}
+      </h3>
+    </div>
+    <div class="card-body p-0">
+      <table class="table table-row-dashed table-row-gray-300 align-middle gs-4 gy-2 mb-0">
+        <thead>
+          <tr class="fw-bold text-success bg-light-success fs-7">
+            <th class="w-40px">#</th>
+            <th>{{ 'items.code' | translate }}</th>
+            <th>{{ 'items.name' | translate }}</th>
+            <th>{{ 'items.group' | translate }}</th>
+            <th>{{ 'items.type' | translate }}</th>
+            <th>{{ 'items.default_uom' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of savedRows(); track $index) {
+            <tr>
+              <td class="text-muted">{{ $index + 1 }}</td>
+              <td class="fw-semibold">{{ row.itemCode }}</td>
+              <td>{{ row.itemName }}</td>
+              <td>{{ row.groupName }}</td>
+              <td>{{ row.typeName }}</td>
+              <td>{{ row.uomName }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+}

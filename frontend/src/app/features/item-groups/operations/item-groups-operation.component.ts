@@ -6,32 +6,31 @@ import { ToastrService } from 'ngx-toastr';
 import { ApiService } from '../../../core/api.service';
 import { RegularOperationHeaderComponent } from '../../../shared/components/cards/regular-operation-header/regular-operation-header.component';
 import { RegularOperationActionsComponent } from '../../../shared/components/cards/regular-operation-actions/regular-operation-actions.component';
+import { CustomSelectInputComponent, SelectOption } from '../../../shared/components/custom-controls/custom-select-input/custom-select-input.component';
 
-interface UOM {
-  id: number;
-  internalCode: string;
-  name_EN: string;
-  name_AR: string;
-  mustBeWholeNumber: boolean;
+interface ItemGroup {
+  itemGroupId: number;
+  name: string;
+  parentItemGroupId: number | null;
+  isGroup: boolean;
   isActive: boolean;
   isFavorite: boolean;
 }
 
 interface SavedRow {
-  internalCode: string;
-  name_EN: string;
-  name_AR: string;
-  mustBeWholeNumber: boolean;
+  name: string;
+  parentName: string;
+  isGroup: boolean;
 }
 
 @Component({
-  selector: 'app-uoms-operation',
+  selector: 'app-item-groups-operation',
   standalone: true,
-  imports: [FormsModule, TranslatePipe, RegularOperationHeaderComponent, RegularOperationActionsComponent],
-  templateUrl: './uoms-operation.component.html',
-  styleUrl: './uoms-operation.component.less',
+  imports: [FormsModule, TranslatePipe, RegularOperationHeaderComponent, RegularOperationActionsComponent, CustomSelectInputComponent],
+  templateUrl: './item-groups-operation.component.html',
+  styleUrl: './item-groups-operation.component.less',
 })
-export class UomsOperationComponent implements OnInit {
+export class ItemGroupsOperationComponent implements OnInit {
   private api       = inject(ApiService);
   private router    = inject(Router);
   private route     = inject(ActivatedRoute);
@@ -42,40 +41,36 @@ export class UomsOperationComponent implements OnInit {
   saving    = signal(false);
   savingNew = signal(false);
   savedRows = signal<SavedRow[]>([]);
+  allGroups = signal<ItemGroup[]>([]);
 
-  form: Partial<UOM> = this.blank();
+  form: Partial<ItemGroup> = this.blank();
 
   ngOnInit() {
+    this.api.get<ItemGroup[]>('itemgroups').subscribe(g => this.allGroups.set(g));
+
     const id = Number(this.route.snapshot.paramMap.get('id'));
     if (id) {
       this.isEdit.set(true);
-      this.api.get<UOM>(`uoms/${id}`).subscribe(u => this.form = { ...u });
-    } else {
-      this.loadNextCode();
+      this.api.get<ItemGroup>(`itemgroups/${id}`).subscribe(g => this.form = { ...g });
     }
   }
 
-  private loadNextCode() {
-    this.api.get<{ code: string }>('uoms/nextcode').subscribe(r => {
-      this.form.internalCode = r.code;
-    });
+  get parentGroupOptions(): SelectOption[] {
+    const filtered = this.isEdit()
+      ? this.allGroups().filter(g => g.itemGroupId !== this.form.itemGroupId)
+      : this.allGroups();
+    return filtered.map(g => ({ value: g.itemGroupId, label: g.name }));
   }
 
-  private blank(): Partial<UOM> {
-    return { id: 0, internalCode: '', name_EN: '', name_AR: '', mustBeWholeNumber: false, isActive: true, isFavorite: false };
+  private blank(): Partial<ItemGroup> {
+    return { itemGroupId: 0, name: '', parentItemGroupId: null, isGroup: false, isActive: true, isFavorite: false };
   }
 
   private validate(): boolean {
     const missing: string[] = [];
 
-    if (!this.form.internalCode?.trim())
-      missing.push(this.translate.instant('uoms.internal_code'));
-
-    if (!this.form.name_EN?.trim())
-      missing.push(`${this.translate.instant('common.name')} (EN)`);
-
-    if (!this.form.name_AR?.trim())
-      missing.push(`${this.translate.instant('common.name')} (AR)`);
+    if (!this.form.name?.trim())
+      missing.push(this.translate.instant('common.name'));
 
     if (missing.length) {
       this.toastr.error(
@@ -94,23 +89,23 @@ export class UomsOperationComponent implements OnInit {
     andNew ? this.savingNew.set(true) : this.saving.set(true);
 
     const req = this.isEdit()
-      ? this.api.put<UOM>(`uoms/${this.form.id}`, this.form)
-      : this.api.post<UOM>('uoms', this.form);
+      ? this.api.put<ItemGroup>(`itemgroups/${this.form.itemGroupId}`, this.form)
+      : this.api.post<ItemGroup>('itemgroups', this.form);
 
     req.subscribe({
       next: () => {
         this.toastr.success(this.translate.instant('common.save_success'));
         if (andNew) {
+          const parent = this.allGroups().find(g => g.itemGroupId === this.form.parentItemGroupId);
           this.savedRows.update(rows => [...rows, {
-            internalCode:      this.form.internalCode ?? '',
-            name_EN:           this.form.name_EN ?? '',
-            name_AR:           this.form.name_AR ?? '',
-            mustBeWholeNumber: this.form.mustBeWholeNumber ?? false,
+            name:       this.form.name ?? '',
+            parentName: parent?.name ?? '—',
+            isGroup:    this.form.isGroup ?? false,
           }]);
           this.form = this.blank();
           this.isEdit.set(false);
           this.savingNew.set(false);
-          this.loadNextCode();
+          this.api.get<ItemGroup[]>('itemgroups').subscribe(g => this.allGroups.set(g));
         } else {
           this.back();
         }
@@ -125,12 +120,7 @@ export class UomsOperationComponent implements OnInit {
   save()       { this.submit(false); }
   saveAndNew() { this.submit(true);  }
 
-  resetForm() {
-    this.form = this.blank();
-    this.loadNextCode();
-  }
+  resetForm() { this.form = this.blank(); }
 
-  back() {
-    this.router.navigate(['/stock/uoms']);
-  }
+  back() { this.router.navigate(['/stock/item-groups']); }
 }
