@@ -75,6 +75,7 @@
     "to_uom": "To UOM",
     "value": "Factor",
     "conversion_group": "Conversion Group",
+    "internal_code": "Internal Code",
     "delete_confirm": "Delete this conversion factor?",
     "delete_selected_confirm": "Delete {{count}} selected factor(s)?"
   },

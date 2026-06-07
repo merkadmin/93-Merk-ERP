@@ -16,6 +16,7 @@ interface UomConversionFactor {
   uomToId: number;
   value: number;
   uomConversionGroupId: number | null;
+  internalCode: string | null;
   isActive: boolean;
   isFavorite: boolean;
   uomFrom?: UOM;
@@ -71,9 +72,10 @@ export class UomConversionFactorsComponent implements OnInit {
       .sort((a, b) => a.label.localeCompare(b.label));
 
     return [
-      { key: 'groupId',  label: this.translate.instant('uom_conversion_factors.conversion_group'),  type: 'select', options: grpOpts           },
-      { key: 'uomFrom',  label: this.translate.instant('uom_conversion_factors.from_uom'),          type: 'select', options: uomOpts(fromMap) },
-      { key: 'uomTo',    label: this.translate.instant('uom_conversion_factors.to_uom'),            type: 'select', options: uomOpts(toMap)   },
+      { key: 'groupId',      label: this.translate.instant('uom_conversion_factors.conversion_group'), type: 'select', options: grpOpts           },
+      { key: 'internalCode', label: this.translate.instant('uom_conversion_factors.internal_code'),    type: 'text'                              },
+      { key: 'uomFrom',      label: this.translate.instant('uom_conversion_factors.from_uom'),         type: 'select', options: uomOpts(fromMap) },
+      { key: 'uomTo',        label: this.translate.instant('uom_conversion_factors.to_uom'),           type: 'select', options: uomOpts(toMap)   },
     ];
   }
 
@@ -87,9 +89,10 @@ export class UomConversionFactorsComponent implements OnInit {
   get filteredFactors(): UomConversionFactor[] {
     const f = this.activeFilter();
     return this.sortedFactors.filter(x => {
-      if (f['uomFrom'] != null && x.uomFromId           !== f['uomFrom']) return false;
-      if (f['uomTo']   != null && x.uomToId             !== f['uomTo'])   return false;
-      if (f['groupId'] != null && x.uomConversionGroupId !== f['groupId']) return false;
+      if (f['groupId']      != null && x.uomConversionGroupId !== f['groupId'])                              return false;
+      if (f['internalCode'] != null && !(x.internalCode ?? '').toLowerCase().includes((f['internalCode'] as string).toLowerCase())) return false;
+      if (f['uomFrom']      != null && x.uomFromId            !== f['uomFrom'])                              return false;
+      if (f['uomTo']        != null && x.uomToId              !== f['uomTo'])                                return false;
       return true;
     });
   }

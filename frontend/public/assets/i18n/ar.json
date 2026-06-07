@@ -75,6 +75,7 @@
     "to_uom": "إلى وحدة القياس",
     "value": "معامل التحويل",
     "conversion_group": "مجموعة التحويل",
+    "internal_code": "الكود الداخلي",
     "delete_confirm": "حذف معامل التحويل هذا؟",
     "delete_selected_confirm": "حذف {{count}} معامل محدد؟"
   },

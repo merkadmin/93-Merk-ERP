@@ -25,6 +25,7 @@
               (change)="toggleAll()">
           </th>
           <th>{{ 'uom_conversion_factors.conversion_group' | translate }}</th>
+          <th>{{ 'uom_conversion_factors.internal_code' | translate }}</th>
           <th>{{ 'uom_conversion_factors.from_uom' | translate }}</th>
           <th>{{ 'uom_conversion_factors.to_uom' | translate }}</th>
           <th class="col-factor">{{ 'uom_conversion_factors.value' | translate }}</th>
@@ -40,6 +41,7 @@
                 (change)="toggleOne(f.id)">
             </td>
             <td>{{ groupLabel(f.uomConversionGroup) }}</td>
+            <td>{{ f.internalCode }}</td>
             <td>{{ uomLabel(f.uomFrom) }}</td>
             <td>{{ uomLabel(f.uomTo) }}</td>
             <td class="fw-semibold col-factor">{{ f.value }}</td>
@@ -79,7 +81,7 @@
           </tr>
         } @empty {
           <tr>
-            <td colspan="6" class="text-center text-muted py-6">—</td>
+            <td colspan="7" class="text-center text-muted py-6">—</td>
           </tr>
         }
       </tbody>

@@ -18,6 +18,7 @@ interface UomConversionFactor {
   uomToId: number;
   value: number;
   uomConversionGroupId: number | null;
+  internalCode: string | null;
   isActive: boolean;
   isFavorite: boolean;
 }
@@ -59,7 +60,15 @@ export class UomConversionFactorsOperationComponent implements OnInit {
         this.form = { ...f };
         this.valueExpression = f.value?.toString() ?? '1';
       });
+    } else {
+      this.loadNextCode();
     }
+  }
+
+  private loadNextCode() {
+    this.api.get<{ code: string }>('uomconversionfactors/nextcode').subscribe(r => {
+      this.form.internalCode = r.code;
+    });
   }
 
   evaluateExpression() {
@@ -95,7 +104,7 @@ export class UomConversionFactorsOperationComponent implements OnInit {
   }
 
   private blank(): Partial<UomConversionFactor> {
-    return { id: 0, uomFromId: 0, uomToId: 0, value: 1, uomConversionGroupId: null, isActive: true, isFavorite: false };
+    return { id: 0, uomFromId: 0, uomToId: 0, value: 1, uomConversionGroupId: null, internalCode: null, isActive: true, isFavorite: false };
   }
 
   private resetAll() {
@@ -104,6 +113,7 @@ export class UomConversionFactorsOperationComponent implements OnInit {
     this.form.uomToId              = 0;
     this.form.value                = 1;
     this.form.uomConversionGroupId = null;
+    this.form.internalCode         = null;
     this.form.isActive             = true;
     this.form.isFavorite           = false;
     this.valueExpression           = '1';
@@ -151,6 +161,7 @@ export class UomConversionFactorsOperationComponent implements OnInit {
           this.resetAll();
           this.isEdit.set(false);
           this.savingNew.set(false);
+          this.loadNextCode();
         } else {
           this.back();
         }
@@ -165,7 +176,7 @@ export class UomConversionFactorsOperationComponent implements OnInit {
   save()       { this.submit(false); }
   saveAndNew() { this.submit(true);  }
 
-  resetForm() { this.resetAll(); }
+  resetForm() { this.resetAll(); this.loadNextCode(); }
 
   back() { this.router.navigate(['/stock/uom-conversion-factors']); }
 }

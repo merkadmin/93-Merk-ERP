@@ -7,6 +7,7 @@ public class UOMConversionFactor_cs
 	public long UOMToId { get; set; }
 	public double Value { get; set; }
 	public int? UOMConversionGroupId { get; set; }
+	public string? InternalCode { get; set; }
 	public bool IsActive { get; set; } = true;
 	public bool IsFavorite { get; set; } = false;
 	public long? InsertedBy { get; set; }

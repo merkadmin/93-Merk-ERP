@@ -80,22 +80,21 @@ app-root { display: contents; }
   margin-left: 1rem !important;
 }
 
-/* ── All inputs: glowing border on hover and focus ── */
+/* ── All inputs: glowing border on hover and focus (matches CustomSelectInputComponent) ── */
 .form-control,
 .form-control-solid,
 .form-select,
 .form-select-solid {
-  transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+  transition: border-color 0.15s, box-shadow 0.15s !important;
 
-  &:hover {
+  &:hover:not(:disabled):not([disabled]) {
     border-color: var(--bs-primary) !important;
-    box-shadow: 0 0 0 3px rgba(var(--bs-primary-rgb), 0.15) !important;
   }
 
   &:focus {
     border-color: var(--bs-primary) !important;
-    box-shadow: 0 0 0 4px rgba(var(--bs-primary-rgb), 0.25) !important;
-    outline: none !important;
+    box-shadow: 0 0 0 0.25rem rgba(var(--bs-primary-rgb), 0.25) !important;
+    outline: 0 !important;
   }
 }
 
@@ -106,7 +105,9 @@ html:not([data-bs-theme=dark]) {
   .form-select,
   .form-select-solid {
     background-color: #ffffff !important;
-    border-color: var(--bs-border-color) !important;
+    &:not(:hover):not(:focus) {
+      border-color: var(--bs-border-color) !important;
+    }
   }
 }
 

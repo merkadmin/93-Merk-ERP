@@ -7,7 +7,7 @@
 <div class="card">
   <div class="card-body">
 
-    <!-- Row 1: Conversion Group -->
+    <!-- Row 1: Conversion Group · Internal Code -->
     <div class="row g-4 mb-4">
       <div class="col-4">
         <label class="form-label required">{{ 'uom_conversion_factors.conversion_group' | translate }}</label>
@@ -17,6 +17,12 @@
           (valueChange)="form.uomConversionGroupId = $event !== null ? +$event : null"
           [placeholder]="'common.select' | translate"
           [searchPlaceholder]="'common.search' | translate" />
+      </div>
+      <div class="col-4">
+        <label class="form-label">{{ 'uom_conversion_factors.internal_code' | translate }}</label>
+        <input class="form-control" type="text"
+          [(ngModel)]="form.internalCode" name="internalCode"
+          [placeholder]="'uom_conversion_factors.internal_code' | translate">
       </div>
     </div>
 

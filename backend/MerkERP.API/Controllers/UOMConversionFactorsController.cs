@@ -20,6 +20,23 @@ public class UOMConversionFactorsController(MerkDbContext db) : ControllerBase
 			.OrderBy(f => f.UOMFrom.Name_EN)
 			.ToListAsync());
 
+	[HttpGet("nextcode")]
+	public async Task<IActionResult> NextCode()
+	{
+		const string prefix = "UCF-";
+		var codes = await db.UOMConversionFactor_cs
+			.Where(f => f.InternalCode != null && f.InternalCode.StartsWith(prefix))
+			.Select(f => f.InternalCode!)
+			.ToListAsync();
+
+		var maxNum = codes
+			.Select(c => int.TryParse(c[prefix.Length..], out var n) ? n : 0)
+			.DefaultIfEmpty(0)
+			.Max();
+
+		return Ok(new { code = $"{prefix}{(maxNum + 1):D3}" });
+	}
+
 	[HttpGet("{id:long}")]
 	public async Task<IActionResult> Get(long id) =>
 		await db.UOMConversionFactor_cs
@@ -50,6 +67,7 @@ public class UOMConversionFactorsController(MerkDbContext db) : ControllerBase
 		existing.UOMToId               = e.UOMToId;
 		existing.Value                 = e.Value;
 		existing.UOMConversionGroupId  = e.UOMConversionGroupId;
+		existing.InternalCode          = e.InternalCode;
 		existing.IsActive              = e.IsActive;
 		existing.IsFavorite            = e.IsFavorite;
 		await db.SaveChangesAsync();
