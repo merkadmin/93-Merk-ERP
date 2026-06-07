@@ -134,6 +134,9 @@ export class UomConversionFactorsOperationComponent implements OnInit {
     if (!this.form.uomConversionGroupId)
       missing.push(this.translate.instant('uom_conversion_factors.conversion_group'));
 
+    if (!this.form.internalCode?.trim())
+      missing.push(this.translate.instant('uom_conversion_factors.internal_code'));
+
     if (missing.length) {
       this.toastr.error(
         missing.join('<br>'),
