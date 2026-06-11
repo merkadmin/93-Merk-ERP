@@ -13,6 +13,23 @@ public class WarehousesController(MerkDbContext db) : ControllerBase
 	public async Task<IActionResult> GetAll() =>
 		Ok(await db.WareHouse_cs.OrderBy(w => w.Name_EN).ToListAsync());
 
+	[HttpGet("nextcode")]
+	public async Task<IActionResult> NextCode()
+	{
+		const string prefix = "WH-";
+		var codes = await db.WareHouse_cs
+			.Where(w => w.InternalCode != null && w.InternalCode.StartsWith(prefix))
+			.Select(w => w.InternalCode!)
+			.ToListAsync();
+
+		var maxNum = codes
+			.Select(c => int.TryParse(c[prefix.Length..], out var n) ? n : 0)
+			.DefaultIfEmpty(0)
+			.Max();
+
+		return Ok(new { code = $"{prefix}{(maxNum + 1):D3}" });
+	}
+
 	[HttpGet("{id}")]
 	public async Task<IActionResult> Get(long id) =>
 		await db.WareHouse_cs.FindAsync(id) is { } e ? Ok(e) : NotFound();

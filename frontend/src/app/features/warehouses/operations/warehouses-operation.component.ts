@@ -50,7 +50,13 @@ export class WarehousesOperationComponent implements OnInit {
     if (id) {
       this.isEdit.set(true);
       this.api.get<Warehouse>(`warehouses/${id}`).subscribe(w => this.form = { ...w });
+    } else {
+      this.loadNextCode();
     }
+  }
+
+  private loadNextCode() {
+    this.api.get<{ code: string }>('warehouses/nextcode').subscribe(r => this.form.internalCode = r.code);
   }
 
   private label<T extends { name_EN: string; name_AR: string | null }>(item: T): string {
@@ -108,6 +114,7 @@ export class WarehousesOperationComponent implements OnInit {
           this.form = this.blank();
           this.isEdit.set(false);
           this.savingNew.set(false);
+          this.loadNextCode();
           this.api.get<Warehouse[]>('warehouses').subscribe(d => this.warehouses.set(d));
         } else {
           this.back();
@@ -119,6 +126,6 @@ export class WarehousesOperationComponent implements OnInit {
 
   save()       { this.submit(false); }
   saveAndNew() { this.submit(true);  }
-  resetForm()  { this.form = this.blank(); }
+  resetForm()  { this.form = this.blank(); this.loadNextCode(); }
   back()       { this.router.navigate(['/stock/warehouses']); }
 }
