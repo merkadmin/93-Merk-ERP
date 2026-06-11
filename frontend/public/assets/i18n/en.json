@@ -54,7 +54,8 @@
     "retry": "Retry",
     "server_offline_title": "Server Not Responding",
     "server_offline_message": "Unable to reach the server. Please check that the backend is running and try again.",
-    "general": "Details"
+    "general": "Details",
+    "is_parent": "Is Parent"
   },
   "items": {
     "title": "Items",
@@ -87,7 +88,9 @@
     "barcode_type": "Barcode Type",
     "no_barcodes": "No barcodes added yet.",
     "barcode_fill_all": "Please fill in Barcode Type, UOM and Barcode value.",
-    "barcodes_save_first": "Save the item first, then you can add barcodes."
+    "barcodes_save_first": "Save the item first, then you can add barcodes.",
+    "inventory_validation_method": "Inventory Valuation Method",
+    "default_warehouse": "Default Warehouse"
   },
   "item_groups": {
     "title": "Item Groups",
@@ -133,8 +136,16 @@
   },
   "warehouses": {
     "title": "Warehouses",
+    "add_title": "New Warehouse",
+    "edit_title": "Edit Warehouse",
+    "add": "Add Warehouse",
     "parent_warehouse": "Parent Warehouse",
-    "delete_confirm": "Delete this warehouse?"
+    "type": "Warehouse Type",
+    "category": "Warehouse Category",
+    "delete_confirm": "Delete this warehouse?",
+    "delete_selected_confirm": "Delete {{count}} selected warehouse(s)?",
+    "saved_rows_title_single": "record saved in this session",
+    "saved_rows_title": "records saved in this session"
   },
   "stock": {
     "title": "Current Stock",

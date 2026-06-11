@@ -54,16 +54,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: var(--bs-danger);
-  color: #fff;
+  background: none;
   border: none;
+  color: var(--bs-secondary-color);
   cursor: pointer;
   z-index: 2;
-  transition: opacity 0.15s;
-  &:hover { opacity: 0.75; }
+  padding: 0;
+  transition: color 0.15s;
+  &:hover { color: var(--bs-danger); }
 }
 
 // ── Dropdown panel ───────────────────────────────────────────────────────────

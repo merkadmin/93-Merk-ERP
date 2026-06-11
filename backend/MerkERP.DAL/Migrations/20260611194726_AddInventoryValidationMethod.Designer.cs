@@ -4,6 +4,7 @@ using MerkERP.DAL.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MerkERP.DAL.Migrations
 {
     [DbContext(typeof(MerkDbContext))]
-    partial class MerkDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260611194726_AddInventoryValidationMethod")]
+    partial class AddInventoryValidationMethod
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -94,38 +97,6 @@ namespace MerkERP.DAL.Migrations
                             BarcodeTypeId = 11L,
                             Name = "Custom"
                         });
-                });
-
-            modelBuilder.Entity("MerkERP.Core.Models.Branch_cs", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<long?>("InsertedBy")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("InsertedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Name_AR")
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("Name_EN")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(200)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Branch_cs");
                 });
 
             modelBuilder.Entity("MerkERP.Core.Models.InventoryValidationMethod_s", b =>
@@ -347,9 +318,6 @@ namespace MerkERP.DAL.Migrations
                     b.Property<long>("DefaultUOMId")
                         .HasColumnType("bigint");
 
-                    b.Property<long?>("DefaultWarehouseId")
-                        .HasColumnType("bigint");
-
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
@@ -404,8 +372,6 @@ namespace MerkERP.DAL.Migrations
                     b.HasIndex("DefaultSellingUOMId");
 
                     b.HasIndex("DefaultUOMId");
-
-                    b.HasIndex("DefaultWarehouseId");
 
                     b.HasIndex("InternalCode")
                         .IsUnique();
@@ -606,103 +572,19 @@ namespace MerkERP.DAL.Migrations
                     b.ToTable("UOM_cs");
                 });
 
-            modelBuilder.Entity("MerkERP.Core.Models.WareHouseCategory_cs", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<long?>("InsertedBy")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("InsertedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Name_AR")
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("Name_EN")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(200)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("WareHouseCategory_cs");
-                });
-
-            modelBuilder.Entity("MerkERP.Core.Models.WareHouseType_s", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<string>("Name_AR")
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("Name_EN")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(200)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("WareHouseType_s");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1L,
-                            Name_AR = "مستودعات الأدوية",
-                            Name_EN = "Pharmaceutical Warehouses"
-                        },
-                        new
-                        {
-                            Id = 2L,
-                            Name_AR = "مستودعات المستهلكات ومعدات الوقاية الشخصية",
-                            Name_EN = "Consumables & PPE Warehouses"
-                        },
-                        new
-                        {
-                            Id = 3L,
-                            Name_AR = "مستودعات الأجهزة والمعدات الطبية",
-                            Name_EN = "Medical Device & Equipment Warehouses"
-                        },
-                        new
-                        {
-                            Id = 4L,
-                            Name_AR = "مستودعات العمليات الجراحية المعقمة",
-                            Name_EN = "Sterile Surgical Warehouses"
-                        });
-                });
-
             modelBuilder.Entity("MerkERP.Core.Models.WareHouse_cs", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<long>("WarehouseId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("WarehouseId"));
 
                     b.Property<long?>("InsertedBy")
                         .HasColumnType("bigint");
 
                     b.Property<DateTime?>("InsertedDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("InternalCode")
-                        .HasColumnType("nvarchar(50)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
@@ -710,32 +592,19 @@ namespace MerkERP.DAL.Migrations
                     b.Property<bool>("IsFavorite")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsParent")
+                    b.Property<bool>("IsGroup")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Name_AR")
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("Name_EN")
+                    b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(200)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<long?>("ParentWarehouseId")
                         .HasColumnType("bigint");
 
-                    b.Property<long?>("WareHouseCategoryId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("WareHouseTypeId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
+                    b.HasKey("WarehouseId");
 
                     b.HasIndex("ParentWarehouseId");
-
-                    b.HasIndex("WareHouseCategoryId");
-
-                    b.HasIndex("WareHouseTypeId");
 
                     b.ToTable("WareHouse_cs");
                 });
@@ -862,11 +731,6 @@ namespace MerkERP.DAL.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("MerkERP.Core.Models.WareHouse_cs", "DefaultWarehouse")
-                        .WithMany()
-                        .HasForeignKey("DefaultWarehouseId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.HasOne("MerkERP.Core.Models.InventoryValidationMethod_s", "InventoryValidationMethod")
                         .WithMany()
                         .HasForeignKey("InventoryValidationMethodId")
@@ -889,8 +753,6 @@ namespace MerkERP.DAL.Migrations
                     b.Navigation("DefaultSellingUOM");
 
                     b.Navigation("DefaultUOM");
-
-                    b.Navigation("DefaultWarehouse");
 
                     b.Navigation("InventoryValidationMethod");
 
@@ -951,21 +813,7 @@ namespace MerkERP.DAL.Migrations
                         .HasForeignKey("ParentWarehouseId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("MerkERP.Core.Models.WareHouseCategory_cs", "WareHouseCategory")
-                        .WithMany()
-                        .HasForeignKey("WareHouseCategoryId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("MerkERP.Core.Models.WareHouseType_s", "WareHouseType")
-                        .WithMany()
-                        .HasForeignKey("WareHouseTypeId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.Navigation("ParentWarehouse");
-
-                    b.Navigation("WareHouseCategory");
-
-                    b.Navigation("WareHouseType");
                 });
 
             modelBuilder.Entity("MerkERP.Core.Models.WarehouseTransaction", b =>

@@ -1,0 +1,137 @@
+<app-regular-operation-header
+  [title]="(isEdit() ? 'warehouses.edit_title' : 'warehouses.add_title') | translate"
+  icon="ki-outline ki-home-2"
+  color="success"
+  (cancel)="back()" />
+
+<div class="card">
+  <div class="card-body">
+    <div class="row g-4">
+
+      <div class="col-3">
+        <label class="form-label">{{ 'common.internal_code' | translate }}</label>
+        <input class="form-control" [(ngModel)]="form.internalCode" name="internalCode"
+          [placeholder]="'common.internal_code' | translate">
+      </div>
+
+      <div class="col-3">
+        <label class="form-label">{{ 'common.name' | translate }} (AR)</label>
+        <input class="form-control" [(ngModel)]="form.name_AR" name="name_AR" dir="rtl"
+          [placeholder]="'common.name' | translate">
+      </div>
+
+      <div class="col-3">
+        <label class="form-label required">{{ 'common.name' | translate }} (EN)</label>
+        <input class="form-control" [(ngModel)]="form.name_EN" name="name_EN"
+          [placeholder]="'common.name' | translate">
+      </div>
+
+      <div class="w-100"></div>
+
+      <div class="col-3">
+        <label class="form-label">{{ 'warehouses.type' | translate }}</label>
+        <app-custom-select-input
+          [options]="typeOptions"
+          [value]="form.wareHouseTypeId ?? null"
+          (valueChange)="form.wareHouseTypeId = $event ? +$event : null"
+          [placeholder]="'common.none' | translate"
+          [searchPlaceholder]="'common.search' | translate" />
+      </div>
+
+      <div class="col-3">
+        <label class="form-label">{{ 'warehouses.category' | translate }}</label>
+        <app-custom-select-input
+          [options]="categoryOptions"
+          [value]="form.wareHouseCategoryId ?? null"
+          (valueChange)="form.wareHouseCategoryId = $event ? +$event : null"
+          [placeholder]="'common.none' | translate"
+          [searchPlaceholder]="'common.search' | translate" />
+      </div>
+
+      <div class="col-3">
+        <label class="form-label">{{ 'warehouses.parent_warehouse' | translate }}</label>
+        <app-custom-select-input
+          [options]="parentOptions"
+          [value]="form.parentWarehouseId ?? null"
+          (valueChange)="form.parentWarehouseId = $event ? +$event : null"
+          [placeholder]="'common.none' | translate"
+          [searchPlaceholder]="'common.search' | translate" />
+      </div>
+
+      <div class="col-3 d-flex align-items-end pb-2 gap-6">
+        <div class="form-check form-check-custom form-check-solid">
+          <input class="form-check-input" type="checkbox"
+            [(ngModel)]="form.isParent" name="isParent" id="isParent">
+          <label class="form-check-label fw-semibold" for="isParent">
+            {{ 'common.is_parent' | translate }}
+          </label>
+        </div>
+        <div class="form-check form-check-custom form-check-solid">
+          <input class="form-check-input" type="checkbox"
+            [(ngModel)]="form.isActive" name="isActive" id="isActive">
+          <label class="form-check-label fw-semibold" for="isActive">
+            {{ 'common.active' | translate }}
+          </label>
+        </div>
+      </div>
+
+      <div class="w-100"></div>
+
+      <div class="col-6">
+        <label class="form-label">{{ 'common.description' | translate }}</label>
+        <textarea class="form-control" [(ngModel)]="form.description" name="description"
+          rows="3" [placeholder]="'common.description' | translate"></textarea>
+      </div>
+
+    </div>
+  </div>
+
+  <app-regular-operation-actions
+    [saving]="saving()"
+    [savingNew]="savingNew()"
+    (save)="save()"
+    (saveAndNew)="saveAndNew()"
+    (reset)="resetForm()" />
+</div>
+
+@if (savedRows().length > 0) {
+  <div class="card mt-6">
+    <div class="card-header min-h-50px">
+      <h3 class="card-title fs-6 fw-bold text-success">
+        <i class="ki-outline ki-check-circle fs-4 text-success me-2"></i>
+        {{ savedRows().length }}
+        {{ (savedRows().length === 1 ? 'warehouses.saved_rows_title_single' : 'warehouses.saved_rows_title') | translate }}
+      </h3>
+    </div>
+    <div class="card-body p-0">
+      <table class="table table-row-dashed table-row-gray-300 align-middle gs-4 gy-2 mb-0">
+        <thead>
+          <tr class="fw-bold text-success bg-light-success fs-7">
+            <th class="w-40px">#</th>
+            <th>{{ 'common.name' | translate }} (EN)</th>
+            <th>{{ 'common.name' | translate }} (AR)</th>
+            <th>{{ 'warehouses.parent_warehouse' | translate }}</th>
+            <th>{{ 'common.is_parent' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of savedRows(); track $index) {
+            <tr>
+              <td class="text-muted">{{ $index + 1 }}</td>
+              <td class="fw-semibold">{{ row.name_EN }}</td>
+              <td>{{ row.name_AR || '—' }}</td>
+              <td>{{ row.parentName }}</td>
+              <td>
+                <span class="badge"
+                  [class.badge-light-info]="row.isParent"
+                  [class.badge-light-secondary]="!row.isParent">
+                  {{ (row.isParent ? 'common.yes' : 'common.no') | translate }}
+                </span>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+}

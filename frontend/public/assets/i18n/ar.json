@@ -54,7 +54,8 @@
     "retry": "إعادة المحاولة",
     "server_offline_title": "الخادم لا يستجيب",
     "server_offline_message": "تعذر الوصول إلى الخادم. يرجى التأكد من تشغيل الخادم والمحاولة مجدداً.",
-    "general": "رئيسي"
+    "general": "رئيسي",
+    "is_parent": "أصل"
   },
   "items": {
     "title": "الأصناف",
@@ -87,7 +88,9 @@
     "barcode_type": "نوع الباركود",
     "no_barcodes": "لم يتم إضافة باركودات بعد.",
     "barcode_fill_all": "يرجى تعبئة نوع الباركود ووحدة القياس وقيمة الباركود.",
-    "barcodes_save_first": "احفظ الصنف أولاً، ثم يمكنك إضافة الباركودات."
+    "barcodes_save_first": "احفظ الصنف أولاً، ثم يمكنك إضافة الباركودات.",
+    "inventory_validation_method": "طريقة تقييم المخزون",
+    "default_warehouse": "المستودع الافتراضي"
   },
   "item_groups": {
     "title": "مجموعات الأصناف",
@@ -133,8 +136,16 @@
   },
   "warehouses": {
     "title": "المستودعات",
+    "add_title": "مستودع جديد",
+    "edit_title": "تعديل المستودع",
+    "add": "إضافة مستودع",
     "parent_warehouse": "المستودع الأصل",
-    "delete_confirm": "حذف هذا المستودع؟"
+    "type": "نوع المستودع",
+    "category": "تصنيف المستودع",
+    "delete_confirm": "حذف هذا المستودع؟",
+    "delete_selected_confirm": "حذف {{count}} مستودع محدد؟",
+    "saved_rows_title_single": "سجل تم حفظه في هذه الجلسة",
+    "saved_rows_title": "سجلات تم حفظها في هذه الجلسة"
   },
   "stock": {
     "title": "المخزون الحالي",

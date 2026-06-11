@@ -12,6 +12,8 @@ public class Item_cs
 	public long? DefaultPurchaseUOMId { get; set; }
 	public bool AcceptSelling { get; set; } = true;
 	public long? DefaultSellingUOMId { get; set; }
+	public long? InventoryValidationMethodId { get; set; }
+	public long? DefaultWarehouseId { get; set; }
 	public string? Description { get; set; }
 	public long? OpeningStock { get; set; }
 	public DateTime? ExpirationDate { get; set; }
@@ -24,6 +26,8 @@ public class Item_cs
 
 	public ItemGroup_cs? ItemGroup { get; set; }
 	public ItemType_s? ItemType { get; set; }
+	public InventoryValidationMethod_s? InventoryValidationMethod { get; set; }
+	public WareHouse_cs? DefaultWarehouse { get; set; }
 	public UOM_cs? DefaultUOM { get; set; }
 	public UOM_cs? DefaultPurchaseUOM { get; set; }
 	public UOM_cs? DefaultSellingUOM { get; set; }

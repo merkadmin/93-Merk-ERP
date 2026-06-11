@@ -121,6 +121,24 @@ html[data-bs-theme=dark] {
     border-color: #4a4a65 !important;
     color: var(--bs-body-color) !important;
   }
+
+  /* ── Dark mode: checkbox / radio labels — white text ── */
+  .form-check-label {
+    color: #ffffff !important;
+  }
+
+  /* ── Dark mode: card-header nav-line-tabs — white text ── */
+  .nav.nav-line-tabs .nav-link {
+    color: rgba(255, 255, 255, 0.55) !important;
+
+    &:hover:not(.active) {
+      color: rgba(255, 255, 255, 0.85) !important;
+    }
+
+    &.active {
+      color: #ffffff !important;
+    }
+  }
 }
 
 /* ── Mobile layout (below Bootstrap lg = 992px) ── */

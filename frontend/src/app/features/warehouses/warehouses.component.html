@@ -1,64 +1,101 @@
-<div class="d-flex justify-content-between align-items-center mb-3">
-  <h5 class="mb-0"><i class="ki-outline ki-home-2 fs-2 me-2"></i>{{ 'warehouses.title' | translate }}</h5>
-  <button class="btn btn-sm btn-primary" (click)="openNew()"><i class="ki-outline ki-plus fs-4"></i> {{ 'common.add' | translate }}</button>
-</div>
+<app-regular-list-header-with-actions
+  [title]="'warehouses.title' | translate"
+  icon="ki-outline ki-home-2"
+  color="primary"
+  [selectedCount]="selectedIds().size"
+  [showImportExport]="false"
+  (add)="addNew()"
+  (refresh)="load()"
+  (deleteSelected)="deleteSelected()" />
 
-<div *ngIf="showForm" class="card mb-3 border-primary">
-  <div class="card-body">
-    <form (ngSubmit)="save()">
-      <div class="row g-2 align-items-end">
-        <div class="col-md-4">
-          <label class="form-label">{{ 'common.name' | translate }}</label>
-          <input class="form-control form-control-sm" [(ngModel)]="form.name" name="name" required>
-        </div>
-        <div class="col-md-3">
-          <label class="form-label">{{ 'warehouses.parent_warehouse' | translate }}</label>
-          <select class="form-select form-select-sm" [(ngModel)]="form.parentWarehouseId" name="parent">
-            <option [ngValue]="null">{{ 'common.none' | translate }}</option>
-            <option *ngFor="let w of warehouses()" [ngValue]="w.warehouseId">{{ w.name }}</option>
-          </select>
-        </div>
-        <div class="col-auto pt-4">
-          <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" [(ngModel)]="form.isGroup" name="isGroup" id="wIsGroup">
-            <label class="form-check-label" for="wIsGroup">{{ 'common.is_group' | translate }}</label>
-          </div>
-          <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" [(ngModel)]="form.isActive" name="isActive" id="wIsActive">
-            <label class="form-check-label" for="wIsActive">{{ 'common.active' | translate }}</label>
-          </div>
-        </div>
-        <div class="col-auto">
-          <button type="submit" class="btn btn-sm btn-success me-1">{{ 'common.save' | translate }}</button>
-          <button type="button" class="btn btn-sm btn-secondary" (click)="cancel()">{{ 'common.cancel' | translate }}</button>
-        </div>
-      </div>
-    </form>
+<app-regular-list-search-actions
+  [fields]="searchFields"
+  (filterChange)="onFilterChange($event)" />
+
+<div class="card">
+  <div class="card-body p-0">
+    <table class="table table-row-dashed table-row-gray-300 align-middle gs-4 gy-3 mb-0">
+      <thead>
+        <tr class="fw-bold text-primary bg-light-primary">
+          <th class="w-40px">
+            <input type="checkbox" class="form-check-input"
+              [checked]="isAllSelected"
+              [indeterminate]="isIndeterminate"
+              (change)="toggleAll()">
+          </th>
+          <th>{{ 'common.name' | translate }}</th>
+          <th>{{ 'common.is_parent' | translate }}</th>
+          <th>{{ 'common.active' | translate }}</th>
+          <th [class.text-end]="!isRtl" [class.text-start]="isRtl">{{ 'common.actions' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (w of displayRows; track w.id) {
+          <tr [class.table-active]="isSelected(w.id)">
+            <td>
+              <input type="checkbox" class="form-check-input"
+                [checked]="isSelected(w.id)"
+                (change)="toggleOne(w.id)">
+            </td>
+            <td class="fw-semibold">
+              <div class="d-flex align-items-center" [style.paddingInlineStart.px]="w.level * 24">
+                @if (w.level > 0) {
+                  <span class="text-muted fs-9 me-1" style="line-height:1">└─</span>
+                }
+                @if (!w.parentWarehouseId) {
+                  <i class="ki-outline ki-home-2 fs-4 text-primary me-2"></i>
+                } @else if (w.isParent) {
+                  <i class="ki-outline ki-abstract-28 fs-4 text-warning me-2"></i>
+                } @else {
+                  <i class="ki-outline ki-home-1 fs-4 text-gray-400 me-2"></i>
+                }
+                {{ label(w) }}
+              </div>
+            </td>
+            <td>
+              <span class="badge"
+                [class.badge-light-info]="w.isParent"
+                [class.badge-light-secondary]="!w.isParent">
+                {{ (w.isParent ? 'common.yes' : 'common.no') | translate }}
+              </span>
+            </td>
+            <td>
+              <span class="badge"
+                [class.badge-light-success]="w.isActive"
+                [class.badge-light-danger]="!w.isActive">
+                {{ (w.isActive ? 'common.yes' : 'common.no') | translate }}
+              </span>
+            </td>
+            <td class="text-nowrap" [class.text-end]="!isRtl" [class.text-start]="isRtl">
+              <div class="d-inline-flex align-items-center gap-2">
+                <button class="btn btn-icon btn-sm btn-light-primary" (click)="edit(w.id)"
+                  [title]="'common.edit' | translate">
+                  <i class="ki-outline ki-pencil fs-4"></i>
+                </button>
+                @if (w.isActive) {
+                  <button class="btn btn-sm btn-light-warning" (click)="toggleActive(w)">
+                    <i class="ki-outline ki-minus-circle fs-4 me-1"></i>
+                    {{ 'common.deactivate' | translate }}
+                  </button>
+                } @else {
+                  <button class="btn btn-sm btn-light-success" (click)="toggleActive(w)">
+                    <i class="ki-outline ki-check-circle fs-4 me-1"></i>
+                    {{ 'common.activate' | translate }}
+                  </button>
+                }
+                <button class="btn btn-icon btn-sm btn-light-danger" (click)="delete(w.id)"
+                  [title]="'common.delete' | translate">
+                  <i class="ki-outline ki-trash fs-4"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="5" class="text-center text-muted py-6">—</td>
+          </tr>
+        }
+      </tbody>
+    </table>
   </div>
 </div>
-
-<table class="table table-sm table-hover table-bordered">
-  <thead class="table-dark">
-    <tr>
-      <th>#</th>
-      <th>{{ 'common.name' | translate }}</th>
-      <th>{{ 'common.parent' | translate }}</th>
-      <th>{{ 'common.is_group' | translate }}</th>
-      <th>{{ 'common.active' | translate }}</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let w of warehouses()">
-      <td>{{ w.warehouseId }}</td>
-      <td>{{ w.name }}</td>
-      <td>{{ parentName(w.parentWarehouseId) }}</td>
-      <td><span class="badge" [class]="w.isGroup ? 'bg-info' : 'bg-secondary'">{{ (w.isGroup ? 'common.yes' : 'common.no') | translate }}</span></td>
-      <td><span class="badge" [class]="w.isActive ? 'bg-success' : 'bg-secondary'">{{ (w.isActive ? 'common.yes' : 'common.no') | translate }}</span></td>
-      <td>
-        <button class="btn btn-sm btn-outline-primary me-1" (click)="edit(w)">{{ 'common.edit' | translate }}</button>
-        <button class="btn btn-sm btn-outline-danger" (click)="delete(w.warehouseId)">{{ 'common.delete' | translate }}</button>
-      </td>
-    </tr>
-  </tbody>
-</table>

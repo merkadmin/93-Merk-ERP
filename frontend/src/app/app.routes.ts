@@ -23,7 +23,9 @@ export const routes: Routes = [
   { path: 'stock/uom-conversion-factors/operation',      loadComponent: () => import('./features/uom-conversion-factors/operations/uom-conversion-factors-operation.component').then(m => m.UomConversionFactorsOperationComponent) },
   { path: 'stock/uom-conversion-factors/operation/:id',  loadComponent: () => import('./features/uom-conversion-factors/operations/uom-conversion-factors-operation.component').then(m => m.UomConversionFactorsOperationComponent) },
 
-  { path: 'stock/warehouses',      loadComponent: () => import('./features/warehouses/warehouses.component').then(m => m.WarehousesComponent) },
+  { path: 'stock/warehouses',               loadComponent: () => import('./features/warehouses/warehouses.component').then(m => m.WarehousesComponent) },
+  { path: 'stock/warehouses/operation',     loadComponent: () => import('./features/warehouses/operations/warehouses-operation.component').then(m => m.WarehousesOperationComponent) },
+  { path: 'stock/warehouses/operation/:id', loadComponent: () => import('./features/warehouses/operations/warehouses-operation.component').then(m => m.WarehousesOperationComponent) },
   { path: 'stock/current-stock',   loadComponent: () => import('./features/stock/stock.component').then(m => m.StockComponent) },
   { path: 'stock/stock-movement',  loadComponent: () => import('./features/stock-movement/stock-movement.component').then(m => m.StockMovementComponent) },
 ];

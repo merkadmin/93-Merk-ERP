@@ -111,6 +111,32 @@
     <!-- ── Inventory tab ────────────────────────────────────────────── -->
     @if (activeTab() === 'inventory') {
 
+      <!-- Row 0: Inventory Validation Method · Default Warehouse -->
+      <div class="row g-4 mb-4">
+        <div class="col-3">
+          <label class="form-label">{{ 'items.inventory_validation_method' | translate }}</label>
+          <app-custom-select-input
+            [options]="inventoryValidationMethodOptions"
+            [value]="form.inventoryValidationMethodId || null"
+            (valueChange)="form.inventoryValidationMethodId = $event ? +$event : undefined"
+            [placeholder]="'common.select' | translate"
+            [searchPlaceholder]="'common.search' | translate" />
+        </div>
+        <div class="col-3">
+          <label class="form-label">{{ 'items.default_warehouse' | translate }}</label>
+          <app-custom-select-input
+            [options]="warehouseOptions"
+            [value]="form.defaultWarehouseId || null"
+            (valueChange)="form.defaultWarehouseId = $event ? +$event : undefined"
+            [placeholder]="'common.select' | translate"
+            [searchPlaceholder]="'common.search' | translate" />
+        </div>
+        <div class="col-3"></div>
+        <div class="col-3"></div>
+      </div>
+
+      <hr class="my-4">
+
       <!-- Row 1: Default UOM · Default Purchase UOM · Accept Selling · Default Selling UOM -->
       <div class="row g-4 mb-4">
         <div class="col-3">

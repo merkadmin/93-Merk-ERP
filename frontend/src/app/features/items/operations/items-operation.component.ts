@@ -9,10 +9,12 @@ import { RegularOperationHeaderComponent } from '../../../shared/components/card
 import { RegularOperationActionsComponent } from '../../../shared/components/cards/regular-operation-actions/regular-operation-actions.component';
 import { CustomSelectInputComponent, SelectOption } from '../../../shared/components/custom-controls/custom-select-input/custom-select-input.component';
 
-interface ItemGroup   { itemGroupId: number; name_EN: string; name_AR?: string; }
-interface ItemType    { itemTypeId: number;  name: string; }
-interface ItemUOM     { id: number; name_EN: string; name_AR?: string; }
-interface BarcodeType { barcodeTypeId: number; name: string; }
+interface ItemGroup                  { itemGroupId: number; name_EN: string; name_AR?: string; }
+interface ItemType                   { itemTypeId: number;  name: string; }
+interface ItemUOM                    { id: number; name_EN: string; name_AR?: string; }
+interface BarcodeType                { barcodeTypeId: number; name: string; }
+interface InventoryValidationMethod  { inventoryValidationMethodId: number; name: string; }
+interface Warehouse                  { id: number; name_EN: string; name_AR: string | null; isParent: boolean; }
 
 interface ItemBarcode {
   id: number;
@@ -35,6 +37,8 @@ interface Item {
   defaultPurchaseUOMId?: number;
   acceptSelling: boolean;
   defaultSellingUOMId?: number;
+  inventoryValidationMethodId?: number;
+  defaultWarehouseId?: number;
   description?: string;
   openingStock?: number;
   expirationDate?: string;
@@ -76,11 +80,13 @@ export class ItemsOperationComponent implements OnInit {
   savedRows     = signal<SavedRow[]>([]);
   activeTab     = signal<'general' | 'inventory' | 'barcodes'>('general');
 
-  groups       = signal<ItemGroup[]>([]);
-  types        = signal<ItemType[]>([]);
-  uoms         = signal<ItemUOM[]>([]);
-  barcodeTypes = signal<BarcodeType[]>([]);
-  barcodes     = signal<ItemBarcode[]>([]);
+  groups                    = signal<ItemGroup[]>([]);
+  types                     = signal<ItemType[]>([]);
+  uoms                      = signal<ItemUOM[]>([]);
+  barcodeTypes              = signal<BarcodeType[]>([]);
+  inventoryValidationMethods = signal<InventoryValidationMethod[]>([]);
+  warehouses                = signal<Warehouse[]>([]);
+  barcodes                  = signal<ItemBarcode[]>([]);
 
   form: Partial<Item> = this.blank();
   newBarcode = this.blankBarcode();
@@ -90,6 +96,8 @@ export class ItemsOperationComponent implements OnInit {
     this.api.get<ItemType[]>('itemtypes').subscribe(d => this.types.set(d));
     this.api.get<ItemUOM[]>('uoms').subscribe(d => this.uoms.set(d));
     this.api.get<BarcodeType[]>('barcodetypes').subscribe(d => this.barcodeTypes.set(d));
+    this.api.get<InventoryValidationMethod[]>('inventoryvalidationmethods').subscribe(d => this.inventoryValidationMethods.set(d));
+    this.api.get<Warehouse[]>('warehouses').subscribe(d => this.warehouses.set(d));
 
     const id = Number(this.route.snapshot.paramMap.get('id'));
     if (id) {
@@ -170,12 +178,21 @@ export class ItemsOperationComponent implements OnInit {
     return this.barcodeTypes().map(b => ({ value: b.barcodeTypeId, label: b.name }));
   }
 
+  get inventoryValidationMethodOptions(): SelectOption[] {
+    return this.inventoryValidationMethods().map(m => ({ value: m.inventoryValidationMethodId, label: m.name }));
+  }
+
+  get warehouseOptions(): SelectOption[] {
+    return this.warehouses().filter(w => !w.isParent).map(w => ({ value: w.id, label: this.isRtl ? (w.name_AR || w.name_EN) : (w.name_EN || w.name_AR || '') }));
+  }
+
   private blank(): Partial<Item> {
     return {
       id: 0, internalCode: '', name_EN: '', name_AR: '',
       itemGroupId: 0, itemTypeId: 1,
       defaultUOMId: 0, defaultPurchaseUOMId: undefined, defaultSellingUOMId: undefined,
       acceptSelling: true,
+      inventoryValidationMethodId: undefined, defaultWarehouseId: undefined,
       description: '', openingStock: undefined, expirationDate: undefined,
       minOrderQuantity: undefined, safetyStock: undefined,
       isActive: true, isFavorite: false,

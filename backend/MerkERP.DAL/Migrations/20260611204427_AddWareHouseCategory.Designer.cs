@@ -4,6 +4,7 @@ using MerkERP.DAL.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MerkERP.DAL.Migrations
 {
     [DbContext(typeof(MerkDbContext))]
-    partial class MerkDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260611204427_AddWareHouseCategory")]
+    partial class AddWareHouseCategory
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -638,52 +641,6 @@ namespace MerkERP.DAL.Migrations
                     b.ToTable("WareHouseCategory_cs");
                 });
 
-            modelBuilder.Entity("MerkERP.Core.Models.WareHouseType_s", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<string>("Name_AR")
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("Name_EN")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(200)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("WareHouseType_s");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1L,
-                            Name_AR = "مستودعات الأدوية",
-                            Name_EN = "Pharmaceutical Warehouses"
-                        },
-                        new
-                        {
-                            Id = 2L,
-                            Name_AR = "مستودعات المستهلكات ومعدات الوقاية الشخصية",
-                            Name_EN = "Consumables & PPE Warehouses"
-                        },
-                        new
-                        {
-                            Id = 3L,
-                            Name_AR = "مستودعات الأجهزة والمعدات الطبية",
-                            Name_EN = "Medical Device & Equipment Warehouses"
-                        },
-                        new
-                        {
-                            Id = 4L,
-                            Name_AR = "مستودعات العمليات الجراحية المعقمة",
-                            Name_EN = "Sterile Surgical Warehouses"
-                        });
-                });
-
             modelBuilder.Entity("MerkERP.Core.Models.WareHouse_cs", b =>
                 {
                     b.Property<long>("Id")
@@ -700,9 +657,6 @@ namespace MerkERP.DAL.Migrations
 
                     b.Property<DateTime?>("InsertedDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("InternalCode")
-                        .HasColumnType("nvarchar(50)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
@@ -723,19 +677,9 @@ namespace MerkERP.DAL.Migrations
                     b.Property<long?>("ParentWarehouseId")
                         .HasColumnType("bigint");
 
-                    b.Property<long?>("WareHouseCategoryId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("WareHouseTypeId")
-                        .HasColumnType("bigint");
-
                     b.HasKey("Id");
 
                     b.HasIndex("ParentWarehouseId");
-
-                    b.HasIndex("WareHouseCategoryId");
-
-                    b.HasIndex("WareHouseTypeId");
 
                     b.ToTable("WareHouse_cs");
                 });
@@ -951,21 +895,7 @@ namespace MerkERP.DAL.Migrations
                         .HasForeignKey("ParentWarehouseId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("MerkERP.Core.Models.WareHouseCategory_cs", "WareHouseCategory")
-                        .WithMany()
-                        .HasForeignKey("WareHouseCategoryId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("MerkERP.Core.Models.WareHouseType_s", "WareHouseType")
-                        .WithMany()
-                        .HasForeignKey("WareHouseTypeId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.Navigation("ParentWarehouse");
-
-                    b.Navigation("WareHouseCategory");
-
-                    b.Navigation("WareHouseType");
                 });
 
             modelBuilder.Entity("MerkERP.Core.Models.WarehouseTransaction", b =>

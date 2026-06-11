@@ -4,6 +4,7 @@ using MerkERP.DAL.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MerkERP.DAL.Migrations
 {
     [DbContext(typeof(MerkDbContext))]
-    partial class MerkDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260611204714_AddWareHouseType")]
+    partial class AddWareHouseType
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -701,9 +704,6 @@ namespace MerkERP.DAL.Migrations
                     b.Property<DateTime?>("InsertedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("InternalCode")
-                        .HasColumnType("nvarchar(50)");
-
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
@@ -723,19 +723,9 @@ namespace MerkERP.DAL.Migrations
                     b.Property<long?>("ParentWarehouseId")
                         .HasColumnType("bigint");
 
-                    b.Property<long?>("WareHouseCategoryId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("WareHouseTypeId")
-                        .HasColumnType("bigint");
-
                     b.HasKey("Id");
 
                     b.HasIndex("ParentWarehouseId");
-
-                    b.HasIndex("WareHouseCategoryId");
-
-                    b.HasIndex("WareHouseTypeId");
 
                     b.ToTable("WareHouse_cs");
                 });
@@ -951,21 +941,7 @@ namespace MerkERP.DAL.Migrations
                         .HasForeignKey("ParentWarehouseId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("MerkERP.Core.Models.WareHouseCategory_cs", "WareHouseCategory")
-                        .WithMany()
-                        .HasForeignKey("WareHouseCategoryId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("MerkERP.Core.Models.WareHouseType_s", "WareHouseType")
-                        .WithMany()
-                        .HasForeignKey("WareHouseTypeId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.Navigation("ParentWarehouse");
-
-                    b.Navigation("WareHouseCategory");
-
-                    b.Navigation("WareHouseType");
                 });
 
             modelBuilder.Entity("MerkERP.Core.Models.WarehouseTransaction", b =>
