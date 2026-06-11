@@ -17,19 +17,18 @@ public class Item_cs
 	public DateTime? ExpirationDate { get; set; }
 	public int? MinOrderQuantity { get; set; }
 	public long? SafetyStock { get; set; }
-	public bool HasBatch { get; set; }
-	public bool HasSerial { get; set; }
 	public bool IsActive { get; set; } = true;
 	public bool IsFavorite { get; set; } = false;
 	public long? InsertedBy { get; set; }
 	public DateTime? InsertedDate { get; set; }
 
-	public ItemGroup_cs ItemGroup { get; set; } = null!;
-	public ItemType_s ItemType { get; set; } = null!;
-	public UOM_cs DefaultUOM { get; set; } = null!;
+	public ItemGroup_cs? ItemGroup { get; set; }
+	public ItemType_s? ItemType { get; set; }
+	public UOM_cs? DefaultUOM { get; set; }
 	public UOM_cs? DefaultPurchaseUOM { get; set; }
 	public UOM_cs? DefaultSellingUOM { get; set; }
 	public ICollection<ItemUOMConversion_cs> UOMConversions { get; set; } = [];
+	public ICollection<Item_UOM_Barcode_cs> Barcodes { get; set; } = [];
 	public ICollection<WarehouseTransaction> WarehouseTransactions { get; set; } = [];
 	public ICollection<StockLedgerTransaction> StockLedgerTransactions { get; set; } = [];
 }

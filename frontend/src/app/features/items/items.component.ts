@@ -28,8 +28,6 @@ interface Item {
   expirationDate?: string;
   minOrderQuantity?: number;
   safetyStock?: number;
-  hasBatch: boolean;
-  hasSerial: boolean;
   isActive: boolean;
   isFavorite: boolean;
   itemGroup?: ItemGroup;

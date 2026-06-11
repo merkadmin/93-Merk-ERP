@@ -9,9 +9,20 @@ import { RegularOperationHeaderComponent } from '../../../shared/components/card
 import { RegularOperationActionsComponent } from '../../../shared/components/cards/regular-operation-actions/regular-operation-actions.component';
 import { CustomSelectInputComponent, SelectOption } from '../../../shared/components/custom-controls/custom-select-input/custom-select-input.component';
 
-interface ItemGroup { itemGroupId: number; name_EN: string; name_AR?: string; }
-interface ItemType  { itemTypeId: number;  name: string; }
-interface ItemUOM   { id: number; name_EN: string; name_AR?: string; }
+interface ItemGroup   { itemGroupId: number; name_EN: string; name_AR?: string; }
+interface ItemType    { itemTypeId: number;  name: string; }
+interface ItemUOM     { id: number; name_EN: string; name_AR?: string; }
+interface BarcodeType { barcodeTypeId: number; name: string; }
+
+interface ItemBarcode {
+  id: number;
+  itemId: number;
+  barcodeTypeId: number;
+  uomId: number;
+  barcode: string;
+  barcodeType?: BarcodeType;
+  uom?: ItemUOM;
+}
 
 interface Item {
   id: number;
@@ -29,8 +40,6 @@ interface Item {
   expirationDate?: string;
   minOrderQuantity?: number;
   safetyStock?: number;
-  hasBatch: boolean;
-  hasSerial: boolean;
   isActive: boolean;
   isFavorite: boolean;
 }
@@ -60,26 +69,33 @@ export class ItemsOperationComponent implements OnInit {
 
   get isRtl() { return this.doc.documentElement.dir === 'rtl'; }
 
-  isEdit    = signal(false);
-  saving    = signal(false);
-  savingNew = signal(false);
-  savedRows = signal<SavedRow[]>([]);
+  isEdit        = signal(false);
+  saving        = signal(false);
+  savingNew     = signal(false);
+  addingBarcode = signal(false);
+  savedRows     = signal<SavedRow[]>([]);
+  activeTab     = signal<'general' | 'inventory' | 'barcodes'>('general');
 
-  groups = signal<ItemGroup[]>([]);
-  types  = signal<ItemType[]>([]);
-  uoms   = signal<ItemUOM[]>([]);
+  groups       = signal<ItemGroup[]>([]);
+  types        = signal<ItemType[]>([]);
+  uoms         = signal<ItemUOM[]>([]);
+  barcodeTypes = signal<BarcodeType[]>([]);
+  barcodes     = signal<ItemBarcode[]>([]);
 
   form: Partial<Item> = this.blank();
+  newBarcode = this.blankBarcode();
 
   ngOnInit() {
     this.api.get<ItemGroup[]>('itemgroups').subscribe(d => this.groups.set(d));
     this.api.get<ItemType[]>('itemtypes').subscribe(d => this.types.set(d));
     this.api.get<ItemUOM[]>('uoms').subscribe(d => this.uoms.set(d));
+    this.api.get<BarcodeType[]>('barcodetypes').subscribe(d => this.barcodeTypes.set(d));
 
     const id = Number(this.route.snapshot.paramMap.get('id'));
     if (id) {
       this.isEdit.set(true);
       this.api.get<Item>(`items/${id}`).subscribe(item => this.form = { ...item });
+      this.loadBarcodes(id);
     } else {
       this.loadNextCode();
     }
@@ -91,12 +107,51 @@ export class ItemsOperationComponent implements OnInit {
     });
   }
 
+  private loadBarcodes(itemId: number) {
+    this.api.get<ItemBarcode[]>(`items/${itemId}/barcodes`).subscribe(d => this.barcodes.set(d));
+  }
+
+  private blankBarcode() {
+    return { barcodeTypeId: 0, uomId: 0, barcode: '' };
+  }
+
+  addBarcode() {
+    if (!this.newBarcode.barcodeTypeId || !this.newBarcode.uomId || !this.newBarcode.barcode.trim()) {
+      this.toastr.warning(this.translate.instant('items.barcode_fill_all'));
+      return;
+    }
+    this.addingBarcode.set(true);
+    this.api.post<ItemBarcode>(`items/${this.form.id}/barcodes`, this.newBarcode).subscribe({
+      next: () => {
+        this.loadBarcodes(this.form.id!);
+        this.newBarcode = this.blankBarcode();
+        this.addingBarcode.set(false);
+      },
+      error: () => this.addingBarcode.set(false),
+    });
+  }
+
+  removeBarcode(id: number) {
+    this.api.delete(`items/${this.form.id}/barcodes/${id}`).subscribe(() =>
+      this.barcodes.update(list => list.filter(b => b.id !== id))
+    );
+  }
+
   uomLabel(uom: ItemUOM): string {
     return this.isRtl ? (uom.name_AR || uom.name_EN) : (uom.name_EN || uom.name_AR || '');
   }
 
   groupLabel(g: ItemGroup): string {
     return this.isRtl ? (g.name_AR || g.name_EN) : (g.name_EN || g.name_AR || '');
+  }
+
+  barcodeTypeName(id: number): string {
+    return this.barcodeTypes().find(b => b.barcodeTypeId === id)?.name ?? '—';
+  }
+
+  uomName(id: number): string {
+    const u = this.uoms().find(u => u.id === id);
+    return u ? this.uomLabel(u) : '—';
   }
 
   get groupOptions(): SelectOption[] {
@@ -111,6 +166,10 @@ export class ItemsOperationComponent implements OnInit {
     return this.uoms().map(u => ({ value: u.id, label: this.uomLabel(u) }));
   }
 
+  get barcodeTypeOptions(): SelectOption[] {
+    return this.barcodeTypes().map(b => ({ value: b.barcodeTypeId, label: b.name }));
+  }
+
   private blank(): Partial<Item> {
     return {
       id: 0, internalCode: '', name_EN: '', name_AR: '',
@@ -119,7 +178,7 @@ export class ItemsOperationComponent implements OnInit {
       acceptSelling: true,
       description: '', openingStock: undefined, expirationDate: undefined,
       minOrderQuantity: undefined, safetyStock: undefined,
-      hasBatch: false, hasSerial: false, isActive: true, isFavorite: false,
+      isActive: true, isFavorite: false,
     };
   }
 
@@ -178,6 +237,7 @@ export class ItemsOperationComponent implements OnInit {
           this.form = this.blank();
           this.isEdit.set(false);
           this.savingNew.set(false);
+          this.activeTab.set('general');
           this.loadNextCode();
         } else {
           this.back();
@@ -193,7 +253,7 @@ export class ItemsOperationComponent implements OnInit {
   save()       { this.submit(false); }
   saveAndNew() { this.submit(true);  }
 
-  resetForm() { this.form = this.blank(); this.loadNextCode(); }
+  resetForm() { this.form = this.blank(); this.activeTab.set('general'); this.loadNextCode(); }
 
   back() { this.router.navigate(['/stock/items']); }
 }

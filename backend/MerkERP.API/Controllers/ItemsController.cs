@@ -110,8 +110,6 @@ public class ItemsController(MerkDbContext db, ExcelService excel) : ControllerB
 			var typeName      = row.Length > 4 ? row[4] : "";
 			var uomName       = row.Length > 5 ? row[5] : "";
 			var desc          = row.Length > 6 ? row[6] : "";
-			var batchStr      = row.Length > 7 ? row[7] : "";
-			var serialStr     = row.Length > 8 ? row[8] : "";
 
 			if (string.IsNullOrWhiteSpace(internalCode) && string.IsNullOrWhiteSpace(nameEn)) continue;
 
@@ -151,8 +149,6 @@ public class ItemsController(MerkDbContext db, ExcelService excel) : ControllerB
 				ItemTypeId   = type.ItemTypeId,
 				DefaultUOMId = uom.Id,
 				Description  = string.IsNullOrWhiteSpace(desc) ? null : desc,
-				HasBatch     = batchStr.Trim().ToLowerInvariant()  is "yes" or "true" or "1",
-				HasSerial    = serialStr.Trim().ToLowerInvariant() is "yes" or "true" or "1",
 				IsActive     = true,
 				InsertedDate = DateTime.UtcNow,
 			});
@@ -202,8 +198,6 @@ public class ItemsController(MerkDbContext db, ExcelService excel) : ControllerB
 		existing.ExpirationDate        = e.ExpirationDate;
 		existing.MinOrderQuantity      = e.MinOrderQuantity;
 		existing.SafetyStock           = e.SafetyStock;
-		existing.HasBatch              = e.HasBatch;
-		existing.HasSerial             = e.HasSerial;
 		existing.IsActive              = e.IsActive;
 		existing.IsFavorite            = e.IsFavorite;
 		await db.SaveChangesAsync();
@@ -258,6 +252,35 @@ public class ItemsController(MerkDbContext db, ExcelService excel) : ControllerB
 			.Where(i => ids.Contains(i.Id))
 			.ToListAsync();
 		db.Item_cs.RemoveRange(entities);
+		await db.SaveChangesAsync();
+		return NoContent();
+	}
+
+	// ── Barcodes ────────────────────────────────────────────────────────────
+
+	[HttpGet("{itemId:long}/barcodes")]
+	public async Task<IActionResult> GetBarcodes(long itemId) =>
+		Ok(await db.Item_UOM_Barcode_cs
+			.Where(b => b.ItemId == itemId)
+			.Include(b => b.BarcodeType)
+			.Include(b => b.UOM)
+			.ToListAsync());
+
+	[HttpPost("{itemId:long}/barcodes")]
+	public async Task<IActionResult> AddBarcode(long itemId, Item_UOM_Barcode_cs barcode)
+	{
+		barcode.ItemId = itemId;
+		db.Item_UOM_Barcode_cs.Add(barcode);
+		await db.SaveChangesAsync();
+		return Ok(barcode);
+	}
+
+	[HttpDelete("{itemId:long}/barcodes/{id:long}")]
+	public async Task<IActionResult> DeleteBarcode(long itemId, long id)
+	{
+		var b = await db.Item_UOM_Barcode_cs.FindAsync(id);
+		if (b is null || b.ItemId != itemId) return NotFound();
+		db.Item_UOM_Barcode_cs.Remove(b);
 		await db.SaveChangesAsync();
 		return NoContent();
 	}

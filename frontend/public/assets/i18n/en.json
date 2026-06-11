@@ -53,7 +53,8 @@
     "clear_filter": "Clear Filter",
     "retry": "Retry",
     "server_offline_title": "Server Not Responding",
-    "server_offline_message": "Unable to reach the server. Please check that the backend is running and try again."
+    "server_offline_message": "Unable to reach the server. Please check that the backend is running and try again.",
+    "general": "Details"
   },
   "items": {
     "title": "Items",
@@ -79,7 +80,14 @@
     "delete_confirm": "Delete this item?",
     "delete_selected_confirm": "Delete {{count}} selected item(s)?",
     "saved_rows_title_single": "record saved in this session",
-    "saved_rows_title": "records saved in this session"
+    "saved_rows_title": "records saved in this session",
+    "inventory_tab": "Inventory",
+    "barcodes": "Barcodes",
+    "barcode": "Barcode",
+    "barcode_type": "Barcode Type",
+    "no_barcodes": "No barcodes added yet.",
+    "barcode_fill_all": "Please fill in Barcode Type, UOM and Barcode value.",
+    "barcodes_save_first": "Save the item first, then you can add barcodes."
   },
   "item_groups": {
     "title": "Item Groups",

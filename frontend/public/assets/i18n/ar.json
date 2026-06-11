@@ -53,7 +53,8 @@
     "clear_filter": "مسح الفلتر",
     "retry": "إعادة المحاولة",
     "server_offline_title": "الخادم لا يستجيب",
-    "server_offline_message": "تعذر الوصول إلى الخادم. يرجى التأكد من تشغيل الخادم والمحاولة مجدداً."
+    "server_offline_message": "تعذر الوصول إلى الخادم. يرجى التأكد من تشغيل الخادم والمحاولة مجدداً.",
+    "general": "رئيسي"
   },
   "items": {
     "title": "الأصناف",
@@ -79,7 +80,14 @@
     "delete_confirm": "حذف هذا الصنف؟",
     "delete_selected_confirm": "حذف {{count}} صنف محدد؟",
     "saved_rows_title_single": "سجل تم حفظه في هذه الجلسة",
-    "saved_rows_title": "سجلات تم حفظها في هذه الجلسة"
+    "saved_rows_title": "سجلات تم حفظها في هذه الجلسة",
+    "inventory_tab": "المخزون",
+    "barcodes": "باركود",
+    "barcode": "الباركود",
+    "barcode_type": "نوع الباركود",
+    "no_barcodes": "لم يتم إضافة باركودات بعد.",
+    "barcode_fill_all": "يرجى تعبئة نوع الباركود ووحدة القياس وقيمة الباركود.",
+    "barcodes_save_first": "احفظ الصنف أولاً، ثم يمكنك إضافة الباركودات."
   },
   "item_groups": {
     "title": "مجموعات الأصناف",

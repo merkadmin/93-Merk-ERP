@@ -32,8 +32,6 @@
           <th>{{ 'items.group' | translate }}</th>
           <th>{{ 'items.type' | translate }}</th>
           <th>{{ 'items.default_uom' | translate }}</th>
-          <th>{{ 'items.batch' | translate }}</th>
-          <th>{{ 'items.serial' | translate }}</th>
           <th [class.text-end]="!isRtl" [class.text-start]="isRtl">{{ 'common.actions' | translate }}</th>
         </tr>
       </thead>
@@ -50,20 +48,6 @@
             <td>{{ groupLabel(item.itemGroup) }}</td>
             <td>{{ item.itemType?.name ?? '—' }}</td>
             <td>{{ uomLabel(item.defaultUOM) }}</td>
-            <td>
-              <span class="badge"
-                [class.badge-light-info]="item.hasBatch"
-                [class.badge-light-secondary]="!item.hasBatch">
-                {{ (item.hasBatch ? 'common.yes' : 'common.no') | translate }}
-              </span>
-            </td>
-            <td>
-              <span class="badge"
-                [class.badge-light-info]="item.hasSerial"
-                [class.badge-light-secondary]="!item.hasSerial">
-                {{ (item.hasSerial ? 'common.yes' : 'common.no') | translate }}
-              </span>
-            </td>
             <td class="text-nowrap" [class.text-end]="!isRtl" [class.text-start]="isRtl">
               <div class="d-inline-flex align-items-center gap-2">
                 <button class="btn btn-icon btn-sm" (click)="toggleFavorite(item)"

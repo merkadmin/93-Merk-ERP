@@ -4,6 +4,7 @@ using MerkERP.DAL.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MerkERP.DAL.Migrations
 {
     [DbContext(typeof(MerkDbContext))]
-    partial class MerkDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260611184940_RemoveHasBatchHasSerialFromItem")]
+    partial class RemoveHasBatchHasSerialFromItem
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,80 +24,6 @@ namespace MerkERP.DAL.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("MerkERP.Core.Models.BarcodeType_s", b =>
-                {
-                    b.Property<long>("BarcodeTypeId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("BarcodeTypeId"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("BarcodeTypeId");
-
-                    b.ToTable("BarcodeType_s");
-
-                    b.HasData(
-                        new
-                        {
-                            BarcodeTypeId = 1L,
-                            Name = "EAN-13"
-                        },
-                        new
-                        {
-                            BarcodeTypeId = 2L,
-                            Name = "EAN-8"
-                        },
-                        new
-                        {
-                            BarcodeTypeId = 3L,
-                            Name = "UPC-A"
-                        },
-                        new
-                        {
-                            BarcodeTypeId = 4L,
-                            Name = "UPC-E"
-                        },
-                        new
-                        {
-                            BarcodeTypeId = 5L,
-                            Name = "Code 39"
-                        },
-                        new
-                        {
-                            BarcodeTypeId = 6L,
-                            Name = "Code 128"
-                        },
-                        new
-                        {
-                            BarcodeTypeId = 7L,
-                            Name = "ITF-14"
-                        },
-                        new
-                        {
-                            BarcodeTypeId = 8L,
-                            Name = "GS1-128"
-                        },
-                        new
-                        {
-                            BarcodeTypeId = 9L,
-                            Name = "QR Code"
-                        },
-                        new
-                        {
-                            BarcodeTypeId = 10L,
-                            Name = "Data Matrix"
-                        },
-                        new
-                        {
-                            BarcodeTypeId = 11L,
-                            Name = "Custom"
-                        });
-                });
 
             modelBuilder.Entity("MerkERP.Core.Models.ItemGroup_cs", b =>
                 {
@@ -227,38 +156,6 @@ namespace MerkERP.DAL.Migrations
                     b.HasIndex("UOMId");
 
                     b.ToTable("ItemUOMConversion_cs");
-                });
-
-            modelBuilder.Entity("MerkERP.Core.Models.Item_UOM_Barcode_cs", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<string>("Barcode")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<long>("BarcodeTypeId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("ItemId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("UOMId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BarcodeTypeId");
-
-                    b.HasIndex("ItemId");
-
-                    b.HasIndex("UOMId");
-
-                    b.ToTable("Item_UOM_Barcode_cs");
                 });
 
             modelBuilder.Entity("MerkERP.Core.Models.Item_cs", b =>
@@ -644,33 +541,6 @@ namespace MerkERP.DAL.Migrations
                     b.Navigation("UOM");
                 });
 
-            modelBuilder.Entity("MerkERP.Core.Models.Item_UOM_Barcode_cs", b =>
-                {
-                    b.HasOne("MerkERP.Core.Models.BarcodeType_s", "BarcodeType")
-                        .WithMany()
-                        .HasForeignKey("BarcodeTypeId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("MerkERP.Core.Models.Item_cs", "Item")
-                        .WithMany("Barcodes")
-                        .HasForeignKey("ItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("MerkERP.Core.Models.UOM_cs", "UOM")
-                        .WithMany()
-                        .HasForeignKey("UOMId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("BarcodeType");
-
-                    b.Navigation("Item");
-
-                    b.Navigation("UOM");
-                });
-
             modelBuilder.Entity("MerkERP.Core.Models.Item_cs", b =>
                 {
                     b.HasOne("MerkERP.Core.Models.UOM_cs", "DefaultPurchaseUOM")
@@ -800,8 +670,6 @@ namespace MerkERP.DAL.Migrations
 
             modelBuilder.Entity("MerkERP.Core.Models.Item_cs", b =>
                 {
-                    b.Navigation("Barcodes");
-
                     b.Navigation("StockLedgerTransactions");
 
                     b.Navigation("UOMConversions");
