@@ -1,7 +1,7 @@
 <div class="csi-wrap">
 
   <!-- Trigger -->
-  <button type="button" class="csi-btn" [class.csi-btn--open]="isOpen" (click)="toggle()" [disabled]="disabled()">
+  <button type="button" class="csi-btn form-control" [class.csi-btn--open]="isOpen" (click)="toggle()" [disabled]="disabled()">
     @if (value() !== null && value() !== 0) {
       <span class="csi-selected fw-semibold flex-grow-1">{{ selectedLabel }}</span>
     } @else {
