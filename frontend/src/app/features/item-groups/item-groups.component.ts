@@ -51,8 +51,9 @@ export class ItemGroupsComponent implements OnInit {
 
   get searchFields(): SearchField[] {
     return [
-      { key: 'name_EN', label: this.translate.instant('common.name_en'), type: 'text' },
-      { key: 'name_AR', label: this.translate.instant('common.name_ar'), type: 'text' },
+      { key: 'internalCode', label: this.translate.instant('common.internal_code'), type: 'text' },
+      { key: 'name_AR',      label: this.translate.instant('common.name') + ' (AR)', type: 'text' },
+      { key: 'name_EN',      label: this.translate.instant('common.name') + ' (EN)', type: 'text' },
     ];
   }
 
@@ -66,8 +67,9 @@ export class ItemGroupsComponent implements OnInit {
   get filteredGroups(): ItemGroup[] {
     const f = this.activeFilter();
     return this.sortedGroups.filter(g => {
-      if (f['name_EN'] != null && !g.name_EN.toLowerCase().includes((f['name_EN'] as string).toLowerCase())) return false;
-      if (f['name_AR'] != null && !(g.name_AR ?? '').toLowerCase().includes((f['name_AR'] as string).toLowerCase())) return false;
+      if (f['internalCode'] != null && !(g.internalCode ?? '').toLowerCase().includes((f['internalCode'] as string).toLowerCase())) return false;
+      if (f['name_AR']      != null && !(g.name_AR ?? '').toLowerCase().includes((f['name_AR'] as string).toLowerCase())) return false;
+      if (f['name_EN']      != null && !g.name_EN.toLowerCase().includes((f['name_EN'] as string).toLowerCase())) return false;
       return true;
     });
   }

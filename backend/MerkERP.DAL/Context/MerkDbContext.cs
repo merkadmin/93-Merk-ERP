@@ -152,6 +152,8 @@ public class MerkDbContext : DbContext
 			.Property(e => e.Description).HasColumnType("nvarchar(max)");
 
 		m.Entity<WareHouseCategory_cs>()
+			.Property(e => e.InternalCode).HasColumnType("nvarchar(50)");
+		m.Entity<WareHouseCategory_cs>()
 			.Property(e => e.Name_EN).HasColumnType("nvarchar(200)");
 		m.Entity<WareHouseCategory_cs>()
 			.Property(e => e.Name_AR).HasColumnType("nvarchar(200)");

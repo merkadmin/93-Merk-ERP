@@ -25,6 +25,7 @@ export class SidebarService {
       iconColor: 'text-primary',
       isVisible: () => true,
       getChildren: () => [
+        { route: '/stock/warehouse-categories',    icon: 'ki-outline ki-abstract-28',  labelKey: 'nav.warehouse_categories' },
         { route: '/stock/warehouses',              icon: 'ki-outline ki-home-2',       labelKey: 'nav.warehouses' },
         { route: '/stock/items',                   icon: 'ki-outline ki-package',      labelKey: 'nav.items' },
         { route: '/stock/item-groups',             icon: 'ki-outline ki-category',     labelKey: 'nav.item_groups' },

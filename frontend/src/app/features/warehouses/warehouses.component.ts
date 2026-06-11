@@ -2,13 +2,16 @@ import { DOCUMENT } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2';
 import { ApiService } from '../../core/api.service';
 import { RegularListHeaderWithActionsComponent } from '../../shared/components/cards/regular-list-header-with-actions/regular-list-header-with-actions.component';
 import { RegularListSearchActionsComponent, SearchField } from '../../shared/components/cards/regular-list-search-actions/regular-list-search-actions.component';
 
-interface Warehouse     { id: number; internalCode: string | null; name_EN: string; name_AR: string | null; parentWarehouseId: number | null; wareHouseTypeId: number | null; wareHouseCategoryId: number | null; isParent: boolean; isActive: boolean; }
-interface WarehouseNode extends Warehouse { level: number; }
+interface Warehouse         { id: number; internalCode: string | null; name_EN: string; name_AR: string | null; parentWarehouseId: number | null; wareHouseTypeId: number | null; wareHouseCategoryId: number | null; isParent: boolean; isActive: boolean; }
+interface WarehouseNode     extends Warehouse { level: number; }
+interface WareHouseType     { id: number; name_EN: string; name_AR: string | null; }
+interface WareHouseCategory { id: number; name_EN: string; name_AR: string | null; }
 
 @Component({
   selector: 'app-warehouses',
@@ -21,16 +24,23 @@ export class WarehousesComponent implements OnInit {
   private api       = inject(ApiService);
   private router    = inject(Router);
   private translate = inject(TranslateService);
+  private toastr    = inject(ToastrService);
   private doc       = inject(DOCUMENT);
 
   get isRtl() { return this.doc.documentElement.dir === 'rtl'; }
 
-  warehouses   = signal<Warehouse[]>([]);
+  warehouses        = signal<Warehouse[]>([]);
+  wareHouseTypes    = signal<WareHouseType[]>([]);
+  wareHouseCategories = signal<WareHouseCategory[]>([]);
   selectedIds  = signal<Set<number>>(new Set());
   activeFilter = signal<Record<string, string | number | null>>({});
 
   get searchFields(): SearchField[] {
-    return [{ key: 'name', label: this.translate.instant('common.name'), type: 'text' }];
+    return [
+      { key: 'internalCode', label: this.translate.instant('common.internal_code'), type: 'text' },
+      { key: 'name_AR',      label: this.translate.instant('common.name') + ' (AR)', type: 'text' },
+      { key: 'name_EN',      label: this.translate.instant('common.name') + ' (EN)', type: 'text' },
+    ];
   }
 
   label(w: Warehouse): string {
@@ -44,9 +54,13 @@ export class WarehousesComponent implements OnInit {
 
   private get flatFiltered(): WarehouseNode[] {
     const f = this.activeFilter();
-    const q = (f['name'] as string | null) ?? '';
     return [...this.warehouses()]
-      .filter(w => w.name_EN.toLowerCase().includes(q.toLowerCase()) || (w.name_AR ?? '').toLowerCase().includes(q.toLowerCase()))
+      .filter(w => {
+        if (f['internalCode'] != null && !(w.internalCode ?? '').toLowerCase().includes((f['internalCode'] as string).toLowerCase())) return false;
+        if (f['name_AR']      != null && !(w.name_AR ?? '').toLowerCase().includes((f['name_AR'] as string).toLowerCase())) return false;
+        if (f['name_EN']      != null && !w.name_EN.toLowerCase().includes((f['name_EN'] as string).toLowerCase())) return false;
+        return true;
+      })
       .sort((a, b) => a.name_EN.localeCompare(b.name_EN))
       .map(w => ({ ...w, level: 0 }));
   }
@@ -77,6 +91,18 @@ export class WarehousesComponent implements OnInit {
     this.selectedIds.set(new Set());
   }
 
+  typeLabel(id: number | null): string {
+    if (!id) return '—';
+    const t = this.wareHouseTypes().find(x => x.id === id);
+    return t ? (this.isRtl ? (t.name_AR || t.name_EN) : (t.name_EN || t.name_AR || '')) : '—';
+  }
+
+  categoryLabel(id: number | null): string {
+    if (!id) return '—';
+    const c = this.wareHouseCategories().find(x => x.id === id);
+    return c ? (this.isRtl ? (c.name_AR || c.name_EN) : (c.name_EN || c.name_AR || '')) : '—';
+  }
+
   ngOnInit() { this.load(); }
 
   load() {
@@ -84,6 +110,8 @@ export class WarehousesComponent implements OnInit {
       this.warehouses.set(d);
       this.selectedIds.set(new Set());
     });
+    this.api.get<WareHouseType[]>('warehousetypes').subscribe(d => this.wareHouseTypes.set(d));
+    this.api.get<WareHouseCategory[]>('warehousecategories').subscribe(d => this.wareHouseCategories.set(d));
   }
 
   isSelected(id: number) { return this.selectedIds().has(id); }
@@ -109,6 +137,35 @@ export class WarehousesComponent implements OnInit {
 
   addNew()         { this.router.navigate(['/stock/warehouses/operation']); }
   edit(id: number) { this.router.navigate(['/stock/warehouses/operation', id]); }
+
+  exportTemplate() {
+    this.api.getBlob('warehouses/export-template').subscribe(blob => {
+      const url = URL.createObjectURL(blob);
+      const a   = document.createElement('a');
+      a.href     = url;
+      a.download = 'warehouses-template.xlsx';
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+  }
+
+  importExcel(file: File) {
+    const fd = new FormData();
+    fd.append('file', file);
+    this.api.post<{ created: number; errors: string[] }>('warehouses/import', fd).subscribe({
+      next: result => {
+        if (result.errors.length === 0) {
+          this.toastr.success(this.translate.instant('common.import_success_count', { count: result.created }));
+        } else {
+          const msg = `${this.translate.instant('common.import_success_count', { count: result.created })}<br>`
+            + result.errors.map(e => `• ${e}`).join('<br>');
+          this.toastr.warning(msg, this.translate.instant('common.import_partial'), { enableHtml: true, timeOut: 8000 });
+        }
+        this.load();
+      },
+      error: () => this.toastr.error(this.translate.instant('common.import_error')),
+    });
+  }
 
   toggleActive(w: Warehouse) {
     this.api.patch<Warehouse>(`warehouses/${w.id}/toggle-active`).subscribe(updated =>

@@ -23,6 +23,10 @@ export const routes: Routes = [
   { path: 'stock/uom-conversion-factors/operation',      loadComponent: () => import('./features/uom-conversion-factors/operations/uom-conversion-factors-operation.component').then(m => m.UomConversionFactorsOperationComponent) },
   { path: 'stock/uom-conversion-factors/operation/:id',  loadComponent: () => import('./features/uom-conversion-factors/operations/uom-conversion-factors-operation.component').then(m => m.UomConversionFactorsOperationComponent) },
 
+  { path: 'stock/warehouse-categories',               loadComponent: () => import('./features/warehouse-categories/warehouse-categories.component').then(m => m.WarehouseCategoriesComponent) },
+  { path: 'stock/warehouse-categories/operation',     loadComponent: () => import('./features/warehouse-categories/operations/warehouse-categories-operation.component').then(m => m.WarehouseCategoriesOperationComponent) },
+  { path: 'stock/warehouse-categories/operation/:id', loadComponent: () => import('./features/warehouse-categories/operations/warehouse-categories-operation.component').then(m => m.WarehouseCategoriesOperationComponent) },
+
   { path: 'stock/warehouses',               loadComponent: () => import('./features/warehouses/warehouses.component').then(m => m.WarehousesComponent) },
   { path: 'stock/warehouses/operation',     loadComponent: () => import('./features/warehouses/operations/warehouses-operation.component').then(m => m.WarehousesOperationComponent) },
   { path: 'stock/warehouses/operation/:id', loadComponent: () => import('./features/warehouses/operations/warehouses-operation.component').then(m => m.WarehousesOperationComponent) },

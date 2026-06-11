@@ -10,6 +10,7 @@
     "uoms": "وحدات القياس",
     "uom_conversion_factors": "معامل وحدات القياس",
     "warehousing": "المستودعات",
+    "warehouse_categories": "فئات المستودعات",
     "warehouses": "المستودعات",
     "current_stock": "المخزون الحالي",
     "stock_movement": "حركة المخزون"
@@ -133,6 +134,15 @@
     "saved_rows_title": "سجلات تم حفظها في هذه الجلسة",
     "delete_confirm": "حذف معامل التحويل هذا؟",
     "delete_selected_confirm": "حذف {{count}} معامل محدد؟"
+  },
+  "warehouse_categories": {
+    "title": "فئات المستودعات",
+    "add_title": "مجموعة مستودع جديدة",
+    "edit_title": "تعديل مجموعة المستودع",
+    "delete_confirm": "حذف مجموعة المستودع هذه؟",
+    "delete_selected_confirm": "حذف {{count}} مجموعة محددة؟",
+    "saved_rows_title_single": "سجل تم حفظه في هذه الجلسة",
+    "saved_rows_title": "سجلات تم حفظها في هذه الجلسة"
   },
   "warehouses": {
     "title": "المستودعات",

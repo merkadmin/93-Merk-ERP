@@ -3,10 +3,12 @@
   icon="ki-outline ki-home-2"
   color="primary"
   [selectedCount]="selectedIds().size"
-  [showImportExport]="false"
+  [showImportExport]="true"
   (add)="addNew()"
   (refresh)="load()"
-  (deleteSelected)="deleteSelected()" />
+  (deleteSelected)="deleteSelected()"
+  (exportTemplate)="exportTemplate()"
+  (importFile)="importExcel($event)" />
 
 <app-regular-list-search-actions
   [fields]="searchFields"
@@ -23,7 +25,11 @@
               [indeterminate]="isIndeterminate"
               (change)="toggleAll()">
           </th>
-          <th>{{ 'common.name' | translate }}</th>
+          <th>{{ 'common.internal_code' | translate }}</th>
+          <th>{{ 'common.name' | translate }} (AR)</th>
+          <th>{{ 'common.name' | translate }} (EN)</th>
+          <th>{{ 'warehouses.type' | translate }}</th>
+          <th>{{ 'warehouses.category' | translate }}</th>
           <th>{{ 'common.is_parent' | translate }}</th>
           <th>{{ 'common.active' | translate }}</th>
           <th [class.text-end]="!isRtl" [class.text-start]="isRtl">{{ 'common.actions' | translate }}</th>
@@ -37,6 +43,8 @@
                 [checked]="isSelected(w.id)"
                 (change)="toggleOne(w.id)">
             </td>
+            <td class="text-muted">{{ w.internalCode || '—' }}</td>
+            <td class="text-muted" dir="rtl">{{ w.name_AR || '—' }}</td>
             <td class="fw-semibold">
               <div class="d-flex align-items-center" [style.paddingInlineStart.px]="w.level * 24">
                 @if (w.level > 0) {
@@ -49,9 +57,11 @@
                 } @else {
                   <i class="ki-outline ki-home-1 fs-4 text-gray-400 me-2"></i>
                 }
-                {{ label(w) }}
+                {{ w.name_EN }}
               </div>
             </td>
+            <td class="text-muted">{{ typeLabel(w.wareHouseTypeId) }}</td>
+            <td class="text-muted">{{ categoryLabel(w.wareHouseCategoryId) }}</td>
             <td>
               <span class="badge"
                 [class.badge-light-info]="w.isParent"
@@ -92,7 +102,7 @@
           </tr>
         } @empty {
           <tr>
-            <td colspan="5" class="text-center text-muted py-6">—</td>
+            <td colspan="9" class="text-center text-muted py-6">—</td>
           </tr>
         }
       </tbody>

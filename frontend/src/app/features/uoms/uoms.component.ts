@@ -44,8 +44,9 @@ export class UomsComponent implements OnInit {
 
   get searchFields(): SearchField[] {
     return [
-      { key: 'internalCode', label: this.translate.instant('common.internal_code'), type: 'text' },
-      { key: 'name',         label: this.translate.instant('common.name'),         type: 'text' },
+      { key: 'internalCode', label: this.translate.instant('common.internal_code'),                      type: 'text' },
+      { key: 'name_AR',      label: this.translate.instant('common.name') + ' (AR)',                     type: 'text' },
+      { key: 'name_EN',      label: this.translate.instant('common.name') + ' (EN)',                     type: 'text' },
     ];
   }
 
@@ -60,10 +61,8 @@ export class UomsComponent implements OnInit {
     const f = this.activeFilter();
     return this.sortedUoms.filter(u => {
       if (f['internalCode'] != null && !(u.internalCode ?? '').toLowerCase().includes((f['internalCode'] as string).toLowerCase())) return false;
-      if (f['name'] != null) {
-        const q = (f['name'] as string).toLowerCase();
-        if (!(u.name_EN ?? '').toLowerCase().includes(q) && !(u.name_AR ?? '').toLowerCase().includes(q)) return false;
-      }
+      if (f['name_AR']      != null && !(u.name_AR ?? '').toLowerCase().includes((f['name_AR'] as string).toLowerCase())) return false;
+      if (f['name_EN']      != null && !(u.name_EN ?? '').toLowerCase().includes((f['name_EN'] as string).toLowerCase())) return false;
       return true;
     });
   }

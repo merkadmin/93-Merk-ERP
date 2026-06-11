@@ -82,10 +82,11 @@ export class ItemsComponent implements OnInit {
     const typeOpts  = [...typeMap.entries()].map(([value, label])  => ({ value, label })).sort((a, b) => a.label.localeCompare(b.label));
 
     return [
-      { key: 'internalCode', label: this.translate.instant('items.code'),  type: 'text'   },
-      { key: 'name_EN',      label: this.translate.instant('items.name'),  type: 'text'   },
-      { key: 'groupId',      label: this.translate.instant('items.group'), type: 'select', options: groupOpts },
-      { key: 'typeId',       label: this.translate.instant('items.type'),  type: 'select', options: typeOpts  },
+      { key: 'internalCode', label: this.translate.instant('items.code'),                 type: 'text'   },
+      { key: 'name_AR',      label: this.translate.instant('common.name') + ' (AR)',      type: 'text'   },
+      { key: 'name_EN',      label: this.translate.instant('common.name') + ' (EN)',      type: 'text'   },
+      { key: 'groupId',      label: this.translate.instant('items.group'),                type: 'select', options: groupOpts },
+      { key: 'typeId',       label: this.translate.instant('items.type'),                 type: 'select', options: typeOpts  },
     ];
   }
 
@@ -100,6 +101,7 @@ export class ItemsComponent implements OnInit {
     const f = this.activeFilter();
     return this.sortedItems.filter(item => {
       if (f['internalCode'] != null && !item.internalCode.toLowerCase().includes((f['internalCode'] as string).toLowerCase())) return false;
+      if (f['name_AR']      != null && !(item.name_AR ?? '').toLowerCase().includes((f['name_AR'] as string).toLowerCase())) return false;
       if (f['name_EN']      != null && !item.name_EN.toLowerCase().includes((f['name_EN'] as string).toLowerCase())) return false;
       if (f['groupId']      != null && item.itemGroupId !== f['groupId'])  return false;
       if (f['typeId']       != null && item.itemTypeId  !== f['typeId'])   return false;

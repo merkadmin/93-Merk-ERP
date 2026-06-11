@@ -10,6 +10,7 @@
     "uoms": "UOM",
     "uom_conversion_factors": "UOM Conversion Factor",
     "warehousing": "Warehousing",
+    "warehouse_categories": "Warehouse Categories",
     "warehouses": "Warehouses",
     "current_stock": "Current Stock",
     "stock_movement": "Stock Movement"
@@ -133,6 +134,15 @@
     "saved_rows_title": "records saved in this session",
     "delete_confirm": "Delete this conversion factor?",
     "delete_selected_confirm": "Delete {{count}} selected factor(s)?"
+  },
+  "warehouse_categories": {
+    "title": "Warehouse Categories",
+    "add_title": "New Warehouse Category",
+    "edit_title": "Edit Warehouse Category",
+    "delete_confirm": "Delete this warehouse category?",
+    "delete_selected_confirm": "Delete {{count}} selected category(ies)?",
+    "saved_rows_title_single": "record saved in this session",
+    "saved_rows_title": "records saved in this session"
   },
   "warehouses": {
     "title": "Warehouses",
