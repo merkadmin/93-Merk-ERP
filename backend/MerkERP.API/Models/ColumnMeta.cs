@@ -10,18 +10,17 @@ namespace MerkERP.API.Models;
 /// <param name="Order">1-based display order (RTL-aware; lower = rightmost in Arabic).</param>
 /// <param name="EntityProperty">
 ///   Exact PascalCase property name on the C# model class.
-///   For navigation / lookup columns this is the navigation property name
-///   (e.g. "WareHouseCategory"), NOT the FK column.
+///   For navigation columns this is the navigation property (e.g. "WareHouseCategory"), not the FK.
 /// </param>
 /// <param name="ForeignKeyProperty">
-///   The FK column name when <see cref="EntityProperty"/> is a navigation property
-///   (e.g. "WareHouseCategoryId"). Null for direct scalar columns.
+///   The FK scalar column when EntityProperty is a navigation property (e.g. "WareHouseCategoryId").
+///   Null for direct scalar columns.
 /// </param>
-/// <param name="IsSortable">Whether the column supports server/client sort.</param>
-/// <param name="IsFilterable">Whether the column appears in the search/filter bar.</param>
 /// <param name="FilterType">Filter widget: "text" | "select" | "number" | "date" | "boolean" | "none".</param>
 /// <param name="DataType">Underlying data type: "string" | "number" | "boolean" | "date".</param>
 /// <param name="RenderAs">Rendering hint: "text" | "badge" | "tree" | "yesno".</param>
+/// <param name="IsSortable">Whether the column supports sort.</param>
+/// <param name="IsFilterable">Whether the column appears in the filter bar.</param>
 /// <param name="IsVisible">Default visibility; false = hidden but user-toggleable.</param>
 /// <param name="MinWidth">Suggested minimum column width in pixels (null = auto).</param>
 public record ColumnMeta(
@@ -30,14 +29,14 @@ public record ColumnMeta(
     string  LabelAR,
     int     Order,
     string  EntityProperty,
-    string? ForeignKeyProperty = null,
-    bool    IsSortable         = true,
-    bool    IsFilterable       = true,
-    string  FilterType         = "text",
-    string  DataType           = "string",
-    string  RenderAs           = "text",
-    bool    IsVisible          = true,
-    int?    MinWidth           = null
+    string? ForeignKeyProperty = null,   // 6
+    string  FilterType         = "text", // 7
+    string  DataType           = "string",// 8
+    string  RenderAs           = "text", // 9
+    bool    IsSortable         = true,   // 10
+    bool    IsFilterable       = true,   // 11
+    bool    IsVisible          = true,   // 12
+    int?    MinWidth           = null    // 13
 );
 
 /// <summary>

@@ -1,145 +1,65 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MerkERP.API.Models;
+using MerkERP.DAL.Context;
 
 namespace MerkERP.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class MetadataController : ControllerBase
+public class MetadataController(MerkDbContext db) : ControllerBase
 {
-    // ── Public endpoints ────────────────────────────────────────────────────────
+	[HttpGet]
+	public async Task<IActionResult> GetAll()
+	{
+		var dict = await BuildAllAsync();
+		return Ok(dict);
+	}
 
-    /// <summary>Returns column metadata for all known entities as a dictionary keyed by entityKey.</summary>
-    [HttpGet]
-    public IActionResult GetAll() => Ok(All.ToDictionary(e => e.EntityKey));
+	[HttpGet("{entity}")]
+	public async Task<IActionResult> Get(string entity)
+	{
+		var rows = await db.TableMetaData
+			.Include(t => t.TableName)
+			.Where(t => t.TableName != null &&
+						t.TableName.EntityKey != null &&
+						t.TableName.EntityKey.ToLower() == entity.ToLower())
+			.OrderBy(t => t.Order)
+			.ToListAsync();
 
-    /// <summary>Returns column metadata for a single entity.</summary>
-    [HttpGet("{entity}")]
-    public IActionResult Get(string entity)
-    {
-        var meta = All.FirstOrDefault(e =>
-            string.Equals(e.EntityKey, entity, StringComparison.OrdinalIgnoreCase));
-        return meta is not null ? Ok(meta) : NotFound(new { message = $"No metadata registered for '{entity}'." });
-    }
+		if (rows.Count == 0)
+			return NotFound(new { message = $"No metadata registered for '{entity}'." });
 
-    // ── Master list ─────────────────────────────────────────────────────────────
+		var first = rows.First();
+		var tn = first.TableName!;
+		var meta = new EntityMeta(tn.EntityKey!, tn.Name, tn.Name, rows.Select(ToColumnMeta).ToArray());
+		return Ok(meta);
+	}
 
-    private static readonly EntityMeta[] All =
-    [
-        new(
-            EntityKey:  "items",
-            DbTable:    "Item_cs",
-            ModelClass: "Item_cs",
-            Columns:
-            [
-                new("internalCode", "Code",        "الكود",        Order: 1, EntityProperty: "InternalCode"),
-                new("name_AR",      "Name (AR)",   "الاسم (AR)",   Order: 2, EntityProperty: "Name_AR"),
-                new("name_EN",      "Name (EN)",   "الاسم (EN)",   Order: 3, EntityProperty: "Name_EN"),
-                new("itemGroup",    "Item Group",  "مجموعة الصنف", Order: 4, EntityProperty: "ItemGroup",  ForeignKeyProperty: "ItemGroupId",  FilterType: "select",  DataType: "string"),
-                new("itemType",     "Item Type",   "نوع الصنف",    Order: 5, EntityProperty: "ItemType",   ForeignKeyProperty: "ItemTypeId",   FilterType: "select",  DataType: "string"),
-                new("defaultUOM",   "Default UOM", "وحدة القياس",  Order: 6, EntityProperty: "DefaultUOM", ForeignKeyProperty: "DefaultUOMId", FilterType: "select",  DataType: "string"),
-                new("isActive",     "Active",      "نشط",          Order: 7, EntityProperty: "IsActive",                                       FilterType: "boolean", DataType: "boolean", RenderAs: "badge"),
-            ]
-        ),
+	// ── helpers ──────────────────────────────────────────────────────────────
 
-        new(
-            EntityKey:  "itemgroups",
-            DbTable:    "ItemGroup_cs",
-            ModelClass: "ItemGroup_cs",
-            Columns:
-            [
-                new("internalCode",    "Internal Code", "الكود الداخلي",  Order: 1, EntityProperty: "InternalCode"),
-                new("name_AR",         "Name (AR)",     "الاسم (AR)",     Order: 2, EntityProperty: "Name_AR"),
-                new("name_EN",         "Name (EN)",     "الاسم (EN)",     Order: 3, EntityProperty: "Name_EN"),
-                new("parentItemGroup", "Parent Group",  "المجموعة الأصل", Order: 4, EntityProperty: "ParentItemGroup", ForeignKeyProperty: "ParentItemGroupId", FilterType: "select",  DataType: "string"),
-                new("isMain",          "Is Main",       "أصل",            Order: 5, EntityProperty: "IsMain",                                                     FilterType: "boolean", DataType: "boolean", RenderAs: "badge"),
-                new("isActive",        "Active",        "نشط",            Order: 6, EntityProperty: "IsActive",                                                   FilterType: "boolean", DataType: "boolean", RenderAs: "badge"),
-            ]
-        ),
+	private async Task<Dictionary<string, EntityMeta>> BuildAllAsync()
+	{
+		var rows = await db.TableMetaData
+			.Include(t => t.TableName)
+			.Where(t => t.TableName != null && t.TableName.EntityKey != null)
+			.OrderBy(t => t.TableName!.EntityKey)
+			.ThenBy(t => t.Order)
+			.ToListAsync();
 
-        new(
-            EntityKey:  "uoms",
-            DbTable:    "UOM_cs",
-            ModelClass: "UOM_cs",
-            Columns:
-            [
-                new("internalCode",      "Internal Code",      "الكود الداخلي",      Order: 1, EntityProperty: "InternalCode"),
-                new("name_AR",           "Name (AR)",          "الاسم (AR)",         Order: 2, EntityProperty: "Name_AR"),
-                new("name_EN",           "Name (EN)",          "الاسم (EN)",         Order: 3, EntityProperty: "Name_EN"),
-                new("mustBeWholeNumber", "Must Be Whole No.",  "يجب أن يكون صحيحاً", Order: 4, EntityProperty: "MustBeWholeNumber", FilterType: "boolean", DataType: "boolean", RenderAs: "yesno"),
-                new("isActive",          "Active",             "نشط",                Order: 5, EntityProperty: "IsActive",          FilterType: "boolean", DataType: "boolean", RenderAs: "badge"),
-            ]
-        ),
+		return rows
+			.GroupBy(r => r.TableName!.EntityKey!)
+			.ToDictionary(
+				g => g.Key,
+				g =>
+				{
+					var tn = g.First().TableName!;
+					return new EntityMeta(g.Key, tn.Name, tn.Name, g.Select(ToColumnMeta).ToArray());
+				});
+	}
 
-        new(
-            EntityKey:  "uomconversiongroups",
-            DbTable:    "UOMConversionGroup_cs",
-            ModelClass: "UOMConversionGroup_cs",
-            Columns:
-            [
-                new("internalCode", "Internal Code", "الكود الداخلي", Order: 1, EntityProperty: "InternalCode"),
-                new("name_AR",      "Name (AR)",     "الاسم (AR)",    Order: 2, EntityProperty: "Name_AR"),
-                new("name_EN",      "Name (EN)",     "الاسم (EN)",    Order: 3, EntityProperty: "Name_EN"),
-                new("isActive",     "Active",        "نشط",           Order: 4, EntityProperty: "IsActive", FilterType: "boolean", DataType: "boolean", RenderAs: "badge"),
-            ]
-        ),
-
-        new(
-            EntityKey:  "uomconversionfactors",
-            DbTable:    "UOMConversionFactor_cs",
-            ModelClass: "UOMConversionFactor_cs",
-            Columns:
-            [
-                new("internalCode",       "Internal Code",    "الكود الداخلي",  Order: 1, EntityProperty: "InternalCode"),
-                new("uomFrom",            "From UOM",         "من وحدة القياس",  Order: 2, EntityProperty: "UOMFrom",            ForeignKeyProperty: "UOMFromId",             FilterType: "select"),
-                new("uomTo",              "To UOM",           "إلى وحدة القياس", Order: 3, EntityProperty: "UOMTo",              ForeignKeyProperty: "UOMToId",               FilterType: "select"),
-                new("value",              "Factor",           "معامل التحويل",   Order: 4, EntityProperty: "Value",                                                           FilterType: "number",  DataType: "number"),
-                new("uomConversionGroup", "Conversion Group", "مجموعة التحويل",  Order: 5, EntityProperty: "UOMConversionGroup", ForeignKeyProperty: "UOMConversionGroupId",  FilterType: "select"),
-                new("isActive",           "Active",           "نشط",             Order: 6, EntityProperty: "IsActive",                                                        FilterType: "boolean", DataType: "boolean", RenderAs: "badge"),
-            ]
-        ),
-
-        new(
-            EntityKey:  "warehouses",
-            DbTable:    "WareHouse_cs",
-            ModelClass: "WareHouse_cs",
-            Columns:
-            [
-                new("internalCode",      "Internal Code", "الكود الداخلي", Order: 1, EntityProperty: "InternalCode"),
-                new("name_AR",           "Name (AR)",     "الاسم (AR)",    Order: 2, EntityProperty: "Name_AR"),
-                new("name_EN",           "Name (EN)",     "الاسم (EN)",    Order: 3, EntityProperty: "Name_EN",           IsSortable: false, RenderAs: "tree"),
-                new("wareHouseType",     "Type",          "النوع",         Order: 4, EntityProperty: "WareHouseType",     ForeignKeyProperty: "WareHouseTypeId",     FilterType: "select"),
-                new("wareHouseCategory", "Category",      "الفئة",         Order: 5, EntityProperty: "WareHouseCategory", ForeignKeyProperty: "WareHouseCategoryId", FilterType: "select"),
-                new("isParent",          "Is Parent",     "أصل",           Order: 6, EntityProperty: "IsParent",          FilterType: "boolean", DataType: "boolean", RenderAs: "badge"),
-                new("isActive",          "Active",        "نشط",           Order: 7, EntityProperty: "IsActive",          FilterType: "boolean", DataType: "boolean", RenderAs: "badge"),
-            ]
-        ),
-
-        new(
-            EntityKey:  "warehousecategories",
-            DbTable:    "WareHouseCategory_cs",
-            ModelClass: "WareHouseCategory_cs",
-            Columns:
-            [
-                new("internalCode", "Internal Code", "الكود الداخلي", Order: 1, EntityProperty: "InternalCode"),
-                new("name_AR",      "Name (AR)",     "الاسم (AR)",    Order: 2, EntityProperty: "Name_AR"),
-                new("name_EN",      "Name (EN)",     "الاسم (EN)",    Order: 3, EntityProperty: "Name_EN"),
-                new("description",  "Description",  "الوصف",         Order: 4, EntityProperty: "Description", IsSortable: false),
-                new("isActive",     "Active",        "نشط",           Order: 5, EntityProperty: "IsActive",    FilterType: "boolean", DataType: "boolean", RenderAs: "badge"),
-            ]
-        ),
-
-        new(
-            EntityKey:  "branches",
-            DbTable:    "Branch_cs",
-            ModelClass: "Branch_cs",
-            Columns:
-            [
-                new("name_AR",     "Name (AR)",    "الاسم (AR)", Order: 1, EntityProperty: "Name_AR"),
-                new("name_EN",     "Name (EN)",    "الاسم (EN)", Order: 2, EntityProperty: "Name_EN"),
-                new("description", "Description", "الوصف",      Order: 3, EntityProperty: "Description", IsSortable: false),
-                new("isActive",    "Active",       "نشط",        Order: 4, EntityProperty: "IsActive",    FilterType: "boolean", DataType: "boolean", RenderAs: "badge"),
-            ]
-        ),
-    ];
+	private static ColumnMeta ToColumnMeta(MerkERP.Core.Models.TableMetaData r) =>
+		new(r.Key, r.LabelEN, r.LabelAR, r.Order, r.EntityProperty,
+			r.ForeignKeyProperty, r.FilterType, r.DataType, r.RenderAs,
+			r.IsSortable, r.IsFilterable, r.IsVisible, r.MinWidth);
 }

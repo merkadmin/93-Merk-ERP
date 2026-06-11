@@ -38,4 +38,33 @@ namespace MerkERP.Core.Models.Enums
 		MedicalDeviceAndEquipmentWarehouses = 3,
 		SterileSurgicalWarehouses = 4,
 	}
+
+	/// <summary>
+	/// Maps every physical EF table to a stable integer Id.
+	/// The integer values are mirrored in the TableName_s seed data — keep them in sync.
+	/// When a new table is added: add an entry here, add it to HasData in MerkDbContext,
+	/// then create a migration. The TableRegistryService will catch any table not yet seeded.
+	/// </summary>
+	public enum TableNameEnum
+	{
+		None = 0,
+		BarcodeType_s               = 1,
+		Branch_cs                   = 2,
+		InventoryValidationMethod_s = 3,
+		Item_cs                     = 4,
+		Item_UOM_Barcode_cs         = 5,
+		ItemGroup_cs                = 6,
+		ItemType_s                  = 7,
+		ItemUOMConversion_cs        = 8,
+		StockLedgerTransaction      = 9,
+		TableName_s                 = 10,
+		UOM_cs                      = 11,
+		UOMConversionFactor_cs      = 12,
+		UOMConversionGroup_cs       = 13,
+		WareHouse_cs                = 14,
+		WareHouseCategory_cs        = 15,
+		WareHouseType_s             = 16,
+		WarehouseTransaction        = 17,
+		TableMetaData               = 18,
+	}
 }

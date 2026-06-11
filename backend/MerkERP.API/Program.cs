@@ -12,6 +12,7 @@ builder.Services.AddDbContext<MerkDbContext>(o =>
 
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<StockService>();
+builder.Services.AddScoped<TableRegistryService>();
 builder.Services.AddSingleton<ExcelService>();
 
 builder.Services.AddCors(o => o.AddPolicy("Angular", p =>
@@ -27,8 +28,10 @@ var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
-    var db = scope.ServiceProvider.GetRequiredService<MerkDbContext>();
+    var db      = scope.ServiceProvider.GetRequiredService<MerkDbContext>();
+    var registry = scope.ServiceProvider.GetRequiredService<TableRegistryService>();
     db.Database.Migrate();
+    await registry.SyncAsync();
 }
 
 app.UseSwagger();

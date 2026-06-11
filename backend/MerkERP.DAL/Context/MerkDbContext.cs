@@ -7,6 +7,8 @@ public class MerkDbContext : DbContext
 {
 	public MerkDbContext(DbContextOptions<MerkDbContext> options) : base(options) { }
 
+	public DbSet<TableName_s>  TableName_s  { get; set; }
+	public DbSet<TableMetaData> TableMetaData { get; set; }
 	public DbSet<Branch_cs> Branch_cs { get; set; }
 	public DbSet<WareHouseCategory_cs> WareHouseCategory_cs { get; set; }
 	public DbSet<WareHouseType_s> WareHouseType_s { get; set; }
@@ -27,6 +29,24 @@ public class MerkDbContext : DbContext
 	protected override void OnModelCreating(ModelBuilder m)
 	{
 		// Explicit PKs (class names contain underscores so EF convention doesn't match)
+		m.Entity<TableName_s>().HasKey(e => e.Id);
+		m.Entity<TableName_s>().Property(e => e.Id).ValueGeneratedNever();
+		m.Entity<TableName_s>().Property(e => e.Name).HasColumnType("nvarchar(200)").IsRequired();
+		m.Entity<TableName_s>().Property(e => e.EntityKey).HasColumnType("nvarchar(100)");
+		m.Entity<TableName_s>().HasIndex(e => e.Name).IsUnique();
+
+		m.Entity<TableMetaData>().HasKey(e => e.Id);
+		m.Entity<TableMetaData>().Property(e => e.Id).ValueGeneratedNever();
+		m.Entity<TableMetaData>().HasOne(e => e.TableName).WithMany().HasForeignKey(e => e.TableNameId).OnDelete(DeleteBehavior.Restrict);
+		m.Entity<TableMetaData>().HasIndex(e => new { e.TableNameId, e.Key }).IsUnique();
+		m.Entity<TableMetaData>().Property(e => e.Key).HasColumnType("nvarchar(100)").IsRequired();
+		m.Entity<TableMetaData>().Property(e => e.LabelEN).HasColumnType("nvarchar(200)").IsRequired();
+		m.Entity<TableMetaData>().Property(e => e.LabelAR).HasColumnType("nvarchar(200)").IsRequired();
+		m.Entity<TableMetaData>().Property(e => e.EntityProperty).HasColumnType("nvarchar(100)").IsRequired();
+		m.Entity<TableMetaData>().Property(e => e.ForeignKeyProperty).HasColumnType("nvarchar(100)");
+		m.Entity<TableMetaData>().Property(e => e.FilterType).HasColumnType("nvarchar(20)");
+		m.Entity<TableMetaData>().Property(e => e.DataType).HasColumnType("nvarchar(20)");
+		m.Entity<TableMetaData>().Property(e => e.RenderAs).HasColumnType("nvarchar(20)");
 		m.Entity<Branch_cs>().HasKey(e => e.Id);
 		m.Entity<WareHouseCategory_cs>().HasKey(e => e.Id);
 		m.Entity<WareHouseType_s>().HasKey(e => e.Id);
@@ -164,6 +184,91 @@ public class MerkDbContext : DbContext
 			.Property(e => e.Name_EN).HasColumnType("nvarchar(200)");
 		m.Entity<WareHouseType_s>()
 			.Property(e => e.Name_AR).HasColumnType("nvarchar(200)");
+
+		m.Entity<TableName_s>().HasData(
+			new TableName_s { Id = 1,  Name = "BarcodeType_s",               EntityKey = null                    },
+			new TableName_s { Id = 2,  Name = "Branch_cs",                   EntityKey = "branches"              },
+			new TableName_s { Id = 3,  Name = "InventoryValidationMethod_s", EntityKey = null                    },
+			new TableName_s { Id = 4,  Name = "Item_cs",                     EntityKey = "items"                 },
+			new TableName_s { Id = 5,  Name = "Item_UOM_Barcode_cs",         EntityKey = null                    },
+			new TableName_s { Id = 6,  Name = "ItemGroup_cs",                EntityKey = "itemgroups"            },
+			new TableName_s { Id = 7,  Name = "ItemType_s",                  EntityKey = null                    },
+			new TableName_s { Id = 8,  Name = "ItemUOMConversion_cs",        EntityKey = null                    },
+			new TableName_s { Id = 9,  Name = "StockLedgerTransaction",      EntityKey = null                    },
+			new TableName_s { Id = 10, Name = "TableName_s",                 EntityKey = null                    },
+			new TableName_s { Id = 11, Name = "UOM_cs",                      EntityKey = "uoms"                  },
+			new TableName_s { Id = 12, Name = "UOMConversionFactor_cs",      EntityKey = "uomconversionfactors"  },
+			new TableName_s { Id = 13, Name = "UOMConversionGroup_cs",       EntityKey = "uomconversiongroups"   },
+			new TableName_s { Id = 14, Name = "WareHouse_cs",                EntityKey = "warehouses"            },
+			new TableName_s { Id = 15, Name = "WareHouseCategory_cs",        EntityKey = "warehousecategories"   },
+			new TableName_s { Id = 16, Name = "WareHouseType_s",             EntityKey = null                    },
+			new TableName_s { Id = 17, Name = "WarehouseTransaction",        EntityKey = null                    },
+			new TableName_s { Id = 18, Name = "TableMetaData",               EntityKey = null                    }
+		);
+
+		// ── TableMetaData seed ── (mirrors MetadataController column definitions)
+		m.Entity<TableMetaData>().HasData(
+
+			// items  (TableNameId = 4)
+			new TableMetaData { Id = 1,  TableNameId = 4,  Order = 1, Key = "internalCode",      LabelEN = "Code",             LabelAR = "الكود",             EntityProperty = "InternalCode"                                                                            },
+			new TableMetaData { Id = 2,  TableNameId = 4,  Order = 2, Key = "name_AR",           LabelEN = "Name (AR)",        LabelAR = "الاسم (AR)",        EntityProperty = "Name_AR"                                                                                 },
+			new TableMetaData { Id = 3,  TableNameId = 4,  Order = 3, Key = "name_EN",           LabelEN = "Name (EN)",        LabelAR = "الاسم (EN)",        EntityProperty = "Name_EN"                                                                                 },
+			new TableMetaData { Id = 4,  TableNameId = 4,  Order = 4, Key = "itemGroup",         LabelEN = "Item Group",       LabelAR = "مجموعة الصنف",      EntityProperty = "ItemGroup",  ForeignKeyProperty = "ItemGroupId",  FilterType = "select"                  },
+			new TableMetaData { Id = 5,  TableNameId = 4,  Order = 5, Key = "itemType",          LabelEN = "Item Type",        LabelAR = "نوع الصنف",         EntityProperty = "ItemType",   ForeignKeyProperty = "ItemTypeId",   FilterType = "select"                  },
+			new TableMetaData { Id = 6,  TableNameId = 4,  Order = 6, Key = "defaultUOM",        LabelEN = "Default UOM",      LabelAR = "وحدة القياس",       EntityProperty = "DefaultUOM", ForeignKeyProperty = "DefaultUOMId", FilterType = "select"                  },
+			new TableMetaData { Id = 7,  TableNameId = 4,  Order = 7, Key = "isActive",          LabelEN = "Active",           LabelAR = "نشط",               EntityProperty = "IsActive",                                        FilterType = "boolean", DataType = "boolean", RenderAs = "badge" },
+
+			// itemgroups  (TableNameId = 6)
+			new TableMetaData { Id = 8,  TableNameId = 6,  Order = 1, Key = "internalCode",      LabelEN = "Internal Code",    LabelAR = "الكود الداخلي",     EntityProperty = "InternalCode"                                                                            },
+			new TableMetaData { Id = 9,  TableNameId = 6,  Order = 2, Key = "name_AR",           LabelEN = "Name (AR)",        LabelAR = "الاسم (AR)",        EntityProperty = "Name_AR"                                                                                 },
+			new TableMetaData { Id = 10, TableNameId = 6,  Order = 3, Key = "name_EN",           LabelEN = "Name (EN)",        LabelAR = "الاسم (EN)",        EntityProperty = "Name_EN"                                                                                 },
+			new TableMetaData { Id = 11, TableNameId = 6,  Order = 4, Key = "parentItemGroup",   LabelEN = "Parent Group",     LabelAR = "المجموعة الأصل",    EntityProperty = "ParentItemGroup", ForeignKeyProperty = "ParentItemGroupId", FilterType = "select"       },
+			new TableMetaData { Id = 12, TableNameId = 6,  Order = 5, Key = "isMain",            LabelEN = "Is Main",          LabelAR = "أصل",               EntityProperty = "IsMain",                                          FilterType = "boolean", DataType = "boolean", RenderAs = "badge" },
+			new TableMetaData { Id = 13, TableNameId = 6,  Order = 6, Key = "isActive",          LabelEN = "Active",           LabelAR = "نشط",               EntityProperty = "IsActive",                                        FilterType = "boolean", DataType = "boolean", RenderAs = "badge" },
+
+			// uoms  (TableNameId = 11)
+			new TableMetaData { Id = 14, TableNameId = 11, Order = 1, Key = "internalCode",      LabelEN = "Internal Code",    LabelAR = "الكود الداخلي",     EntityProperty = "InternalCode"                                                                            },
+			new TableMetaData { Id = 15, TableNameId = 11, Order = 2, Key = "name_AR",           LabelEN = "Name (AR)",        LabelAR = "الاسم (AR)",        EntityProperty = "Name_AR"                                                                                 },
+			new TableMetaData { Id = 16, TableNameId = 11, Order = 3, Key = "name_EN",           LabelEN = "Name (EN)",        LabelAR = "الاسم (EN)",        EntityProperty = "Name_EN"                                                                                 },
+			new TableMetaData { Id = 17, TableNameId = 11, Order = 4, Key = "mustBeWholeNumber", LabelEN = "Must Be Whole No.", LabelAR = "يجب أن يكون صحيحاً", EntityProperty = "MustBeWholeNumber",                             FilterType = "boolean", DataType = "boolean", RenderAs = "yesno" },
+			new TableMetaData { Id = 18, TableNameId = 11, Order = 5, Key = "isActive",          LabelEN = "Active",           LabelAR = "نشط",               EntityProperty = "IsActive",                                        FilterType = "boolean", DataType = "boolean", RenderAs = "badge" },
+
+			// uomconversiongroups  (TableNameId = 13)
+			new TableMetaData { Id = 19, TableNameId = 13, Order = 1, Key = "internalCode",      LabelEN = "Internal Code",    LabelAR = "الكود الداخلي",     EntityProperty = "InternalCode"                                                                            },
+			new TableMetaData { Id = 20, TableNameId = 13, Order = 2, Key = "name_AR",           LabelEN = "Name (AR)",        LabelAR = "الاسم (AR)",        EntityProperty = "Name_AR"                                                                                 },
+			new TableMetaData { Id = 21, TableNameId = 13, Order = 3, Key = "name_EN",           LabelEN = "Name (EN)",        LabelAR = "الاسم (EN)",        EntityProperty = "Name_EN"                                                                                 },
+			new TableMetaData { Id = 22, TableNameId = 13, Order = 4, Key = "isActive",          LabelEN = "Active",           LabelAR = "نشط",               EntityProperty = "IsActive",                                        FilterType = "boolean", DataType = "boolean", RenderAs = "badge" },
+
+			// uomconversionfactors  (TableNameId = 12)
+			new TableMetaData { Id = 23, TableNameId = 12, Order = 1, Key = "internalCode",       LabelEN = "Internal Code",    LabelAR = "الكود الداخلي",    EntityProperty = "InternalCode"                                                                            },
+			new TableMetaData { Id = 24, TableNameId = 12, Order = 2, Key = "uomFrom",            LabelEN = "From UOM",         LabelAR = "من وحدة القياس",    EntityProperty = "UOMFrom",            ForeignKeyProperty = "UOMFromId",            FilterType = "select" },
+			new TableMetaData { Id = 25, TableNameId = 12, Order = 3, Key = "uomTo",              LabelEN = "To UOM",           LabelAR = "إلى وحدة القياس",   EntityProperty = "UOMTo",              ForeignKeyProperty = "UOMToId",              FilterType = "select" },
+			new TableMetaData { Id = 26, TableNameId = 12, Order = 4, Key = "value",              LabelEN = "Factor",           LabelAR = "معامل التحويل",     EntityProperty = "Value",                                           FilterType = "number",  DataType = "number"  },
+			new TableMetaData { Id = 27, TableNameId = 12, Order = 5, Key = "uomConversionGroup", LabelEN = "Conversion Group", LabelAR = "مجموعة التحويل",    EntityProperty = "UOMConversionGroup", ForeignKeyProperty = "UOMConversionGroupId", FilterType = "select" },
+			new TableMetaData { Id = 28, TableNameId = 12, Order = 6, Key = "isActive",           LabelEN = "Active",           LabelAR = "نشط",               EntityProperty = "IsActive",                                        FilterType = "boolean", DataType = "boolean", RenderAs = "badge" },
+
+			// warehouses  (TableNameId = 14)
+			new TableMetaData { Id = 29, TableNameId = 14, Order = 1, Key = "internalCode",      LabelEN = "Internal Code",    LabelAR = "الكود الداخلي",     EntityProperty = "InternalCode"                                                                            },
+			new TableMetaData { Id = 30, TableNameId = 14, Order = 2, Key = "name_AR",           LabelEN = "Name (AR)",        LabelAR = "الاسم (AR)",        EntityProperty = "Name_AR"                                                                                 },
+			new TableMetaData { Id = 31, TableNameId = 14, Order = 3, Key = "name_EN",           LabelEN = "Name (EN)",        LabelAR = "الاسم (EN)",        EntityProperty = "Name_EN",                                         RenderAs = "tree",      IsSortable = false },
+			new TableMetaData { Id = 32, TableNameId = 14, Order = 4, Key = "wareHouseType",     LabelEN = "Type",             LabelAR = "النوع",             EntityProperty = "WareHouseType",     ForeignKeyProperty = "WareHouseTypeId",     FilterType = "select"  },
+			new TableMetaData { Id = 33, TableNameId = 14, Order = 5, Key = "wareHouseCategory", LabelEN = "Category",         LabelAR = "الفئة",             EntityProperty = "WareHouseCategory", ForeignKeyProperty = "WareHouseCategoryId", FilterType = "select"  },
+			new TableMetaData { Id = 34, TableNameId = 14, Order = 6, Key = "isParent",          LabelEN = "Is Parent",        LabelAR = "أصل",               EntityProperty = "IsParent",                                        FilterType = "boolean", DataType = "boolean", RenderAs = "badge" },
+			new TableMetaData { Id = 35, TableNameId = 14, Order = 7, Key = "isActive",          LabelEN = "Active",           LabelAR = "نشط",               EntityProperty = "IsActive",                                        FilterType = "boolean", DataType = "boolean", RenderAs = "badge" },
+
+			// warehousecategories  (TableNameId = 15)
+			new TableMetaData { Id = 36, TableNameId = 15, Order = 1, Key = "internalCode",      LabelEN = "Internal Code",    LabelAR = "الكود الداخلي",     EntityProperty = "InternalCode"                                                                            },
+			new TableMetaData { Id = 37, TableNameId = 15, Order = 2, Key = "name_AR",           LabelEN = "Name (AR)",        LabelAR = "الاسم (AR)",        EntityProperty = "Name_AR"                                                                                 },
+			new TableMetaData { Id = 38, TableNameId = 15, Order = 3, Key = "name_EN",           LabelEN = "Name (EN)",        LabelAR = "الاسم (EN)",        EntityProperty = "Name_EN"                                                                                 },
+			new TableMetaData { Id = 39, TableNameId = 15, Order = 4, Key = "description",       LabelEN = "Description",      LabelAR = "الوصف",             EntityProperty = "Description",                                     IsSortable = false                     },
+			new TableMetaData { Id = 40, TableNameId = 15, Order = 5, Key = "isActive",          LabelEN = "Active",           LabelAR = "نشط",               EntityProperty = "IsActive",                                        FilterType = "boolean", DataType = "boolean", RenderAs = "badge" },
+
+			// branches  (TableNameId = 2)
+			new TableMetaData { Id = 41, TableNameId = 2,  Order = 1, Key = "name_AR",           LabelEN = "Name (AR)",        LabelAR = "الاسم (AR)",        EntityProperty = "Name_AR"                                                                                 },
+			new TableMetaData { Id = 42, TableNameId = 2,  Order = 2, Key = "name_EN",           LabelEN = "Name (EN)",        LabelAR = "الاسم (EN)",        EntityProperty = "Name_EN"                                                                                 },
+			new TableMetaData { Id = 43, TableNameId = 2,  Order = 3, Key = "description",       LabelEN = "Description",      LabelAR = "الوصف",             EntityProperty = "Description",                                     IsSortable = false                     },
+			new TableMetaData { Id = 44, TableNameId = 2,  Order = 4, Key = "isActive",          LabelEN = "Active",           LabelAR = "نشط",               EntityProperty = "IsActive",                                        FilterType = "boolean", DataType = "boolean", RenderAs = "badge" }
+		);
 
 		m.Entity<BarcodeType_s>().HasData(
 			new BarcodeType_s { BarcodeTypeId = 1L,  Name = "EAN-13"      },
