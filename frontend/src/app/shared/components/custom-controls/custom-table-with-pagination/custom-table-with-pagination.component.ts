@@ -19,21 +19,22 @@ export class CustomTableWithPaginationComponent implements OnInit {
   private doc = inject(DOCUMENT);
 
   // ── Inputs ────────────────────────────────────────────────────────────────
-  entity = input.required<string>();
-  rows = input<any[]>([]);
-  idKey = input<string>('id');
+  entity        = input.required<string>();
+  rows          = input<any[]>([]);
+  idKey         = input<string>('id');
   cellRenderers = input<Record<string, (row: any) => string>>({});
+  reload        = input<number>(0);
 
   // ── Outputs ───────────────────────────────────────────────────────────────
-  metadataLoaded = output<ColumnMeta[]>();
+  metadataLoaded  = output<ColumnMeta[]>();
   selectionChange = output<Set<any>>();
 
   // ── Content templates ─────────────────────────────────────────────────────
   @ContentChild('rowActions') rowActionsTemplate?: TemplateRef<{ $implicit: any }>;
-  @ContentChild('treeCell') treeCellTemplate?: TemplateRef<{ $implicit: any }>;
+  @ContentChild('treeCell')   treeCellTemplate?:   TemplateRef<{ $implicit: any }>;
 
   // ── State ─────────────────────────────────────────────────────────────────
-  columnMeta = signal<ColumnMeta[]>([]);
+  columnMeta  = signal<ColumnMeta[]>([]);
   selectedIds = signal<Set<any>>(new Set());
   displayRows = signal<any[]>([]);
 
@@ -44,6 +45,18 @@ export class CustomTableWithPaginationComponent implements OnInit {
         const empty = new Set<any>();
         this.selectedIds.set(empty);
         this.selectionChange.emit(empty);
+      });
+    });
+
+    effect(() => {
+      const tick = this.reload();
+      if (tick === 0) return;
+      untracked(() => {
+        this.meta.invalidate(this.entity());
+        this.meta.get(this.entity()).subscribe(m => {
+          this.columnMeta.set(m.columns);
+          this.metadataLoaded.emit(m.columns);
+        });
       });
     });
   }
@@ -77,7 +90,7 @@ export class CustomTableWithPaginationComponent implements OnInit {
   }
 
   toggleOne(row: any): void {
-    const s = new Set(this.selectedIds());
+    const s  = new Set(this.selectedIds());
     const id = row[this.idKey()];
     s.has(id) ? s.delete(id) : s.add(id);
     this.selectedIds.set(s);

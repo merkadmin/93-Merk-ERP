@@ -6,7 +6,7 @@
 <app-regular-list-search-actions [fields]="searchFields" (filterChange)="onFilterChange($event)" />
 
 <app-custom-table-with-pagination entity="warehousecategories" [rows]="filtered"
-  (metadataLoaded)="columnMeta.set($event)" (selectionChange)="selectedIds.set($event)">
+  (metadataLoaded)="columnMeta.set($event)" (selectionChange)="selectedIds.set($event)" [reload]="metaReloadKey()">
   <ng-template #rowActions let-c>
     <div class="d-inline-flex align-items-center gap-2">
       <button class="btn btn-icon btn-sm btn-light-primary" (click)="edit(c.id)" [title]="'common.edit' | translate">

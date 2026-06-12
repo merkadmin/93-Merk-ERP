@@ -57,9 +57,10 @@ export class ItemsComponent implements OnInit {
   get isRtl() { return this.doc.documentElement.dir === 'rtl'; }
 
   items = signal<Item[]>([]);
-  selectedIds = signal<Set<any>>(new Set());
-  activeFilter = signal<Record<string, string | number | null>>({});
-  columnMeta = signal<ColumnMeta[]>([]);
+  selectedIds   = signal<Set<any>>(new Set());
+  metaReloadKey = signal(0);
+  activeFilter  = signal<Record<string, string | number | null>>({});
+  columnMeta    = signal<ColumnMeta[]>([]);
 
   uomLabel(uom?: ItemUOM): string {
     if (!uom) return '—';
@@ -126,6 +127,7 @@ export class ItemsComponent implements OnInit {
   }
 
   load() {
+    this.metaReloadKey.update(n => n + 1);
     this.api.get<Item[]>('items').subscribe(d => this.items.set(d));
   }
 

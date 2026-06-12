@@ -30,9 +30,10 @@ export class WarehouseCategoriesComponent implements OnInit {
   get isRtl() { return this.doc.documentElement.dir === 'rtl'; }
 
   categories = signal<WareHouseCategory[]>([]);
-  selectedIds = signal<Set<any>>(new Set());
-  activeFilter = signal<Record<string, string | number | null>>({});
-  columnMeta = signal<ColumnMeta[]>([]);
+  selectedIds   = signal<Set<any>>(new Set());
+  metaReloadKey = signal(0);
+  activeFilter  = signal<Record<string, string | number | null>>({});
+  columnMeta    = signal<ColumnMeta[]>([]);
 
   label(c: WareHouseCategory): string {
     return this.isRtl ? (c.name_AR || c.name_EN) : (c.name_EN || c.name_AR || '');
@@ -62,6 +63,7 @@ export class WarehouseCategoriesComponent implements OnInit {
   }
 
   load() {
+    this.metaReloadKey.update(n => n + 1);
     this.api.get<WareHouseCategory[]>('warehousecategories').subscribe(d => this.categories.set(d));
   }
 

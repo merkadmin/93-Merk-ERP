@@ -45,9 +45,10 @@ export class UomConversionFactorsComponent implements OnInit {
   get isRtl() { return this.doc.documentElement.dir === 'rtl'; }
 
   factors = signal<UomConversionFactor[]>([]);
-  selectedIds = signal<Set<any>>(new Set());
-  activeFilter = signal<Record<string, string | number | null>>({});
-  columnMeta = signal<ColumnMeta[]>([]);
+  selectedIds   = signal<Set<any>>(new Set());
+  metaReloadKey = signal(0);
+  activeFilter  = signal<Record<string, string | number | null>>({});
+  columnMeta    = signal<ColumnMeta[]>([]);
 
   uomLabel(uom?: UOM): string {
     if (!uom) return '';
@@ -117,6 +118,7 @@ export class UomConversionFactorsComponent implements OnInit {
   }
 
   load() {
+    this.metaReloadKey.update(n => n + 1);
     this.api.get<UomConversionFactor[]>('uomconversionfactors').subscribe(d => this.factors.set(d));
   }
 

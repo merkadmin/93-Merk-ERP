@@ -5,7 +5,7 @@
 <app-regular-list-search-actions [fields]="searchFields" (filterChange)="onFilterChange($event)" />
 
 <app-custom-table-with-pagination entity="items" [rows]="filteredItems" [cellRenderers]="cellRenderers"
-  (metadataLoaded)="columnMeta.set($event)" (selectionChange)="selectedIds.set($event)">
+  (metadataLoaded)="columnMeta.set($event)" (selectionChange)="selectedIds.set($event)" [reload]="metaReloadKey()">
   <ng-template #rowActions let-item>
     <div class="d-inline-flex align-items-center gap-2">
       <button class="btn btn-icon btn-sm" (click)="toggleFavorite(item)" [class.btn-danger]="item.isFavorite"

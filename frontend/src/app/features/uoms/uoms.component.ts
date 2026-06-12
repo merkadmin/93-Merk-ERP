@@ -38,9 +38,10 @@ export class UomsComponent implements OnInit {
   get isRtl() { return this.doc.documentElement.dir === 'rtl'; }
 
   uoms = signal<UOM[]>([]);
-  selectedIds = signal<Set<any>>(new Set());
-  activeFilter = signal<Record<string, string | number | null>>({});
-  columnMeta = signal<ColumnMeta[]>([]);
+  selectedIds   = signal<Set<any>>(new Set());
+  metaReloadKey = signal(0);
+  activeFilter  = signal<Record<string, string | number | null>>({});
+  columnMeta    = signal<ColumnMeta[]>([]);
 
   nameLabel(u: UOM): string {
     return this.isRtl ? (u.name_AR || u.name_EN) : (u.name_EN || u.name_AR);
@@ -78,6 +79,7 @@ export class UomsComponent implements OnInit {
   }
 
   load() {
+    this.metaReloadKey.update(n => n + 1);
     this.api.get<UOM[]>('uoms').subscribe(d => this.uoms.set(d));
   }
 

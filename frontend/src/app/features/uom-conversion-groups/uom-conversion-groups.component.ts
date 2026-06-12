@@ -37,9 +37,10 @@ export class UomConversionGroupsComponent implements OnInit {
   get isRtl() { return this.doc.documentElement.dir === 'rtl'; }
 
   groups = signal<UomConversionGroup[]>([]);
-  selectedIds = signal<Set<any>>(new Set());
-  activeFilter = signal<Record<string, string | number | null>>({});
-  columnMeta = signal<ColumnMeta[]>([]);
+  selectedIds   = signal<Set<any>>(new Set());
+  metaReloadKey = signal(0);
+  activeFilter  = signal<Record<string, string | number | null>>({});
+  columnMeta    = signal<ColumnMeta[]>([]);
 
   nameLabel(g: UomConversionGroup): string {
     return this.isRtl ? (g.name_AR || g.name_EN) : (g.name_EN || g.name_AR);
@@ -76,6 +77,7 @@ export class UomConversionGroupsComponent implements OnInit {
   }
 
   load() {
+    this.metaReloadKey.update(n => n + 1);
     this.api.get<UomConversionGroup[]>('uomconversiongroups').subscribe(d => this.groups.set(d));
   }
 

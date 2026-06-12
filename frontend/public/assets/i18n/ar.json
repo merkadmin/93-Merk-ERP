@@ -9,9 +9,9 @@
     "uom_conversion_groups": "مجموعات وحدات القياس",
     "uoms": "وحدات القياس",
     "uom_conversion_factors": "معامل وحدات القياس",
-    "warehousing": "المستودعات",
-    "warehouse_categories": "فئات المستودعات",
-    "warehouses": "المستودعات",
+    "warehousing": "المخازن",
+    "warehouse_categories": "فئات المخازن",
+    "warehouses": "المخازن",
     "current_stock": "المخزون الحالي",
     "stock_movement": "حركة المخزون"
   },
@@ -96,7 +96,7 @@
     "barcode_fill_all": "يرجى تعبئة نوع الباركود ووحدة القياس وقيمة الباركود.",
     "barcodes_save_first": "احفظ الصنف أولاً، ثم يمكنك إضافة الباركودات.",
     "inventory_validation_method": "طريقة تقييم المخزون",
-    "default_warehouse": "المستودع الافتراضي"
+    "default_warehouse": "المخزن الافتراضي"
   },
   "item_groups": {
     "title": "مجموعات الأصناف",
@@ -141,24 +141,24 @@
     "delete_selected_confirm": "حذف {{count}} معامل محدد؟"
   },
   "warehouse_categories": {
-    "title": "فئات المستودعات",
-    "add_title": "مجموعة مستودع جديدة",
-    "edit_title": "تعديل مجموعة المستودع",
-    "delete_confirm": "حذف مجموعة المستودع هذه؟",
+    "title": "فئات المخازن",
+    "add_title": "مجموعة مخزن جديدة",
+    "edit_title": "تعديل مجموعة المخزن",
+    "delete_confirm": "حذف مجموعة المخزن هذه؟",
     "delete_selected_confirm": "حذف {{count}} مجموعة محددة؟",
     "saved_rows_title_single": "سجل تم حفظه في هذه الجلسة",
     "saved_rows_title": "سجلات تم حفظها في هذه الجلسة"
   },
   "warehouses": {
-    "title": "المستودعات",
+    "title": "المخازن",
     "add_title": "مستودع جديد",
-    "edit_title": "تعديل المستودع",
-    "add": "إضافة مستودع",
-    "parent_warehouse": "المستودع الأصل",
-    "type": "نوع المستودع",
-    "category": "تصنيف المستودع",
-    "delete_confirm": "حذف هذا المستودع؟",
-    "delete_selected_confirm": "حذف {{count}} مستودع محدد؟",
+    "edit_title": "تعديل المخزن",
+    "add": "إضافة مخزن",
+    "parent_warehouse": "المخزن الأصل",
+    "type": "نوع المخزن",
+    "category": "تصنيف المخزن",
+    "delete_confirm": "حذف هذا المخزن؟",
+    "delete_selected_confirm": "حذف {{count}} مخزن محدد؟",
     "saved_rows_title_single": "سجل تم حفظه في هذه الجلسة",
     "saved_rows_title": "سجلات تم حفظها في هذه الجلسة"
   },

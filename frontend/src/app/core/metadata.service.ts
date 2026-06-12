@@ -40,6 +40,10 @@ export class MetadataService {
     );
   }
 
+  invalidate(entity: string): void {
+    this.cache.delete(entity);
+  }
+
   /**
    * Converts filterable columns to SearchField[].
    * - text / number  → rendered as text/number input (auto-included)

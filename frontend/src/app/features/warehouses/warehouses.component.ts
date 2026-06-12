@@ -35,7 +35,8 @@ export class WarehousesComponent implements OnInit {
   warehouses = signal<Warehouse[]>([]);
   wareHouseTypes = signal<WareHouseType[]>([]);
   wareHouseCategories = signal<WareHouseCategory[]>([]);
-  selectedIds = signal<Set<any>>(new Set());
+  selectedIds    = signal<Set<any>>(new Set());
+  metaReloadKey  = signal(0);
   activeFilter = signal<Record<string, string | number | null>>({});
   columnMeta = signal<ColumnMeta[]>([]);
 
@@ -126,6 +127,7 @@ export class WarehousesComponent implements OnInit {
   }
 
   load() {
+    this.metaReloadKey.update(n => n + 1);
     this.api.get<Warehouse[]>('warehouses').subscribe(d => this.warehouses.set(d));
     this.api.get<WareHouseType[]>('warehousetypes').subscribe(d => this.wareHouseTypes.set(d));
     this.api.get<WareHouseCategory[]>('warehousecategories').subscribe(d => this.wareHouseCategories.set(d));

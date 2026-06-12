@@ -5,7 +5,7 @@
 <app-regular-list-search-actions [fields]="searchFields" (filterChange)="onFilterChange($event)" />
 
 <app-custom-table-with-pagination entity="uoms" [rows]="filteredUoms" (metadataLoaded)="columnMeta.set($event)"
-  (selectionChange)="selectedIds.set($event)">
+  (selectionChange)="selectedIds.set($event)" [reload]="metaReloadKey()">
   <ng-template #rowActions let-uom>
     <div class="d-inline-flex align-items-center gap-2">
       <button class="btn btn-icon btn-sm" (click)="toggleFavorite(uom)" [class.btn-danger]="uom.isFavorite"
