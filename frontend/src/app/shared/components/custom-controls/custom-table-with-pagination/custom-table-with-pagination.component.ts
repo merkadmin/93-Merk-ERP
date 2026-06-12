@@ -1,7 +1,7 @@
 import { DOCUMENT, NgTemplateOutlet } from '@angular/common';
 import {
   Component, ContentChild, OnInit, TemplateRef,
-  effect, inject, input, output, signal, untracked
+  computed, effect, inject, input, output, signal, untracked
 } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ColumnMeta, MetadataService } from '../../../../core/metadata.service';
@@ -37,6 +37,25 @@ export class CustomTableWithPaginationComponent implements OnInit {
   columnMeta  = signal<ColumnMeta[]>([]);
   selectedIds = signal<Set<any>>(new Set());
   displayRows = signal<any[]>([]);
+  sortKey     = signal<string | null>(null);
+  sortDir     = signal<'asc' | 'desc'>('asc');
+
+  sortedRows = computed(() => {
+    const key = this.sortKey();
+    const dir = this.sortDir();
+    const rows = this.rows();
+    if (!key) return rows;
+    const renderer = this.cellRenderers()[key];
+    return [...rows].sort((a, b) => {
+      const va = renderer ? renderer(a) : a[key];
+      const vb = renderer ? renderer(b) : b[key];
+      if (va == null && vb == null) return 0;
+      if (va == null) return dir === 'asc' ? -1 : 1;
+      if (vb == null) return dir === 'asc' ? 1 : -1;
+      const cmp = typeof va === 'string' ? va.localeCompare(vb) : va < vb ? -1 : va > vb ? 1 : 0;
+      return dir === 'asc' ? cmp : -cmp;
+    });
+  });
 
   constructor() {
     effect(() => {
@@ -106,6 +125,17 @@ export class CustomTableWithPaginationComponent implements OnInit {
     }
     this.selectedIds.set(s);
     this.selectionChange.emit(s);
+  }
+
+  // ── Sorting ───────────────────────────────────────────────────────────────
+  sortBy(col: ColumnMeta): void {
+    if (!col.isSortable) return;
+    if (this.sortKey() === col.key) {
+      this.sortDir.update(d => d === 'asc' ? 'desc' : 'asc');
+    } else {
+      this.sortKey.set(col.key);
+      this.sortDir.set('asc');
+    }
   }
 
   // ── Cell rendering ─────────────────────────────────────────────────────────
