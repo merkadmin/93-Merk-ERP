@@ -130,6 +130,27 @@ public class MerkDbContext : DbContext
 			.HasIndex(b => new { b.ItemId, b.WarehouseId })
 			.IsUnique();
 
+		m.Entity<ItemUOMConversion_cs>()
+			.Property(e => e.ConversionFactor).HasColumnType("decimal(18,2)");
+
+		m.Entity<WarehouseTransaction>()
+			.Property(e => e.ActualQty).HasColumnType("decimal(18,2)");
+		m.Entity<WarehouseTransaction>()
+			.Property(e => e.OrderedQty).HasColumnType("decimal(18,2)");
+		m.Entity<WarehouseTransaction>()
+			.Property(e => e.ReservedQty).HasColumnType("decimal(18,2)");
+		m.Entity<WarehouseTransaction>()
+			.Property(e => e.ValuationRate).HasColumnType("decimal(18,2)");
+
+		m.Entity<StockLedgerTransaction>()
+			.Property(e => e.ActualQty).HasColumnType("decimal(18,2)");
+		m.Entity<StockLedgerTransaction>()
+			.Property(e => e.QtyAfterTransaction).HasColumnType("decimal(18,2)");
+		m.Entity<StockLedgerTransaction>()
+			.Property(e => e.StockValue).HasColumnType("decimal(18,2)");
+		m.Entity<StockLedgerTransaction>()
+			.Property(e => e.ValuationRate).HasColumnType("decimal(18,2)");
+
 		m.Entity<Item_cs>()
 			.HasIndex(i => i.InternalCode)
 			.IsUnique();
