@@ -28,15 +28,23 @@ export interface EntityMeta {
 
 export type SelectOption = { value: string | number; label: string };
 
+const CACHE_TTL_MS = 30 * 60 * 1000;
+
+interface CacheEntry {
+  data: EntityMeta;
+  expiresAt: number;
+}
+
 @Injectable({ providedIn: 'root' })
 export class MetadataService {
   private api = inject(ApiService);
-  private cache = new Map<string, EntityMeta>();
+  private cache = new Map<string, CacheEntry>();
 
   get(entity: string): Observable<EntityMeta> {
-    if (this.cache.has(entity)) return of(this.cache.get(entity)!);
+    const entry = this.cache.get(entity);
+    if (entry && Date.now() < entry.expiresAt) return of(entry.data);
     return this.api.get<EntityMeta>(`metadata/${entity}`).pipe(
-      tap(m => this.cache.set(entity, m))
+      tap(m => this.cache.set(entity, { data: m, expiresAt: Date.now() + CACHE_TTL_MS }))
     );
   }
 

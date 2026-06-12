@@ -23,13 +23,14 @@
         <input class="form-control" [(ngModel)]="form.name_EN" name="name_EN" [placeholder]="'common.name' | translate">
       </div>
 
-      <div class="col-3 d-flex align-items-end pb-2">
-        <div class="form-check form-check-custom form-check-solid">
-          <input class="form-check-input" type="checkbox" [(ngModel)]="form.isActive" name="isActive" id="isActive">
-          <label class="form-check-label fw-semibold" for="isActive">
-            {{ 'common.active' | translate }}
-          </label>
-        </div>
+      <div class="col-3">
+        <label class="form-label">{{ 'warehouse_categories.warehouse_type' | translate }}</label>
+        <select class="form-select" [(ngModel)]="form.wareHouseTypeId" name="wareHouseTypeId">
+          <option [ngValue]="null">— {{ 'common.none' | translate }} —</option>
+          @for (t of wareHouseTypes(); track t.id) {
+          <option [ngValue]="t.id">{{ isRtl ? (t.name_AR || t.name_EN) : t.name_EN }}</option>
+          }
+        </select>
       </div>
 
       <div class="w-100"></div>

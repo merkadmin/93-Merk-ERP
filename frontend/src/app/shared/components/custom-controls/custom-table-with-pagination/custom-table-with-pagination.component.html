@@ -3,12 +3,12 @@
     <table class="table table-row-dashed table-row-gray-300 align-middle gs-4 gy-3 mb-0">
       <thead>
         <tr class="fw-bold text-primary bg-light-primary">
-          <th class="w-40px">
+          <th class="w-40px fw-bold">
             <input type="checkbox" class="form-check-input" [checked]="isAllSelected" [indeterminate]="isIndeterminate"
               (change)="toggleAll()">
           </th>
           @for (col of visibleColumns; track col.key) {
-          <th [style.min-width.px]="col.minWidth ?? null"
+          <th class="fw-bold" [style.min-width.px]="col.minWidth ?? null"
               [class.sortable-col]="col.isSortable"
               (click)="sortBy(col)">
             {{ isRtl ? col.labelAR : col.labelEN }}
@@ -24,7 +24,7 @@
           </th>
           }
           @if (rowActionsTemplate) {
-          <th [class.text-end]="!isRtl" [class.text-start]="isRtl">{{ 'common.actions' | translate }}</th>
+          <th class="fw-bold" [class.text-end]="!isRtl" [class.text-start]="isRtl">{{ 'common.actions' | translate }}</th>
           }
         </tr>
       </thead>

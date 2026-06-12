@@ -147,7 +147,8 @@
     "delete_confirm": "Delete this warehouse category?",
     "delete_selected_confirm": "Delete {{count}} selected category(ies)?",
     "saved_rows_title_single": "record saved in this session",
-    "saved_rows_title": "records saved in this session"
+    "saved_rows_title": "records saved in this session",
+    "warehouse_type": "Warehouse Type"
   },
   "warehouses": {
     "title": "Warehouses",

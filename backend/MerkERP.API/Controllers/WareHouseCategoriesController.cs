@@ -21,7 +21,7 @@ public class WareHouseCategoriesController : ControllerBase
 
 	[HttpGet]
 	public async Task<IActionResult> GetAll() =>
-		Ok(await _db.WareHouseCategory_cs.OrderBy(c => c.Name_EN).ToListAsync());
+		Ok(await _db.WareHouseCategory_cs.Include(c => c.WareHouseType).OrderBy(c => c.Name_EN).ToListAsync());
 
 	[HttpGet("nextcode")]
 	public async Task<IActionResult> NextCode()
@@ -100,7 +100,7 @@ public class WareHouseCategoriesController : ControllerBase
 
 	[HttpGet("{id}")]
 	public async Task<IActionResult> Get(long id) =>
-		await _db.WareHouseCategory_cs.FindAsync(id) is { } e ? Ok(e) : NotFound();
+		await _db.WareHouseCategory_cs.Include(c => c.WareHouseType).FirstOrDefaultAsync(c => c.Id == id) is { } e ? Ok(e) : NotFound();
 
 	[HttpPost]
 	public async Task<IActionResult> Create(WareHouseCategory_cs e)

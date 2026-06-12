@@ -142,12 +142,13 @@
   },
   "warehouse_categories": {
     "title": "فئات المخازن",
-    "add_title": "مجموعة مخزن جديدة",
-    "edit_title": "تعديل مجموعة المخزن",
-    "delete_confirm": "حذف مجموعة المخزن هذه؟",
-    "delete_selected_confirm": "حذف {{count}} مجموعة محددة؟",
+    "add_title": "فئة مخزن جديدة",
+    "edit_title": "تعديل فئة المخزن",
+    "delete_confirm": "حذف فئة المخزن هذه؟",
+    "delete_selected_confirm": "حذف {{count}} فئة محددة؟",
     "saved_rows_title_single": "سجل تم حفظه في هذه الجلسة",
-    "saved_rows_title": "سجلات تم حفظها في هذه الجلسة"
+    "saved_rows_title": "سجلات تم حفظها في هذه الجلسة",
+    "warehouse_type": "نوع المخزن"
   },
   "warehouses": {
     "title": "المخازن",

@@ -49,6 +49,8 @@ public class MerkDbContext : DbContext
 		m.Entity<TableMetaData>().Property(e => e.RenderAs).HasColumnType("nvarchar(20)");
 		m.Entity<Branch_cs>().HasKey(e => e.Id);
 		m.Entity<WareHouseCategory_cs>().HasKey(e => e.Id);
+		m.Entity<WareHouseCategory_cs>()
+			.HasOne(c => c.WareHouseType).WithMany().HasForeignKey(c => c.WareHouseTypeId).OnDelete(DeleteBehavior.Restrict);
 		m.Entity<WareHouseType_s>().HasKey(e => e.Id);
 		m.Entity<BarcodeType_s>().HasKey(e => e.BarcodeTypeId);
 		m.Entity<InventoryValidationMethod_s>().HasKey(e => e.InventoryValidationMethodId);

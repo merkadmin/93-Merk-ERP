@@ -8,7 +8,8 @@ import { ApiService } from '../../../core/api.service';
 import { RegularOperationHeaderComponent } from '../../../shared/components/cards/regular-operation-header/regular-operation-header.component';
 import { RegularOperationActionsComponent } from '../../../shared/components/cards/regular-operation-actions/regular-operation-actions.component';
 
-interface WareHouseCategory { id: number; internalCode: string | null; name_EN: string; name_AR: string | null; description: string | null; isActive: boolean; }
+interface WareHouseType { id: number; name_EN: string; name_AR: string | null; }
+interface WareHouseCategory { id: number; internalCode: string | null; name_EN: string; name_AR: string | null; description: string | null; isActive: boolean; wareHouseTypeId: number | null; }
 interface SavedRow { internalCode: string; name_EN: string; name_AR: string; }
 
 @Component({
@@ -28,14 +29,16 @@ export class WarehouseCategoriesOperationComponent implements OnInit {
 
   get isRtl() { return this.doc.documentElement.dir === 'rtl'; }
 
-  isEdit = signal(false);
-  saving = signal(false);
-  savingNew = signal(false);
-  savedRows = signal<SavedRow[]>([]);
+  isEdit        = signal(false);
+  saving        = signal(false);
+  savingNew     = signal(false);
+  savedRows     = signal<SavedRow[]>([]);
+  wareHouseTypes = signal<WareHouseType[]>([]);
 
   form: Partial<WareHouseCategory> = this.blank();
 
   ngOnInit() {
+    this.api.get<WareHouseType[]>('warehousetypes').subscribe(t => this.wareHouseTypes.set(t));
     const id = Number(this.route.snapshot.paramMap.get('id'));
     if (id) {
       this.isEdit.set(true);
@@ -50,7 +53,7 @@ export class WarehouseCategoriesOperationComponent implements OnInit {
   }
 
   private blank(): Partial<WareHouseCategory> {
-    return { id: 0, internalCode: null, name_EN: '', name_AR: null, description: null, isActive: true };
+    return { id: 0, internalCode: null, name_EN: '', name_AR: null, description: null, isActive: true, wareHouseTypeId: null };
   }
 
   private validate(): boolean {

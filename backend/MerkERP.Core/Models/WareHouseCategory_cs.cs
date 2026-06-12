@@ -8,6 +8,8 @@ public class WareHouseCategory_cs
 	public string? Name_AR { get; set; }
 	public string? Description { get; set; }
 	public bool IsActive { get; set; } = true;
+	public long? WareHouseTypeId { get; set; }
+	public WareHouseType_s? WareHouseType { get; set; }
 	public long? InsertedBy { get; set; }
 	public DateTime? InsertedDate { get; set; }
 }
