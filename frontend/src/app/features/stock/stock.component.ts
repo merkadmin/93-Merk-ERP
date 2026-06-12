@@ -21,7 +21,7 @@ interface StockBin {
   styleUrl: './stock.component.less',
 })
 export class StockComponent implements OnInit {
-  api  = inject(ApiService);
+  api = inject(ApiService);
   bins = signal<StockBin[]>([]);
 
   ngOnInit() { this.load(); }

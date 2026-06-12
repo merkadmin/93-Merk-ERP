@@ -9,7 +9,7 @@ import { RegularOperationHeaderComponent } from '../../../shared/components/card
 import { RegularOperationActionsComponent } from '../../../shared/components/cards/regular-operation-actions/regular-operation-actions.component';
 import { CustomSelectInputComponent, SelectOption } from '../../../shared/components/custom-controls/custom-select-input/custom-select-input.component';
 
-interface UOM   { id: number; name_EN: string; name_AR: string; }
+interface UOM { id: number; name_EN: string; name_AR: string; }
 interface Group { id: number; name_EN: string; name_AR: string; }
 
 interface SavedRow {
@@ -39,20 +39,20 @@ interface UomConversionFactor {
   styleUrl: './uom-conversion-factors-operation.component.less',
 })
 export class UomConversionFactorsOperationComponent implements OnInit {
-  private api       = inject(ApiService);
-  private router    = inject(Router);
-  private route     = inject(ActivatedRoute);
+  private api = inject(ApiService);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
   private translate = inject(TranslateService);
-  private toastr    = inject(ToastrService);
-  private doc       = inject(DOCUMENT);
+  private toastr = inject(ToastrService);
+  private doc = inject(DOCUMENT);
 
   get isRtl() { return this.doc.documentElement.dir === 'rtl'; }
 
-  isEdit    = signal(false);
-  saving    = signal(false);
+  isEdit = signal(false);
+  saving = signal(false);
   savingNew = signal(false);
-  uoms      = signal<UOM[]>([]);
-  groups    = signal<Group[]>([]);
+  uoms = signal<UOM[]>([]);
+  groups = signal<Group[]>([]);
   savedRows = signal<SavedRow[]>([]);
 
   form: Partial<UomConversionFactor> = this.blank();
@@ -117,15 +117,15 @@ export class UomConversionFactorsOperationComponent implements OnInit {
   }
 
   private resetAll() {
-    this.form.id                   = 0;
-    this.form.uomFromId            = 0;
-    this.form.uomToId              = 0;
-    this.form.value                = 1;
+    this.form.id = 0;
+    this.form.uomFromId = 0;
+    this.form.uomToId = 0;
+    this.form.value = 1;
     this.form.uomConversionGroupId = null;
-    this.form.internalCode         = null;
-    this.form.isActive             = true;
-    this.form.isFavorite           = false;
-    this.valueExpression           = '1';
+    this.form.internalCode = null;
+    this.form.isActive = true;
+    this.form.isFavorite = false;
+    this.valueExpression = '1';
   }
 
   private validate(): boolean {
@@ -171,14 +171,14 @@ export class UomConversionFactorsOperationComponent implements OnInit {
         this.toastr.success(this.translate.instant('common.save_success'));
         if (andNew) {
           const fromUom = this.uoms().find(u => u.id === this.form.uomFromId);
-          const toUom   = this.uoms().find(u => u.id === this.form.uomToId);
-          const group   = this.groups().find(g => g.id === this.form.uomConversionGroupId);
+          const toUom = this.uoms().find(u => u.id === this.form.uomToId);
+          const group = this.groups().find(g => g.id === this.form.uomConversionGroupId);
           this.savedRows.update(rows => [...rows, {
             internalCode: this.form.internalCode ?? '',
-            groupLabel:   group   ? this.groupLabel(group)   : '—',
-            fromUomLabel: fromUom ? this.uomLabel(fromUom)   : '—',
-            toUomLabel:   toUom   ? this.uomLabel(toUom)     : '—',
-            value:        this.form.value ?? 0,
+            groupLabel: group ? this.groupLabel(group) : '—',
+            fromUomLabel: fromUom ? this.uomLabel(fromUom) : '—',
+            toUomLabel: toUom ? this.uomLabel(toUom) : '—',
+            value: this.form.value ?? 0,
           }]);
           this.resetAll();
           this.isEdit.set(false);
@@ -195,8 +195,8 @@ export class UomConversionFactorsOperationComponent implements OnInit {
     });
   }
 
-  save()       { this.submit(false); }
-  saveAndNew() { this.submit(true);  }
+  save() { this.submit(false); }
+  saveAndNew() { this.submit(true); }
 
   resetForm() { this.resetAll(); this.loadNextCode(); }
 

@@ -6,13 +6,20 @@ namespace MerkERP.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class TableNamesController(MerkDbContext db) : ControllerBase
+public class TableNamesController : ControllerBase
 {
+    private readonly MerkDbContext _db;
+
+    public TableNamesController(MerkDbContext db)
+    {
+        _db = db;
+    }
+
     [HttpGet]
     public async Task<IActionResult> GetAll() =>
-        Ok(await db.TableName_s.OrderBy(t => t.Id).ToListAsync());
+        Ok(await _db.TableName_s.OrderBy(t => t.Id).ToListAsync());
 
     [HttpGet("{id:int}")]
     public async Task<IActionResult> Get(int id) =>
-        await db.TableName_s.FindAsync(id) is { } t ? Ok(t) : NotFound();
+        await _db.TableName_s.FindAsync(id) is { } t ? Ok(t) : NotFound();
 }

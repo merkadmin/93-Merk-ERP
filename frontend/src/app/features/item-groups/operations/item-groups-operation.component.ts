@@ -36,17 +36,17 @@ interface SavedRow {
   styleUrl: './item-groups-operation.component.less',
 })
 export class ItemGroupsOperationComponent implements OnInit {
-  private api       = inject(ApiService);
-  private router    = inject(Router);
-  private route     = inject(ActivatedRoute);
+  private api = inject(ApiService);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
   private translate = inject(TranslateService);
-  private toastr    = inject(ToastrService);
-  private doc       = inject(DOCUMENT);
+  private toastr = inject(ToastrService);
+  private doc = inject(DOCUMENT);
 
   get isRtl() { return this.doc.documentElement.dir === 'rtl'; }
 
-  isEdit    = signal(false);
-  saving    = signal(false);
+  isEdit = signal(false);
+  saving = signal(false);
   savingNew = signal(false);
   savedRows = signal<SavedRow[]>([]);
   allGroups = signal<ItemGroup[]>([]);
@@ -122,10 +122,10 @@ export class ItemGroupsOperationComponent implements OnInit {
           const parent = this.allGroups().find(g => g.itemGroupId === this.form.parentItemGroupId);
           this.savedRows.update(rows => [...rows, {
             internalCode: this.form.internalCode ?? '',
-            name_EN:      this.form.name_EN ?? '',
-            name_AR:      this.form.name_AR ?? '',
-            parentName:   parent ? this.groupLabel(parent) : '—',
-            isMain:       this.form.isMain ?? false,
+            name_EN: this.form.name_EN ?? '',
+            name_AR: this.form.name_AR ?? '',
+            parentName: parent ? this.groupLabel(parent) : '—',
+            isMain: this.form.isMain ?? false,
           }]);
           this.form = this.blank();
           this.isEdit.set(false);
@@ -143,8 +143,8 @@ export class ItemGroupsOperationComponent implements OnInit {
     });
   }
 
-  save()       { this.submit(false); }
-  saveAndNew() { this.submit(true);  }
+  save() { this.submit(false); }
+  saveAndNew() { this.submit(true); }
 
   resetForm() {
     this.form = this.blank();

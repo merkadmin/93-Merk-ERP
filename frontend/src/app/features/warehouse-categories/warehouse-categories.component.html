@@ -1,43 +1,29 @@
-<app-regular-list-header-with-actions
-  [title]="'warehouse_categories.title' | translate"
-  icon="ki-outline ki-abstract-28"
-  color="primary"
-  [selectedCount]="selectedIds().size"
-  [showImportExport]="true"
-  (add)="addNew()"
-  (refresh)="load()"
-  (deleteSelected)="deleteSelected()"
-  (exportTemplate)="exportTemplate()"
+<app-regular-list-header-with-actions [title]="'warehouse_categories.title' | translate"
+  icon="ki-outline ki-abstract-28" color="primary" [selectedCount]="selectedIds().size" [showImportExport]="true"
+  (add)="addNew()" (refresh)="load()" (deleteSelected)="deleteSelected()" (exportTemplate)="exportTemplate()"
   (importFile)="importExcel($event)" />
 
-<app-regular-list-search-actions
-  [fields]="searchFields"
-  (filterChange)="onFilterChange($event)" />
+<app-regular-list-search-actions [fields]="searchFields" (filterChange)="onFilterChange($event)" />
 
-<app-custom-table-with-pagination
-  entity="warehousecategories"
-  [rows]="filtered"
-  (metadataLoaded)="columnMeta.set($event)"
-  (selectionChange)="selectedIds.set($event)">
+<app-custom-table-with-pagination entity="warehousecategories" [rows]="filtered"
+  (metadataLoaded)="columnMeta.set($event)" (selectionChange)="selectedIds.set($event)">
   <ng-template #rowActions let-c>
     <div class="d-inline-flex align-items-center gap-2">
-      <button class="btn btn-icon btn-sm btn-light-primary" (click)="edit(c.id)"
-        [title]="'common.edit' | translate">
+      <button class="btn btn-icon btn-sm btn-light-primary" (click)="edit(c.id)" [title]="'common.edit' | translate">
         <i class="ki-outline ki-pencil fs-4"></i>
       </button>
       @if (c.isActive) {
-        <button class="btn btn-sm btn-light-warning" (click)="toggleActive(c)">
-          <i class="ki-outline ki-minus-circle fs-4 me-1"></i>
-          {{ 'common.deactivate' | translate }}
-        </button>
+      <button class="btn btn-sm btn-light-warning" (click)="toggleActive(c)">
+        <i class="ki-outline ki-minus-circle fs-4 me-1"></i>
+        {{ 'common.deactivate' | translate }}
+      </button>
       } @else {
-        <button class="btn btn-sm btn-light-success" (click)="toggleActive(c)">
-          <i class="ki-outline ki-check-circle fs-4 me-1"></i>
-          {{ 'common.activate' | translate }}
-        </button>
+      <button class="btn btn-sm btn-light-success" (click)="toggleActive(c)">
+        <i class="ki-outline ki-check-circle fs-4 me-1"></i>
+        {{ 'common.activate' | translate }}
+      </button>
       }
-      <button class="btn btn-icon btn-sm btn-light-danger" (click)="delete(c.id)"
-        [title]="'common.delete' | translate">
+      <button class="btn btn-icon btn-sm btn-light-danger" (click)="delete(c.id)" [title]="'common.delete' | translate">
         <i class="ki-outline ki-trash fs-4"></i>
       </button>
     </div>

@@ -10,7 +10,7 @@ import { RegularListSearchActionsComponent, SearchField } from '../../shared/com
 import { RegularListHeaderWithActionsComponent } from '../../shared/components/cards/regular-list-header-with-actions/regular-list-header-with-actions.component';
 import { CustomTableWithPaginationComponent } from '../../shared/components/custom-controls/custom-table-with-pagination/custom-table-with-pagination.component';
 
-interface UOM   { id: number; name_EN: string; name_AR: string; }
+interface UOM { id: number; name_EN: string; name_AR: string; }
 interface Group { id: number; name_EN: string; name_AR: string; }
 
 interface UomConversionFactor {
@@ -35,19 +35,19 @@ interface UomConversionFactor {
   styleUrl: './uom-conversion-factors.component.less',
 })
 export class UomConversionFactorsComponent implements OnInit {
-  private api      = inject(ApiService);
-  private router   = inject(Router);
+  private api = inject(ApiService);
+  private router = inject(Router);
   private translate = inject(TranslateService);
-  private toastr   = inject(ToastrService);
-  private doc      = inject(DOCUMENT);
-  private meta     = inject(MetadataService);
+  private toastr = inject(ToastrService);
+  private doc = inject(DOCUMENT);
+  private meta = inject(MetadataService);
 
   get isRtl() { return this.doc.documentElement.dir === 'rtl'; }
 
-  factors      = signal<UomConversionFactor[]>([]);
-  selectedIds  = signal<Set<any>>(new Set());
+  factors = signal<UomConversionFactor[]>([]);
+  selectedIds = signal<Set<any>>(new Set());
   activeFilter = signal<Record<string, string | number | null>>({});
-  columnMeta   = signal<ColumnMeta[]>([]);
+  columnMeta = signal<ColumnMeta[]>([]);
 
   uomLabel(uom?: UOM): string {
     if (!uom) return '';
@@ -60,12 +60,12 @@ export class UomConversionFactorsComponent implements OnInit {
   }
 
   get searchFields(): SearchField[] {
-    const fromMap  = new Map<number, UOM>();
-    const toMap    = new Map<number, UOM>();
+    const fromMap = new Map<number, UOM>();
+    const toMap = new Map<number, UOM>();
     const groupMap = new Map<number, Group>();
     for (const f of this.factors()) {
-      if (f.uomFrom)            fromMap.set(f.uomFromId, f.uomFrom);
-      if (f.uomTo)              toMap.set(f.uomToId, f.uomTo);
+      if (f.uomFrom) fromMap.set(f.uomFromId, f.uomFrom);
+      if (f.uomTo) toMap.set(f.uomToId, f.uomTo);
       if (f.uomConversionGroup && f.uomConversionGroupId != null)
         groupMap.set(f.uomConversionGroupId, f.uomConversionGroup);
     }
@@ -78,8 +78,8 @@ export class UomConversionFactorsComponent implements OnInit {
 
     return this.meta.toSearchFields(this.columnMeta(), this.isRtl, {
       uomConversionGroup: grpOpts,
-      uomFrom:            uomOpts(fromMap),
-      uomTo:              uomOpts(toMap),
+      uomFrom: uomOpts(fromMap),
+      uomTo: uomOpts(toMap),
     });
   }
 
@@ -93,18 +93,18 @@ export class UomConversionFactorsComponent implements OnInit {
   get filteredFactors(): UomConversionFactor[] {
     const f = this.activeFilter();
     return this.sortedFactors.filter(x => {
-      if (f['internalCode']       != null && !(x.internalCode ?? '').toLowerCase().includes((f['internalCode'] as string).toLowerCase())) return false;
-      if (f['uomFrom']            != null && x.uomFromId            !== f['uomFrom'])            return false;
-      if (f['uomTo']              != null && x.uomToId              !== f['uomTo'])              return false;
+      if (f['internalCode'] != null && !(x.internalCode ?? '').toLowerCase().includes((f['internalCode'] as string).toLowerCase())) return false;
+      if (f['uomFrom'] != null && x.uomFromId !== f['uomFrom']) return false;
+      if (f['uomTo'] != null && x.uomToId !== f['uomTo']) return false;
       if (f['uomConversionGroup'] != null && x.uomConversionGroupId !== f['uomConversionGroup']) return false;
-      if (f['isActive']           != null && x.isActive             !== (f['isActive'] === 1))   return false;
+      if (f['isActive'] != null && x.isActive !== (f['isActive'] === 1)) return false;
       return true;
     });
   }
 
   readonly cellRenderers: Record<string, (item: any) => string> = {
-    uomFrom:            (item) => this.uomLabel(item.uomFrom),
-    uomTo:              (item) => this.uomLabel(item.uomTo),
+    uomFrom: (item) => this.uomLabel(item.uomFrom),
+    uomTo: (item) => this.uomLabel(item.uomTo),
     uomConversionGroup: (item) => this.groupLabel(item.uomConversionGroup),
   };
 
@@ -127,8 +127,8 @@ export class UomConversionFactorsComponent implements OnInit {
   exportTemplate() {
     this.api.getBlob('uomconversionfactors/export-template').subscribe(blob => {
       const url = URL.createObjectURL(blob);
-      const a   = document.createElement('a');
-      a.href     = url;
+      const a = document.createElement('a');
+      a.href = url;
       a.download = 'uom-conversion-factors-template.xlsx';
       a.click();
       URL.revokeObjectURL(url);
@@ -160,11 +160,11 @@ export class UomConversionFactorsComponent implements OnInit {
   delete(id: number) {
     Swal.fire({
       title: this.translate.instant('common.swal_delete_title'),
-      text:  this.translate.instant('uom_conversion_factors.delete_confirm'),
-      icon:  'warning',
-      showCancelButton:  true,
+      text: this.translate.instant('uom_conversion_factors.delete_confirm'),
+      icon: 'warning',
+      showCancelButton: true,
       confirmButtonText: this.translate.instant('common.delete'),
-      cancelButtonText:  this.translate.instant('common.cancel'),
+      cancelButtonText: this.translate.instant('common.cancel'),
       confirmButtonColor: '#f1416c',
       reverseButtons: this.isRtl,
     }).then(result => {
@@ -190,11 +190,11 @@ export class UomConversionFactorsComponent implements OnInit {
     if (!ids.length) return;
     Swal.fire({
       title: this.translate.instant('common.swal_delete_title'),
-      text:  this.translate.instant('uom_conversion_factors.delete_selected_confirm', { count: ids.length }),
-      icon:  'warning',
-      showCancelButton:  true,
+      text: this.translate.instant('uom_conversion_factors.delete_selected_confirm', { count: ids.length }),
+      icon: 'warning',
+      showCancelButton: true,
       confirmButtonText: this.translate.instant('common.delete'),
-      cancelButtonText:  this.translate.instant('common.cancel'),
+      cancelButtonText: this.translate.instant('common.cancel'),
       confirmButtonColor: '#f1416c',
       reverseButtons: this.isRtl,
     }).then(result => {

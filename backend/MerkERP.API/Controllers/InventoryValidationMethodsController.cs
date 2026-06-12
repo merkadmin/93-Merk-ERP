@@ -6,9 +6,16 @@ namespace MerkERP.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class InventoryValidationMethodsController(MerkDbContext db) : ControllerBase
+public class InventoryValidationMethodsController : ControllerBase
 {
+	private readonly MerkDbContext _db;
+
+	public InventoryValidationMethodsController(MerkDbContext db)
+	{
+		_db = db;
+	}
+
 	[HttpGet]
 	public async Task<IActionResult> GetAll() =>
-		Ok(await db.InventoryValidationMethod_s.OrderBy(m => m.InventoryValidationMethodId).ToListAsync());
+		Ok(await _db.InventoryValidationMethod_s.OrderBy(m => m.InventoryValidationMethodId).ToListAsync());
 }

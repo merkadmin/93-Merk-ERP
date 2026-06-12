@@ -1,11 +1,19 @@
 /* Root height — required for Metronic's flex layout to fill the viewport */
-html, body { height: 100%; margin: 0; }
-app-root { display: contents; }
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+app-root {
+  display: contents;
+}
 
 /* Global font: Cairo for Arabic text, Inter for everything else */
 *:not(i):not([class*="ki-"]):not([class*="fa-"]) {
   font-family: 'Inter', sans-serif;
 }
+
 [lang=ar] *:not(i):not([class*="ki-"]):not([class*="fa-"]) {
   font-family: 'Cairo', sans-serif;
   font-size: 1.05rem;
@@ -17,6 +25,7 @@ app-root { display: contents; }
     left: auto !important;
     right: 0 !important;
   }
+
   [dir=rtl] [data-kt-app-sidebar-fixed=true] .app-wrapper {
     margin-left: 0 !important;
     margin-right: calc(var(--bs-app-sidebar-width) + var(--bs-app-sidebar-gap-start, 0px) + var(--bs-app-sidebar-gap-end, 0px)) !important;
@@ -100,11 +109,13 @@ app-root { display: contents; }
 
 /* ── Light mode: white backgrounds for inputs ── */
 html:not([data-bs-theme=dark]) {
+
   .form-control,
   .form-control-solid,
   .form-select,
   .form-select-solid {
     background-color: #ffffff !important;
+
     &:not(:hover):not(:focus) {
       border-color: var(--bs-border-color) !important;
     }
@@ -113,6 +124,7 @@ html:not([data-bs-theme=dark]) {
 
 /* ── Dark mode: darker input backgrounds ── */
 html[data-bs-theme=dark] {
+
   .form-control,
   .form-control-solid,
   .form-select,

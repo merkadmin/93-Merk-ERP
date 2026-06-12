@@ -1,12 +1,26 @@
-:host { display: contents; }
+:host {
+  display: contents;
+}
 
 // LTR: Reset appears rightmost (after the main group)
-.btn-reset     { order: 2; }
-.actions-group { order: 1; }
+.btn-reset {
+  order: 2;
+}
+
+.actions-group {
+  order: 1;
+}
 
 // RTL: Reset at far right, Save/Save&New/Cancel at far left
 :host-context([dir=rtl]) .card-footer {
   justify-content: space-between !important;
 }
-:host-context([dir=rtl]) .btn-reset     { order: 1; }
-:host-context([dir=rtl]) .actions-group { order: 2; flex-direction: row-reverse; }
+
+:host-context([dir=rtl]) .btn-reset {
+  order: 1;
+}
+
+:host-context([dir=rtl]) .actions-group {
+  order: 2;
+  flex-direction: row-reverse;
+}

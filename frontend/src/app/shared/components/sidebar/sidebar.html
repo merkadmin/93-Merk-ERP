@@ -2,9 +2,8 @@
 
   <!-- Logo -->
   <div class="app-sidebar-logo d-flex align-items-center px-4 h-70px border-bottom border-bottom-dashed"
-       id="kt_app_sidebar_logo">
-    <a routerLink="/" (click)="closeSidebar()"
-       class="d-flex align-items-center gap-3 flex-grow-1 text-decoration-none">
+    id="kt_app_sidebar_logo">
+    <a routerLink="/" (click)="closeSidebar()" class="d-flex align-items-center gap-3 flex-grow-1 text-decoration-none">
       <i class="ki-outline ki-abstract-26 fs-1 text-primary"></i>
       <span class="fw-bolder fs-4 text-gray-800 lh-1">{{ 'app.title' | translate }}</span>
     </a>
@@ -15,40 +14,38 @@
 
   <!-- Scrollable menu area -->
   <div class="app-sidebar-menu overflow-hidden flex-column-fluid">
-    <div id="kt_app_sidebar_menu_wrapper"
-         class="app-sidebar-wrapper hover-scroll-overlay-y my-3 px-3"
-         data-kt-scroll="true" data-kt-scroll-activate="true" data-kt-scroll-height="auto"
-         data-kt-scroll-dependencies="#kt_app_sidebar_logo" data-kt-scroll-offset="5px">
+    <div id="kt_app_sidebar_menu_wrapper" class="app-sidebar-wrapper hover-scroll-overlay-y my-3 px-3"
+      data-kt-scroll="true" data-kt-scroll-activate="true" data-kt-scroll-height="auto"
+      data-kt-scroll-dependencies="#kt_app_sidebar_logo" data-kt-scroll-offset="5px">
 
       <div class="menu menu-column menu-rounded menu-sub-indention fw-semibold">
 
         <!-- ── Data-driven sections ────────────────────────────── -->
         @for (section of sidebarService.sections; track section.id) {
-          @if (section.isVisible()) {
-            <div class="menu-item menu-accordion" [class.show]="isSectionExpanded(section.id)">
-              <span class="menu-link py-3" (click)="toggleSection(section.id)">
-                <span class="menu-icon">
-                  <i class="ki-outline {{ section.icon }} fs-2 {{ section.iconColor }}"></i>
-                </span>
-                <span class="menu-title">{{ section.labelKey | translate }}</span>
-                <span class="menu-arrow"></span>
-              </span>
+        @if (section.isVisible()) {
+        <div class="menu-item menu-accordion" [class.show]="isSectionExpanded(section.id)">
+          <span class="menu-link py-3" (click)="toggleSection(section.id)">
+            <span class="menu-icon">
+              <i class="ki-outline {{ section.icon }} fs-2 {{ section.iconColor }}"></i>
+            </span>
+            <span class="menu-title">{{ section.labelKey | translate }}</span>
+            <span class="menu-arrow"></span>
+          </span>
 
-              @if (isSectionExpanded(section.id)) {
-                <div class="menu-sub menu-sub-accordion">
-                  @for (item of section.getChildren(); track item.route) {
-                    <div class="menu-item">
-                      <a class="menu-link py-2" [routerLink]="item.route" routerLinkActive="active"
-                         (click)="closeSidebar()">
-                        <span class="menu-icon"><i class="{{ item.icon }} fs-3"></i></span>
-                        <span class="menu-title">{{ item.labelKey | translate }}</span>
-                      </a>
-                    </div>
-                  }
-                </div>
-              }
+          @if (isSectionExpanded(section.id)) {
+          <div class="menu-sub menu-sub-accordion">
+            @for (item of section.getChildren(); track item.route) {
+            <div class="menu-item">
+              <a class="menu-link py-2" [routerLink]="item.route" routerLinkActive="active" (click)="closeSidebar()">
+                <span class="menu-icon"><i class="{{ item.icon }} fs-3"></i></span>
+                <span class="menu-title">{{ item.labelKey | translate }}</span>
+              </a>
             </div>
+            }
+          </div>
           }
+        </div>
+        }
         }
         <!-- ── End sections ────────────────────────────────────── -->
 

@@ -11,17 +11,17 @@ import { TranslatePipe } from '@ngx-translate/core';
 export class RegularListHeaderWithActionsComponent {
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
 
-  title              = input<string>('');
-  icon               = input<string>('');
-  color              = input<string>('primary');
-  selectedCount      = input<number>(0);
-  showImportExport   = input<boolean>(false);
+  title = input<string>('');
+  icon = input<string>('');
+  color = input<string>('primary');
+  selectedCount = input<number>(0);
+  showImportExport = input<boolean>(false);
 
-  add            = output<void>();
-  refresh        = output<void>();
+  add = output<void>();
+  refresh = output<void>();
   deleteSelected = output<void>();
   exportTemplate = output<void>();
-  importFile     = output<File>();
+  importFile = output<File>();
 
   triggerImport() {
     this.fileInput.nativeElement.value = '';

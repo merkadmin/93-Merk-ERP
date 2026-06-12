@@ -11,8 +11,8 @@ import { RegularListHeaderWithActionsComponent } from '../../shared/components/c
 import { CustomTableWithPaginationComponent } from '../../shared/components/custom-controls/custom-table-with-pagination/custom-table-with-pagination.component';
 
 interface ItemGroup { itemGroupId: number; name_EN: string; name_AR?: string; }
-interface ItemType  { itemTypeId: number;  name: string; }
-interface ItemUOM   { id: number; name_EN: string; name_AR?: string; }
+interface ItemType { itemTypeId: number; name: string; }
+interface ItemUOM { id: number; name_EN: string; name_AR?: string; }
 
 interface Item {
   id: number;
@@ -47,19 +47,19 @@ interface Item {
   styleUrl: './items.component.less',
 })
 export class ItemsComponent implements OnInit {
-  private api      = inject(ApiService);
-  private router   = inject(Router);
+  private api = inject(ApiService);
+  private router = inject(Router);
   private translate = inject(TranslateService);
-  private toastr   = inject(ToastrService);
-  private doc      = inject(DOCUMENT);
-  private meta     = inject(MetadataService);
+  private toastr = inject(ToastrService);
+  private doc = inject(DOCUMENT);
+  private meta = inject(MetadataService);
 
   get isRtl() { return this.doc.documentElement.dir === 'rtl'; }
 
-  items        = signal<Item[]>([]);
-  selectedIds  = signal<Set<any>>(new Set());
+  items = signal<Item[]>([]);
+  selectedIds = signal<Set<any>>(new Set());
   activeFilter = signal<Record<string, string | number | null>>({});
-  columnMeta   = signal<ColumnMeta[]>([]);
+  columnMeta = signal<ColumnMeta[]>([]);
 
   uomLabel(uom?: ItemUOM): string {
     if (!uom) return '—';
@@ -77,17 +77,17 @@ export class ItemsComponent implements OnInit {
 
   get searchFields(): SearchField[] {
     const groupMap = new Map<number, string>();
-    const typeMap  = new Map<number, string>();
+    const typeMap = new Map<number, string>();
     for (const item of this.items()) {
       if (item.itemGroup) groupMap.set(item.itemGroupId, this.groupLabel(item.itemGroup));
-      if (item.itemType)  typeMap.set(item.itemTypeId,  item.itemType.name);
+      if (item.itemType) typeMap.set(item.itemTypeId, item.itemType.name);
     }
     const groupOpts = [...groupMap.entries()].map(([value, label]) => ({ value, label })).sort((a, b) => a.label.localeCompare(b.label));
-    const typeOpts  = [...typeMap.entries()].map(([value, label])  => ({ value, label })).sort((a, b) => a.label.localeCompare(b.label));
+    const typeOpts = [...typeMap.entries()].map(([value, label]) => ({ value, label })).sort((a, b) => a.label.localeCompare(b.label));
 
     return this.meta.toSearchFields(this.columnMeta(), this.isRtl, {
       itemGroup: groupOpts,
-      itemType:  typeOpts,
+      itemType: typeOpts,
     });
   }
 
@@ -102,18 +102,18 @@ export class ItemsComponent implements OnInit {
     const f = this.activeFilter();
     return this.sortedItems.filter(item => {
       if (f['internalCode'] != null && !item.internalCode.toLowerCase().includes((f['internalCode'] as string).toLowerCase())) return false;
-      if (f['name_AR']      != null && !(item.name_AR ?? '').toLowerCase().includes((f['name_AR'] as string).toLowerCase())) return false;
-      if (f['name_EN']      != null && !item.name_EN.toLowerCase().includes((f['name_EN'] as string).toLowerCase())) return false;
-      if (f['itemGroup']    != null && item.itemGroupId !== f['itemGroup']) return false;
-      if (f['itemType']     != null && item.itemTypeId  !== f['itemType'])  return false;
-      if (f['isActive']     != null && item.isActive    !== (f['isActive'] === 1)) return false;
+      if (f['name_AR'] != null && !(item.name_AR ?? '').toLowerCase().includes((f['name_AR'] as string).toLowerCase())) return false;
+      if (f['name_EN'] != null && !item.name_EN.toLowerCase().includes((f['name_EN'] as string).toLowerCase())) return false;
+      if (f['itemGroup'] != null && item.itemGroupId !== f['itemGroup']) return false;
+      if (f['itemType'] != null && item.itemTypeId !== f['itemType']) return false;
+      if (f['isActive'] != null && item.isActive !== (f['isActive'] === 1)) return false;
       return true;
     });
   }
 
   readonly cellRenderers: Record<string, (item: any) => string> = {
-    itemGroup:  (item) => this.groupLabel(item.itemGroup),
-    itemType:   (item) => item.itemType?.name ?? '—',
+    itemGroup: (item) => this.groupLabel(item.itemGroup),
+    itemType: (item) => item.itemType?.name ?? '—',
     defaultUOM: (item) => this.uomLabel(item.defaultUOM),
   };
 
@@ -134,8 +134,8 @@ export class ItemsComponent implements OnInit {
   exportTemplate() {
     this.api.getBlob('items/export-template').subscribe(blob => {
       const url = URL.createObjectURL(blob);
-      const a   = document.createElement('a');
-      a.href     = url;
+      const a = document.createElement('a');
+      a.href = url;
       a.download = 'items-template.xlsx';
       a.click();
       URL.revokeObjectURL(url);
@@ -165,11 +165,11 @@ export class ItemsComponent implements OnInit {
   delete(id: number) {
     Swal.fire({
       title: this.translate.instant('common.swal_delete_title'),
-      text:  this.translate.instant('items.delete_confirm'),
-      icon:  'warning',
-      showCancelButton:  true,
+      text: this.translate.instant('items.delete_confirm'),
+      icon: 'warning',
+      showCancelButton: true,
       confirmButtonText: this.translate.instant('common.delete'),
-      cancelButtonText:  this.translate.instant('common.cancel'),
+      cancelButtonText: this.translate.instant('common.cancel'),
       confirmButtonColor: '#f1416c',
       reverseButtons: this.isRtl,
     }).then(result => {
@@ -197,11 +197,11 @@ export class ItemsComponent implements OnInit {
     if (!ids.length) return;
     Swal.fire({
       title: this.translate.instant('common.swal_delete_title'),
-      text:  this.translate.instant('items.delete_selected_confirm', { count: ids.length }),
-      icon:  'warning',
-      showCancelButton:  true,
+      text: this.translate.instant('items.delete_selected_confirm', { count: ids.length }),
+      icon: 'warning',
+      showCancelButton: true,
       confirmButtonText: this.translate.instant('common.delete'),
-      cancelButtonText:  this.translate.instant('common.cancel'),
+      cancelButtonText: this.translate.instant('common.cancel'),
       confirmButtonColor: '#f1416c',
       reverseButtons: this.isRtl,
     }).then(result => {

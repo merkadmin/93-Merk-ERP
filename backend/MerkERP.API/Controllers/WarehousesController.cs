@@ -8,17 +8,26 @@ namespace MerkERP.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class WarehousesController(MerkDbContext db, ExcelService excel) : ControllerBase
+public class WarehousesController : ControllerBase
 {
+	private readonly MerkDbContext _db;
+	private readonly ExcelService  _excel;
+
+	public WarehousesController(MerkDbContext db, ExcelService excel)
+	{
+		_db    = db;
+		_excel = excel;
+	}
+
 	[HttpGet]
 	public async Task<IActionResult> GetAll() =>
-		Ok(await db.WareHouse_cs.OrderBy(w => w.Name_EN).ToListAsync());
+		Ok(await _db.WareHouse_cs.OrderBy(w => w.Name_EN).ToListAsync());
 
 	[HttpGet("nextcode")]
 	public async Task<IActionResult> NextCode()
 	{
 		const string prefix = "WH-";
-		var codes = await db.WareHouse_cs
+		var codes = await _db.WareHouse_cs
 			.Where(w => w.InternalCode != null && w.InternalCode.StartsWith(prefix))
 			.Select(w => w.InternalCode!)
 			.ToListAsync();
@@ -34,9 +43,9 @@ public class WarehousesController(MerkDbContext db, ExcelService excel) : Contro
 	[HttpGet("export-template")]
 	public async Task<IActionResult> ExportTemplate()
 	{
-		var types      = await db.WareHouseType_s.OrderBy(t => t.Name_EN).ToListAsync();
-		var categories = await db.WareHouseCategory_cs.OrderBy(c => c.Name_EN).ToListAsync();
-		var warehouses = await db.WareHouse_cs.OrderBy(w => w.InternalCode).ToListAsync();
+		var types      = await _db.WareHouseType_s.OrderBy(t => t.Name_EN).ToListAsync();
+		var categories = await _db.WareHouseCategory_cs.OrderBy(c => c.Name_EN).ToListAsync();
+		var warehouses = await _db.WareHouse_cs.OrderBy(w => w.InternalCode).ToListAsync();
 
 		var columns = new (string Label, int Width)[]
 		{
@@ -65,7 +74,7 @@ public class WarehousesController(MerkDbContext db, ExcelService excel) : Contro
 				warehouses.Select(w => new[] { w.InternalCode ?? "", w.Name_EN, w.Name_AR ?? "" })),
 		};
 
-		return File(excel.BuildTemplate(columns, referenceSheets),
+		return File(_excel.BuildTemplate(columns, referenceSheets),
 			"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
 			"warehouses-template.xlsx");
 	}
@@ -76,13 +85,13 @@ public class WarehousesController(MerkDbContext db, ExcelService excel) : Contro
 		if (file is null || file.Length == 0)
 			return BadRequest("No file uploaded.");
 
-		var types      = await db.WareHouseType_s.ToListAsync();
-		var categories = await db.WareHouseCategory_cs.ToListAsync();
-		var warehouses = await db.WareHouse_cs.ToListAsync();
+		var types      = await _db.WareHouseType_s.ToListAsync();
+		var categories = await _db.WareHouseCategory_cs.ToListAsync();
+		var warehouses = await _db.WareHouse_cs.ToListAsync();
 
 		var created = 0;
 		var errors  = new List<string>();
-		var rows    = excel.ReadRows(file.OpenReadStream());
+		var rows    = _excel.ReadRows(file.OpenReadStream());
 
 		for (int i = 0; i < rows.Count; i++)
 		{
@@ -144,7 +153,7 @@ public class WarehousesController(MerkDbContext db, ExcelService excel) : Contro
 				categoryId = cat.Id;
 			}
 
-			db.WareHouse_cs.Add(new WareHouse_cs
+			_db.WareHouse_cs.Add(new WareHouse_cs
 			{
 				InternalCode        = internalCode,
 				Name_EN             = nameEn,
@@ -160,25 +169,25 @@ public class WarehousesController(MerkDbContext db, ExcelService excel) : Contro
 			created++;
 		}
 
-		if (created > 0) await db.SaveChangesAsync();
+		if (created > 0) await _db.SaveChangesAsync();
 		return Ok(new { created, errors });
 	}
 
 	[HttpGet("{id}")]
 	public async Task<IActionResult> Get(long id) =>
-		await db.WareHouse_cs.FindAsync(id) is { } e ? Ok(e) : NotFound();
+		await _db.WareHouse_cs.FindAsync(id) is { } e ? Ok(e) : NotFound();
 
 	[HttpPost]
 	public async Task<IActionResult> Create(WareHouse_cs e)
 	{
 		if (e.ParentWarehouseId == null)
 		{
-			bool rootExists = await db.WareHouse_cs.AnyAsync(w => w.ParentWarehouseId == null);
+			bool rootExists = await _db.WareHouse_cs.AnyAsync(w => w.ParentWarehouseId == null);
 			if (rootExists)
 				return BadRequest(new { message = "A root warehouse already exists. All new warehouses must have a parent." });
 		}
-		db.WareHouse_cs.Add(e);
-		await db.SaveChangesAsync();
+		_db.WareHouse_cs.Add(e);
+		await _db.SaveChangesAsync();
 		return Ok(e);
 	}
 
@@ -188,41 +197,41 @@ public class WarehousesController(MerkDbContext db, ExcelService excel) : Contro
 		if (id != e.Id) return BadRequest();
 		if (e.ParentWarehouseId == null)
 		{
-			bool otherRootExists = await db.WareHouse_cs.AnyAsync(w => w.ParentWarehouseId == null && w.Id != id);
+			bool otherRootExists = await _db.WareHouse_cs.AnyAsync(w => w.ParentWarehouseId == null && w.Id != id);
 			if (otherRootExists)
 				return BadRequest(new { message = "A root warehouse already exists. Only one root warehouse is allowed." });
 		}
-		db.WareHouse_cs.Update(e);
-		await db.SaveChangesAsync();
+		_db.WareHouse_cs.Update(e);
+		await _db.SaveChangesAsync();
 		return Ok(e);
 	}
 
 	[HttpDelete("{id}")]
 	public async Task<IActionResult> Delete(long id)
 	{
-		var e = await db.WareHouse_cs.FindAsync(id);
+		var e = await _db.WareHouse_cs.FindAsync(id);
 		if (e is null) return NotFound();
-		db.WareHouse_cs.Remove(e);
-		await db.SaveChangesAsync();
+		_db.WareHouse_cs.Remove(e);
+		await _db.SaveChangesAsync();
 		return NoContent();
 	}
 
 	[HttpDelete("bulk")]
 	public async Task<IActionResult> DeleteBulk([FromBody] long[] ids)
 	{
-		var entities = await db.WareHouse_cs.Where(w => ids.Contains(w.Id)).ToListAsync();
-		db.WareHouse_cs.RemoveRange(entities);
-		await db.SaveChangesAsync();
+		var entities = await _db.WareHouse_cs.Where(w => ids.Contains(w.Id)).ToListAsync();
+		_db.WareHouse_cs.RemoveRange(entities);
+		await _db.SaveChangesAsync();
 		return NoContent();
 	}
 
 	[HttpPatch("{id}/toggle-active")]
 	public async Task<IActionResult> ToggleActive(long id)
 	{
-		var e = await db.WareHouse_cs.FindAsync(id);
+		var e = await _db.WareHouse_cs.FindAsync(id);
 		if (e is null) return NotFound();
 		e.IsActive = !e.IsActive;
-		await db.SaveChangesAsync();
+		await _db.SaveChangesAsync();
 		return Ok(e);
 	}
 }

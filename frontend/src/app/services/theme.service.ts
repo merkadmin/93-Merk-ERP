@@ -8,7 +8,7 @@ const STORAGE_KEY = 'data-bs-theme';
 export class ThemeService {
   private _mode = signal<ThemeMode>(this._loadStored());
 
-  readonly mode  = this._mode.asReadonly();
+  readonly mode = this._mode.asReadonly();
   readonly isDark = computed(() => this._mode() === 'dark');
 
   constructor() {

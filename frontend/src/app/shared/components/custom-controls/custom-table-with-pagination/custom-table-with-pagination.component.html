@@ -4,80 +4,68 @@
       <thead>
         <tr class="fw-bold text-primary bg-light-primary">
           <th class="w-40px">
-            <input type="checkbox" class="form-check-input"
-              [checked]="isAllSelected"
-              [indeterminate]="isIndeterminate"
+            <input type="checkbox" class="form-check-input" [checked]="isAllSelected" [indeterminate]="isIndeterminate"
               (change)="toggleAll()">
           </th>
           @for (col of visibleColumns; track col.key) {
-            <th [style.min-width.px]="col.minWidth ?? null">{{ isRtl ? col.labelAR : col.labelEN }}</th>
+          <th [style.min-width.px]="col.minWidth ?? null">{{ isRtl ? col.labelAR : col.labelEN }}</th>
           }
           @if (rowActionsTemplate) {
-            <th [class.text-end]="!isRtl" [class.text-start]="isRtl">{{ 'common.actions' | translate }}</th>
+          <th [class.text-end]="!isRtl" [class.text-start]="isRtl">{{ 'common.actions' | translate }}</th>
           }
         </tr>
       </thead>
       <tbody>
         @for (row of displayRows(); track row[idKey()]) {
-          <tr [class.table-active]="isSelected(row)">
-            <td>
-              <input type="checkbox" class="form-check-input"
-                [checked]="isSelected(row)"
-                (change)="toggleOne(row)">
-            </td>
-            @for (col of visibleColumns; track col.key) {
-              <td>
-                @switch (col.renderAs) {
-                  @case ('tree') {
-                    @if (treeCellTemplate) {
-                      <ng-container
-                        [ngTemplateOutlet]="treeCellTemplate"
-                        [ngTemplateOutletContext]="{ $implicit: row }">
-                      </ng-container>
-                    } @else {
-                      {{ getCellText(row, col) }}
-                    }
-                  }
-                  @case ('badge') {
-                    <span class="badge"
-                      [class.badge-light-success]="getCellBoolean(row, col)"
-                      [class.badge-light-danger]="!getCellBoolean(row, col)">
-                      {{ (getCellBoolean(row, col) ? 'common.yes' : 'common.no') | translate }}
-                    </span>
-                  }
-                  @case ('yesno') {
-                    <span class="badge"
-                      [class.badge-light-info]="getCellBoolean(row, col)"
-                      [class.badge-light-secondary]="!getCellBoolean(row, col)">
-                      {{ (getCellBoolean(row, col) ? 'common.yes' : 'common.no') | translate }}
-                    </span>
-                  }
-                  @default {
-                    {{ getCellText(row, col) }}
-                  }
-                }
-              </td>
+        <tr [class.table-active]="isSelected(row)">
+          <td>
+            <input type="checkbox" class="form-check-input" [checked]="isSelected(row)" (change)="toggleOne(row)">
+          </td>
+          @for (col of visibleColumns; track col.key) {
+          <td>
+            @switch (col.renderAs) {
+            @case ('tree') {
+            @if (treeCellTemplate) {
+            <ng-container [ngTemplateOutlet]="treeCellTemplate" [ngTemplateOutletContext]="{ $implicit: row }">
+            </ng-container>
+            } @else {
+            {{ getCellText(row, col) }}
             }
-            @if (rowActionsTemplate) {
-              <td class="text-nowrap" [class.text-end]="!isRtl" [class.text-start]="isRtl">
-                <ng-container
-                  [ngTemplateOutlet]="rowActionsTemplate"
-                  [ngTemplateOutletContext]="{ $implicit: row }">
-                </ng-container>
-              </td>
             }
-          </tr>
+            @case ('badge') {
+            <span class="badge" [class.badge-light-success]="getCellBoolean(row, col)"
+              [class.badge-light-danger]="!getCellBoolean(row, col)">
+              {{ (getCellBoolean(row, col) ? 'common.yes' : 'common.no') | translate }}
+            </span>
+            }
+            @case ('yesno') {
+            <span class="badge" [class.badge-light-info]="getCellBoolean(row, col)"
+              [class.badge-light-secondary]="!getCellBoolean(row, col)">
+              {{ (getCellBoolean(row, col) ? 'common.yes' : 'common.no') | translate }}
+            </span>
+            }
+            @default {
+            {{ getCellText(row, col) }}
+            }
+            }
+          </td>
+          }
+          @if (rowActionsTemplate) {
+          <td class="text-nowrap" [class.text-end]="!isRtl" [class.text-start]="isRtl">
+            <ng-container [ngTemplateOutlet]="rowActionsTemplate" [ngTemplateOutletContext]="{ $implicit: row }">
+            </ng-container>
+          </td>
+          }
+        </tr>
         } @empty {
-          <tr>
-            <td [attr.colspan]="visibleColumns.length + 2" class="text-center text-muted py-6">—</td>
-          </tr>
+        <tr>
+          <td [attr.colspan]="visibleColumns.length + 2" class="text-center text-muted py-6">—</td>
+        </tr>
         }
       </tbody>
     </table>
   </div>
 
-  <app-custom-table-pagination
-    [items]="rows()"
-    (pagedDataChange)="displayRows.set($event)">
+  <app-custom-table-pagination [items]="rows()" (pagedDataChange)="displayRows.set($event)">
   </app-custom-table-pagination>
 </div>

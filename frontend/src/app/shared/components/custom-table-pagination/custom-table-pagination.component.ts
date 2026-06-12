@@ -17,16 +17,16 @@ export class CustomTablePaginationComponent implements OnChanges {
   @Input() defaultPageSize = 25;
 
   // Controlled sync inputs — set by parent to keep multiple instances in step
-  @Input() syncPage:     number | null = null;
+  @Input() syncPage: number | null = null;
   @Input() syncPageSize: number | null = null;
 
   @Output() pagedDataChange = new EventEmitter<any[]>();
-  @Output() pageChange      = new EventEmitter<number>();
-  @Output() pageSizeChange  = new EventEmitter<number>();
+  @Output() pageChange = new EventEmitter<number>();
+  @Output() pageSizeChange = new EventEmitter<number>();
 
   private lang = inject(LanguageService);
 
-  pageSize    = 25;
+  pageSize = 25;
   currentPage = 1;
 
   get isAr(): boolean { return this.lang.lang() === 'ar'; }
@@ -36,7 +36,7 @@ export class CustomTablePaginationComponent implements OnChanges {
       this.pageSize = this.defaultPageSize;
     }
     if (changes['syncPageSize'] && this.syncPageSize !== null && this.syncPageSize !== this.pageSize) {
-      this.pageSize    = this.syncPageSize;
+      this.pageSize = this.syncPageSize;
       this.currentPage = 1;
     }
     if (changes['syncPage'] && this.syncPage !== null && this.syncPage !== this.currentPage) {
@@ -49,24 +49,24 @@ export class CustomTablePaginationComponent implements OnChanges {
   }
 
   // ── Computed ──────────────────────────────────────────────────────────────
-  get total(): number      { return this.items.length; }
+  get total(): number { return this.items.length; }
   get totalPages(): number { return Math.max(1, Math.ceil(this.total / this.pageSize)); }
-  get rangeFrom(): number  { return this.total === 0 ? 0 : (this.currentPage - 1) * this.pageSize + 1; }
-  get rangeTo(): number    { return Math.min(this.currentPage * this.pageSize, this.total); }
+  get rangeFrom(): number { return this.total === 0 ? 0 : (this.currentPage - 1) * this.pageSize + 1; }
+  get rangeTo(): number { return Math.min(this.currentPage * this.pageSize, this.total); }
 
   get visiblePages(): (number | '...')[] {
     const total = this.totalPages;
-    const cur   = this.currentPage;
+    const cur = this.currentPage;
     if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
     // Always exactly 7 elements — prevents layout shifts
-    if (cur <= 4)         return [1, 2, 3, 4, 5, '...', total];
+    if (cur <= 4) return [1, 2, 3, 4, 5, '...', total];
     if (cur >= total - 3) return [1, '...', total - 4, total - 3, total - 2, total - 1, total];
-    return                       [1, '...', cur - 1, cur, cur + 1, '...', total];
+    return [1, '...', cur - 1, cur, cur + 1, '...', total];
   }
 
   // ── Actions ───────────────────────────────────────────────────────────────
   onPageSizeChange(size: number): void {
-    this.pageSize    = +size;
+    this.pageSize = +size;
     this.currentPage = 1;
     this.emit();
     this.pageSizeChange.emit(this.pageSize);
@@ -81,7 +81,7 @@ export class CustomTablePaginationComponent implements OnChanges {
   }
 
   goFirst(): void { this.goToPage(1); }
-  goLast():  void { this.goToPage(this.totalPages); }
+  goLast(): void { this.goToPage(this.totalPages); }
 
   private emit(): void {
     const start = (this.currentPage - 1) * this.pageSize;

@@ -1,11 +1,11 @@
 // ── Section header title: uniform bold color ──────────────────────────────────
-.app-sidebar .menu-item.menu-accordion > .menu-link .menu-title {
+.app-sidebar .menu-item.menu-accordion>.menu-link .menu-title {
   color: var(--bs-gray-800) !important;
   font-weight: 700 !important;
 }
 
 // ── Section header: Metronic bg-light-primary background ─────────────────────
-.app-sidebar .menu-item.menu-accordion > .menu-link {
+.app-sidebar .menu-item.menu-accordion>.menu-link {
   background-color: rgba(var(--bs-primary-rgb), 0.08) !important;
   border-radius: 0.475rem;
   margin-bottom: 2px;
@@ -40,8 +40,13 @@
   &:not(.active):hover {
     background-color: rgba(var(--bs-primary-rgb), 0.05) !important;
 
-    .menu-title { color: var(--bs-primary) !important; }
-    .menu-icon i { color: var(--bs-primary) !important; }
+    .menu-title {
+      color: var(--bs-primary) !important;
+    }
+
+    .menu-icon i {
+      color: var(--bs-primary) !important;
+    }
   }
 }
 

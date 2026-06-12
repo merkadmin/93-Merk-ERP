@@ -1,8 +1,5 @@
-<app-regular-operation-header
-  [title]="(isEdit() ? 'item_groups.edit_title' : 'item_groups.add_title') | translate"
-  icon="ki-outline ki-category"
-  color="success"
-  (cancel)="back()" />
+<app-regular-operation-header [title]="(isEdit() ? 'item_groups.edit_title' : 'item_groups.add_title') | translate"
+  icon="ki-outline ki-category" color="success" (cancel)="back()" />
 
 <!-- Form card -->
 <div class="card">
@@ -17,22 +14,20 @@
 
       <div class="col-3">
         <label class="form-label">{{ 'common.name' | translate }} (AR)</label>
-        <input class="form-control" [(ngModel)]="form.name_AR" name="name_AR"
-          [placeholder]="'common.name' | translate" dir="rtl">
+        <input class="form-control" [(ngModel)]="form.name_AR" name="name_AR" [placeholder]="'common.name' | translate"
+          dir="rtl">
       </div>
 
       <div class="col-3">
         <label class="form-label required">{{ 'common.name' | translate }} (EN)</label>
-        <input class="form-control" [(ngModel)]="form.name_EN" name="name_EN"
-          [placeholder]="'common.name' | translate">
+        <input class="form-control" [(ngModel)]="form.name_EN" name="name_EN" [placeholder]="'common.name' | translate">
       </div>
 
       <div class="w-100"></div>
 
       <div class="col-3 d-flex align-items-end pb-2">
         <div class="form-check form-check-custom form-check-solid">
-          <input class="form-check-input" type="checkbox"
-            [(ngModel)]="form.isMain" name="isMain" id="isMain"
+          <input class="form-check-input" type="checkbox" [(ngModel)]="form.isMain" name="isMain" id="isMain"
             (change)="form.isMain && (form.parentItemGroupId = null)">
           <label class="form-check-label fw-semibold" for="isMain">
             {{ 'common.is_main' | translate }}
@@ -41,69 +36,61 @@
       </div>
 
       @if (!form.isMain) {
-        <div class="col-5">
-          <label class="form-label">{{ 'item_groups.parent_group' | translate }}</label>
-          <app-custom-select-input
-            [options]="parentGroupOptions"
-            [value]="form.parentItemGroupId ?? null"
-            (valueChange)="form.parentItemGroupId = $event !== null ? +$event : null"
-            [placeholder]="'common.none' | translate"
-            [searchPlaceholder]="'common.search' | translate" />
-        </div>
+      <div class="col-5">
+        <label class="form-label">{{ 'item_groups.parent_group' | translate }}</label>
+        <app-custom-select-input [options]="parentGroupOptions" [value]="form.parentItemGroupId ?? null"
+          (valueChange)="form.parentItemGroupId = $event !== null ? +$event : null"
+          [placeholder]="'common.none' | translate" [searchPlaceholder]="'common.search' | translate" />
+      </div>
       }
 
     </div>
   </div>
 
-  <app-regular-operation-actions
-    [saving]="saving()"
-    [savingNew]="savingNew()"
-    (save)="save()"
-    (saveAndNew)="saveAndNew()"
-    (reset)="resetForm()" />
+  <app-regular-operation-actions [saving]="saving()" [savingNew]="savingNew()" (save)="save()"
+    (saveAndNew)="saveAndNew()" (reset)="resetForm()" />
 </div>
 
 <!-- Saved rows -->
 @if (savedRows().length > 0) {
-  <div class="card mt-6">
-    <div class="card-header min-h-50px">
-      <h3 class="card-title fs-6 fw-bold text-success">
-        <i class="ki-outline ki-check-circle fs-4 text-success me-2"></i>
-        {{ savedRows().length }}
-        {{ (savedRows().length === 1 ? 'item_groups.saved_rows_title_single' : 'item_groups.saved_rows_title') | translate }}
-      </h3>
-    </div>
-    <div class="card-body p-0">
-      <table class="table table-row-dashed table-row-gray-300 align-middle gs-4 gy-2 mb-0">
-        <thead>
-          <tr class="fw-bold text-success bg-light-success fs-7">
-            <th class="w-40px">#</th>
-            <th>{{ 'common.internal_code' | translate }}</th>
-            <th>{{ 'common.name' | translate }} (EN)</th>
-            <th>{{ 'common.name' | translate }} (AR)</th>
-            <th>{{ 'item_groups.parent_group' | translate }}</th>
-            <th>{{ 'common.is_main' | translate }}</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of savedRows(); track $index) {
-            <tr>
-              <td class="text-muted">{{ $index + 1 }}</td>
-              <td class="text-muted">{{ row.internalCode || '—' }}</td>
-              <td class="fw-semibold">{{ row.name_EN }}</td>
-              <td>{{ row.name_AR || '—' }}</td>
-              <td>{{ row.parentName }}</td>
-              <td>
-                <span class="badge"
-                  [class.badge-light-info]="row.isMain"
-                  [class.badge-light-secondary]="!row.isMain">
-                  {{ (row.isMain ? 'common.yes' : 'common.no') | translate }}
-                </span>
-              </td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+<div class="card mt-6">
+  <div class="card-header min-h-50px">
+    <h3 class="card-title fs-6 fw-bold text-success">
+      <i class="ki-outline ki-check-circle fs-4 text-success me-2"></i>
+      {{ savedRows().length }}
+      {{ (savedRows().length === 1 ? 'item_groups.saved_rows_title_single' : 'item_groups.saved_rows_title') | translate
+      }}
+    </h3>
   </div>
+  <div class="card-body p-0">
+    <table class="table table-row-dashed table-row-gray-300 align-middle gs-4 gy-2 mb-0">
+      <thead>
+        <tr class="fw-bold text-success bg-light-success fs-7">
+          <th class="w-40px">#</th>
+          <th>{{ 'common.internal_code' | translate }}</th>
+          <th>{{ 'common.name' | translate }} (EN)</th>
+          <th>{{ 'common.name' | translate }} (AR)</th>
+          <th>{{ 'item_groups.parent_group' | translate }}</th>
+          <th>{{ 'common.is_main' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of savedRows(); track $index) {
+        <tr>
+          <td class="text-muted">{{ $index + 1 }}</td>
+          <td class="text-muted">{{ row.internalCode || '—' }}</td>
+          <td class="fw-semibold">{{ row.name_EN }}</td>
+          <td>{{ row.name_AR || '—' }}</td>
+          <td>{{ row.parentName }}</td>
+          <td>
+            <span class="badge" [class.badge-light-info]="row.isMain" [class.badge-light-secondary]="!row.isMain">
+              {{ (row.isMain ? 'common.yes' : 'common.no') | translate }}
+            </span>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
 }

@@ -1,8 +1,5 @@
-<app-regular-operation-header
-  [title]="(isEdit() ? 'uoms.edit_title' : 'uoms.add_title') | translate"
-  icon="ki-outline ki-abstract-26"
-  color="success"
-  (cancel)="back()" />
+<app-regular-operation-header [title]="(isEdit() ? 'uoms.edit_title' : 'uoms.add_title') | translate"
+  icon="ki-outline ki-abstract-26" color="success" (cancel)="back()" />
 
 <!-- Form card -->
 <div class="card">
@@ -17,20 +14,18 @@
 
       <div class="col-3 col-name-ar">
         <label class="form-label required">{{ 'common.name' | translate }} (AR)</label>
-        <input class="form-control" [(ngModel)]="form.name_AR" name="name_AR"
-          [placeholder]="'common.name' | translate">
+        <input class="form-control" [(ngModel)]="form.name_AR" name="name_AR" [placeholder]="'common.name' | translate">
       </div>
 
       <div class="col-3 col-name-en">
         <label class="form-label required">{{ 'common.name' | translate }} (EN)</label>
-        <input class="form-control" [(ngModel)]="form.name_EN" name="name_EN"
-          [placeholder]="'common.name' | translate">
+        <input class="form-control" [(ngModel)]="form.name_EN" name="name_EN" [placeholder]="'common.name' | translate">
       </div>
 
       <div class="col-3 col-whole-number d-flex align-items-end pb-2">
         <div class="form-check form-check-custom form-check-solid">
-          <input class="form-check-input" type="checkbox"
-            [(ngModel)]="form.mustBeWholeNumber" name="mustBeWholeNumber" id="mustBeWholeNumber">
+          <input class="form-check-input" type="checkbox" [(ngModel)]="form.mustBeWholeNumber" name="mustBeWholeNumber"
+            id="mustBeWholeNumber">
           <label class="form-check-label fw-semibold" for="mustBeWholeNumber">
             {{ 'uoms.whole_number_only' | translate }}
           </label>
@@ -40,53 +35,48 @@
     </div>
   </div>
 
-  <app-regular-operation-actions
-    [saving]="saving()"
-    [savingNew]="savingNew()"
-    (save)="save()"
-    (saveAndNew)="saveAndNew()"
-    (reset)="resetForm()" />
+  <app-regular-operation-actions [saving]="saving()" [savingNew]="savingNew()" (save)="save()"
+    (saveAndNew)="saveAndNew()" (reset)="resetForm()" />
 </div>
 
 <!-- Saved rows (visible only after at least one Save & New) -->
 @if (savedRows().length > 0) {
-  <div class="card mt-6">
-    <div class="card-header min-h-50px">
-      <h3 class="card-title fs-6 fw-bold text-success">
-        <i class="ki-outline ki-check-circle fs-4 text-success me-2"></i>
-        {{ savedRows().length }}
-        {{ (savedRows().length === 1 ? 'uoms.saved_rows_title_single' : 'uoms.saved_rows_title') | translate }}
-      </h3>
-    </div>
-    <div class="card-body p-0">
-      <table class="table table-row-dashed table-row-gray-300 align-middle gs-4 gy-2 mb-0">
-        <thead>
-          <tr class="fw-bold text-success bg-light-success fs-7">
-            <th class="w-40px">#</th>
-            <th>{{ 'common.internal_code' | translate }}</th>
-            <th>{{ 'common.name' | translate }} (EN)</th>
-            <th>{{ 'common.name' | translate }} (AR)</th>
-            <th>{{ 'uoms.whole_number' | translate }}</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of savedRows(); track $index) {
-            <tr>
-              <td class="text-muted">{{ $index + 1 }}</td>
-              <td class="fw-semibold">{{ row.internalCode }}</td>
-              <td>{{ row.name_EN }}</td>
-              <td>{{ row.name_AR }}</td>
-              <td>
-                <span class="badge"
-                  [class.badge-light-info]="row.mustBeWholeNumber"
-                  [class.badge-light-secondary]="!row.mustBeWholeNumber">
-                  {{ (row.mustBeWholeNumber ? 'common.yes' : 'common.no') | translate }}
-                </span>
-              </td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+<div class="card mt-6">
+  <div class="card-header min-h-50px">
+    <h3 class="card-title fs-6 fw-bold text-success">
+      <i class="ki-outline ki-check-circle fs-4 text-success me-2"></i>
+      {{ savedRows().length }}
+      {{ (savedRows().length === 1 ? 'uoms.saved_rows_title_single' : 'uoms.saved_rows_title') | translate }}
+    </h3>
   </div>
+  <div class="card-body p-0">
+    <table class="table table-row-dashed table-row-gray-300 align-middle gs-4 gy-2 mb-0">
+      <thead>
+        <tr class="fw-bold text-success bg-light-success fs-7">
+          <th class="w-40px">#</th>
+          <th>{{ 'common.internal_code' | translate }}</th>
+          <th>{{ 'common.name' | translate }} (EN)</th>
+          <th>{{ 'common.name' | translate }} (AR)</th>
+          <th>{{ 'uoms.whole_number' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of savedRows(); track $index) {
+        <tr>
+          <td class="text-muted">{{ $index + 1 }}</td>
+          <td class="fw-semibold">{{ row.internalCode }}</td>
+          <td>{{ row.name_EN }}</td>
+          <td>{{ row.name_AR }}</td>
+          <td>
+            <span class="badge" [class.badge-light-info]="row.mustBeWholeNumber"
+              [class.badge-light-secondary]="!row.mustBeWholeNumber">
+              {{ (row.mustBeWholeNumber ? 'common.yes' : 'common.no') | translate }}
+            </span>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
 }

@@ -1,8 +1,5 @@
-<app-regular-operation-header
-  [title]="(isEdit() ? 'items.edit_title' : 'items.add_title') | translate"
-  icon="ki-outline ki-package"
-  color="success"
-  (cancel)="back()" />
+<app-regular-operation-header [title]="(isEdit() ? 'items.edit_title' : 'items.add_title') | translate"
+  icon="ki-outline ki-package" color="success" (cancel)="back()" />
 
 <!-- Form card -->
 <div class="card">
@@ -12,26 +9,23 @@
     <div class="card-toolbar" [style.marginLeft]="isRtl ? 'auto' : null">
       <ul class="nav nav-tabs nav-line-tabs nav-stretch fs-6 border-0" [class.gap-4]="isRtl">
         <li class="nav-item">
-          <a class="nav-link fw-bold cursor-pointer"
-             [class.active]="activeTab() === 'general'"
-             (click)="activeTab.set('general')">
+          <a class="nav-link fw-bold cursor-pointer" [class.active]="activeTab() === 'general'"
+            (click)="activeTab.set('general')">
             {{ 'common.general' | translate }}
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link fw-bold cursor-pointer"
-             [class.active]="activeTab() === 'inventory'"
-             (click)="activeTab.set('inventory')">
+          <a class="nav-link fw-bold cursor-pointer" [class.active]="activeTab() === 'inventory'"
+            (click)="activeTab.set('inventory')">
             {{ 'items.inventory_tab' | translate }}
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link fw-bold cursor-pointer"
-             [class.active]="activeTab() === 'barcodes'"
-             (click)="activeTab.set('barcodes')">
+          <a class="nav-link fw-bold cursor-pointer" [class.active]="activeTab() === 'barcodes'"
+            (click)="activeTab.set('barcodes')">
             {{ 'items.barcodes' | translate }}
             @if (barcodes().length > 0) {
-              <span class="badge badge-circle badge-light-success ms-2 fs-8">{{ barcodes().length }}</span>
+            <span class="badge badge-circle badge-light-success ms-2 fs-8">{{ barcodes().length }}</span>
             }
           </a>
         </li>
@@ -44,303 +38,271 @@
     <!-- ── General tab ───────────────────────────────────────────────── -->
     @if (activeTab() === 'general') {
 
-      <!-- Row 1: Internal Code · Name AR · Name EN · [spacer] -->
-      <div class="row g-4 mb-4">
-        <div class="col-3">
-          <label class="form-label required">{{ 'common.internal_code' | translate }}</label>
-          <input class="form-control" [(ngModel)]="form.internalCode" name="internalCode"
-            [placeholder]="'common.internal_code' | translate">
-        </div>
-        <div class="col-3">
-          <label class="form-label">{{ 'common.name' | translate }} (AR)</label>
-          <input class="form-control" [(ngModel)]="form.name_AR" name="name_AR"
-            [placeholder]="'common.name' | translate" dir="rtl">
-        </div>
-        <div class="col-3">
-          <label class="form-label required">{{ 'common.name' | translate }} (EN)</label>
-          <input class="form-control" [(ngModel)]="form.name_EN" name="name_EN"
-            [placeholder]="'common.name' | translate">
-        </div>
-        <div class="col-3"></div>
+    <!-- Row 1: Internal Code · Name AR · Name EN · [spacer] -->
+    <div class="row g-4 mb-4">
+      <div class="col-3">
+        <label class="form-label required">{{ 'common.internal_code' | translate }}</label>
+        <input class="form-control" [(ngModel)]="form.internalCode" name="internalCode"
+          [placeholder]="'common.internal_code' | translate">
       </div>
+      <div class="col-3">
+        <label class="form-label">{{ 'common.name' | translate }} (AR)</label>
+        <input class="form-control" [(ngModel)]="form.name_AR" name="name_AR" [placeholder]="'common.name' | translate"
+          dir="rtl">
+      </div>
+      <div class="col-3">
+        <label class="form-label required">{{ 'common.name' | translate }} (EN)</label>
+        <input class="form-control" [(ngModel)]="form.name_EN" name="name_EN" [placeholder]="'common.name' | translate">
+      </div>
+      <div class="col-3"></div>
+    </div>
 
-      <!-- Row 2: Group · Type · [spacer] · [spacer] -->
-      <div class="row g-4 mb-4">
-        <div class="col-3">
-          <label class="form-label required">{{ 'items.group' | translate }}</label>
-          <app-custom-select-input
-            [options]="groupOptions"
-            [value]="form.itemGroupId || null"
-            (valueChange)="form.itemGroupId = +($event ?? 0)"
-            [placeholder]="'common.select' | translate"
-            [searchPlaceholder]="'common.search' | translate" />
-        </div>
-        <div class="col-3">
-          <label class="form-label required">{{ 'items.type' | translate }}</label>
-          <app-custom-select-input
-            [options]="typeOptions"
-            [value]="form.itemTypeId || null"
-            (valueChange)="form.itemTypeId = +($event ?? 0)"
-            [placeholder]="'common.select' | translate"
-            [searchPlaceholder]="'common.search' | translate" />
-        </div>
-        <div class="col-3"></div>
-        <div class="col-3"></div>
+    <!-- Row 2: Group · Type · [spacer] · [spacer] -->
+    <div class="row g-4 mb-4">
+      <div class="col-3">
+        <label class="form-label required">{{ 'items.group' | translate }}</label>
+        <app-custom-select-input [options]="groupOptions" [value]="form.itemGroupId || null"
+          (valueChange)="form.itemGroupId = +($event ?? 0)" [placeholder]="'common.select' | translate"
+          [searchPlaceholder]="'common.search' | translate" />
       </div>
+      <div class="col-3">
+        <label class="form-label required">{{ 'items.type' | translate }}</label>
+        <app-custom-select-input [options]="typeOptions" [value]="form.itemTypeId || null"
+          (valueChange)="form.itemTypeId = +($event ?? 0)" [placeholder]="'common.select' | translate"
+          [searchPlaceholder]="'common.search' | translate" />
+      </div>
+      <div class="col-3"></div>
+      <div class="col-3"></div>
+    </div>
 
-      <!-- Row 3: Expiration Date -->
-      <div class="row g-4 mb-4">
-        <div class="col-3">
-          <label class="form-label">{{ 'items.expiration_date' | translate }}</label>
-          <input class="form-control" type="datetime-local" [(ngModel)]="form.expirationDate" name="expirationDate">
-        </div>
-        <div class="col-9"></div>
+    <!-- Row 3: Expiration Date -->
+    <div class="row g-4 mb-4">
+      <div class="col-3">
+        <label class="form-label">{{ 'items.expiration_date' | translate }}</label>
+        <input class="form-control" type="datetime-local" [(ngModel)]="form.expirationDate" name="expirationDate">
       </div>
+      <div class="col-9"></div>
+    </div>
 
-      <!-- Row 4: Description -->
-      <div class="row g-4">
-        <div class="col-12">
-          <label class="form-label">{{ 'items.description' | translate }}</label>
-          <textarea class="form-control" rows="3" [(ngModel)]="form.description" name="description"
-            [placeholder]="'items.description' | translate"></textarea>
-        </div>
+    <!-- Row 4: Description -->
+    <div class="row g-4">
+      <div class="col-12">
+        <label class="form-label">{{ 'items.description' | translate }}</label>
+        <textarea class="form-control" rows="3" [(ngModel)]="form.description" name="description"
+          [placeholder]="'items.description' | translate"></textarea>
       </div>
+    </div>
 
     }
 
     <!-- ── Inventory tab ────────────────────────────────────────────── -->
     @if (activeTab() === 'inventory') {
 
-      <!-- Row 0: Inventory Validation Method · Default Warehouse -->
-      <div class="row g-4 mb-4">
-        <div class="col-3">
-          <label class="form-label">{{ 'items.inventory_validation_method' | translate }}</label>
-          <app-custom-select-input
-            [options]="inventoryValidationMethodOptions"
-            [value]="form.inventoryValidationMethodId || null"
-            (valueChange)="form.inventoryValidationMethodId = $event ? +$event : undefined"
-            [placeholder]="'common.select' | translate"
-            [searchPlaceholder]="'common.search' | translate" />
-        </div>
-        <div class="col-3">
-          <label class="form-label">{{ 'items.default_warehouse' | translate }}</label>
-          <app-custom-select-input
-            [options]="warehouseOptions"
-            [value]="form.defaultWarehouseId || null"
-            (valueChange)="form.defaultWarehouseId = $event ? +$event : undefined"
-            [placeholder]="'common.select' | translate"
-            [searchPlaceholder]="'common.search' | translate" />
-        </div>
-        <div class="col-3"></div>
-        <div class="col-3"></div>
+    <!-- Row 0: Inventory Validation Method · Default Warehouse -->
+    <div class="row g-4 mb-4">
+      <div class="col-3">
+        <label class="form-label">{{ 'items.inventory_validation_method' | translate }}</label>
+        <app-custom-select-input [options]="inventoryValidationMethodOptions"
+          [value]="form.inventoryValidationMethodId || null"
+          (valueChange)="form.inventoryValidationMethodId = $event ? +$event : undefined"
+          [placeholder]="'common.select' | translate" [searchPlaceholder]="'common.search' | translate" />
       </div>
-
-      <hr class="my-4">
-
-      <!-- Row 1: Default UOM · Default Purchase UOM · Accept Selling · Default Selling UOM -->
-      <div class="row g-4 mb-4">
-        <div class="col-3">
-          <label class="form-label required">{{ 'items.default_uom' | translate }}</label>
-          <app-custom-select-input
-            [options]="uomOptions"
-            [value]="form.defaultUOMId || null"
-            (valueChange)="form.defaultUOMId = +($event ?? 0)"
-            [placeholder]="'common.select' | translate"
-            [searchPlaceholder]="'common.search' | translate" />
-        </div>
-        <div class="col-3">
-          <label class="form-label">{{ 'items.default_purchase_uom' | translate }}</label>
-          <app-custom-select-input
-            [options]="uomOptions"
-            [value]="form.defaultPurchaseUOMId || null"
-            (valueChange)="form.defaultPurchaseUOMId = $event ? +$event : undefined"
-            [placeholder]="'common.select' | translate"
-            [searchPlaceholder]="'common.search' | translate" />
-        </div>
-        <div class="col-3 d-flex align-items-end pb-2">
-          <div class="form-check form-check-custom form-check-solid">
-            <input class="form-check-input" type="checkbox"
-              [(ngModel)]="form.acceptSelling" name="acceptSelling" id="acceptSelling">
-            <label class="form-check-label fw-semibold" for="acceptSelling"
-              [style.marginRight]="isRtl ? '0.5rem' : null">
-              {{ 'items.accept_selling' | translate }}
-            </label>
-          </div>
-        </div>
-        @if (form.acceptSelling) {
-          <div class="col-3">
-            <label class="form-label">{{ 'items.default_selling_uom' | translate }}</label>
-            <app-custom-select-input
-              [options]="uomOptions"
-              [value]="form.defaultSellingUOMId || null"
-              (valueChange)="form.defaultSellingUOMId = $event ? +$event : undefined"
-              [placeholder]="'common.select' | translate"
-              [searchPlaceholder]="'common.search' | translate" />
-          </div>
-        } @else {
-          <div class="col-3"></div>
-        }
+      <div class="col-3">
+        <label class="form-label">{{ 'items.default_warehouse' | translate }}</label>
+        <app-custom-select-input [options]="warehouseOptions" [value]="form.defaultWarehouseId || null"
+          (valueChange)="form.defaultWarehouseId = $event ? +$event : undefined"
+          [placeholder]="'common.select' | translate" [searchPlaceholder]="'common.search' | translate" />
       </div>
+      <div class="col-3"></div>
+      <div class="col-3"></div>
+    </div>
 
-      <!-- Row 2: Opening Stock · Safety Stock · Reorder Stock · [spacer] -->
-      <div class="row g-4">
-        <div class="col-3">
-          <label class="form-label">{{ 'items.opening_stock' | translate }}</label>
-          <input class="form-control" type="number" min="0" [(ngModel)]="form.openingStock" name="openingStock"
-            [placeholder]="'items.opening_stock' | translate">
-        </div>
-        <div class="col-3">
-          <label class="form-label">{{ 'items.safety_stock' | translate }}</label>
-          <input class="form-control" type="number" min="0" [(ngModel)]="form.safetyStock" name="safetyStock"
-            [placeholder]="'items.safety_stock' | translate">
-        </div>
-        <div class="col-3">
-          <label class="form-label">{{ 'items.reorder_stock' | translate }}</label>
-          <input class="form-control" type="number" min="0" [(ngModel)]="form.minOrderQuantity" name="minOrderQuantity"
-            [placeholder]="'items.reorder_stock' | translate">
-        </div>
-        <div class="col-3"></div>
+    <hr class="my-4">
+
+    <!-- Row 1: Default UOM · Default Purchase UOM · Accept Selling · Default Selling UOM -->
+    <div class="row g-4 mb-4">
+      <div class="col-3">
+        <label class="form-label required">{{ 'items.default_uom' | translate }}</label>
+        <app-custom-select-input [options]="uomOptions" [value]="form.defaultUOMId || null"
+          (valueChange)="form.defaultUOMId = +($event ?? 0)" [placeholder]="'common.select' | translate"
+          [searchPlaceholder]="'common.search' | translate" />
       </div>
+      <div class="col-3">
+        <label class="form-label">{{ 'items.default_purchase_uom' | translate }}</label>
+        <app-custom-select-input [options]="uomOptions" [value]="form.defaultPurchaseUOMId || null"
+          (valueChange)="form.defaultPurchaseUOMId = $event ? +$event : undefined"
+          [placeholder]="'common.select' | translate" [searchPlaceholder]="'common.search' | translate" />
+      </div>
+      <div class="col-3 d-flex align-items-end pb-2">
+        <div class="form-check form-check-custom form-check-solid">
+          <input class="form-check-input" type="checkbox" [(ngModel)]="form.acceptSelling" name="acceptSelling"
+            id="acceptSelling">
+          <label class="form-check-label fw-semibold" for="acceptSelling" [style.marginRight]="isRtl ? '0.5rem' : null">
+            {{ 'items.accept_selling' | translate }}
+          </label>
+        </div>
+      </div>
+      @if (form.acceptSelling) {
+      <div class="col-3">
+        <label class="form-label">{{ 'items.default_selling_uom' | translate }}</label>
+        <app-custom-select-input [options]="uomOptions" [value]="form.defaultSellingUOMId || null"
+          (valueChange)="form.defaultSellingUOMId = $event ? +$event : undefined"
+          [placeholder]="'common.select' | translate" [searchPlaceholder]="'common.search' | translate" />
+      </div>
+      } @else {
+      <div class="col-3"></div>
+      }
+    </div>
+
+    <!-- Row 2: Opening Stock · Safety Stock · Reorder Stock · [spacer] -->
+    <div class="row g-4">
+      <div class="col-3">
+        <label class="form-label">{{ 'items.opening_stock' | translate }}</label>
+        <input class="form-control" type="number" min="0" [(ngModel)]="form.openingStock" name="openingStock"
+          [placeholder]="'items.opening_stock' | translate">
+      </div>
+      <div class="col-3">
+        <label class="form-label">{{ 'items.safety_stock' | translate }}</label>
+        <input class="form-control" type="number" min="0" [(ngModel)]="form.safetyStock" name="safetyStock"
+          [placeholder]="'items.safety_stock' | translate">
+      </div>
+      <div class="col-3">
+        <label class="form-label">{{ 'items.reorder_stock' | translate }}</label>
+        <input class="form-control" type="number" min="0" [(ngModel)]="form.minOrderQuantity" name="minOrderQuantity"
+          [placeholder]="'items.reorder_stock' | translate">
+      </div>
+      <div class="col-3"></div>
+    </div>
 
     }
 
     <!-- ── Barcodes tab ──────────────────────────────────────────────── -->
     @if (activeTab() === 'barcodes') {
 
-      @if (!isEdit()) {
+    @if (!isEdit()) {
 
-        <!-- Create mode: prompt user to save first -->
-        <div class="notice d-flex bg-light-warning rounded border-warning border border-dashed p-6">
-          <i class="ki-outline ki-information fs-2tx text-warning me-4"></i>
-          <div class="d-flex flex-stack flex-grow-1">
-            <div class="fw-semibold">
-              <div class="fs-6 text-gray-700">{{ 'items.barcodes_save_first' | translate }}</div>
-            </div>
-          </div>
+    <!-- Create mode: prompt user to save first -->
+    <div class="notice d-flex bg-light-warning rounded border-warning border border-dashed p-6">
+      <i class="ki-outline ki-information fs-2tx text-warning me-4"></i>
+      <div class="d-flex flex-stack flex-grow-1">
+        <div class="fw-semibold">
+          <div class="fs-6 text-gray-700">{{ 'items.barcodes_save_first' | translate }}</div>
         </div>
+      </div>
+    </div>
 
-      } @else {
+    } @else {
 
-        <!-- Add barcode row -->
-        <div class="row g-3 align-items-end mb-6">
-          <div class="col-3">
-            <label class="form-label">{{ 'items.barcode_type' | translate }}</label>
-            <app-custom-select-input
-              [options]="barcodeTypeOptions"
-              [value]="newBarcode.barcodeTypeId || null"
-              (valueChange)="newBarcode.barcodeTypeId = +($event ?? 0)"
-              [placeholder]="'common.select' | translate"
-              [searchPlaceholder]="'common.search' | translate" />
-          </div>
-          <div class="col-3">
-            <label class="form-label">{{ 'items.default_uom' | translate }}</label>
-            <app-custom-select-input
-              [options]="uomOptions"
-              [value]="newBarcode.uomId || null"
-              (valueChange)="newBarcode.uomId = +($event ?? 0)"
-              [placeholder]="'common.select' | translate"
-              [searchPlaceholder]="'common.search' | translate" />
-          </div>
-          <div class="col-4">
-            <label class="form-label">{{ 'items.barcode' | translate }}</label>
-            <input class="form-control" [(ngModel)]="newBarcode.barcode" name="newBarcode"
-              [placeholder]="'items.barcode' | translate">
-          </div>
-          <div class="col-2">
-            <button class="btn btn-success w-100" (click)="addBarcode()" [disabled]="addingBarcode()">
-              @if (addingBarcode()) {
-                <span class="spinner-border spinner-border-sm me-2"></span>
-              } @else {
-                <i class="ki-outline ki-plus fs-4 me-1"></i>
-              }
-              {{ 'common.add' | translate }}
+    <!-- Add barcode row -->
+    <div class="row g-3 align-items-end mb-6">
+      <div class="col-3">
+        <label class="form-label">{{ 'items.barcode_type' | translate }}</label>
+        <app-custom-select-input [options]="barcodeTypeOptions" [value]="newBarcode.barcodeTypeId || null"
+          (valueChange)="newBarcode.barcodeTypeId = +($event ?? 0)" [placeholder]="'common.select' | translate"
+          [searchPlaceholder]="'common.search' | translate" />
+      </div>
+      <div class="col-3">
+        <label class="form-label">{{ 'items.default_uom' | translate }}</label>
+        <app-custom-select-input [options]="uomOptions" [value]="newBarcode.uomId || null"
+          (valueChange)="newBarcode.uomId = +($event ?? 0)" [placeholder]="'common.select' | translate"
+          [searchPlaceholder]="'common.search' | translate" />
+      </div>
+      <div class="col-4">
+        <label class="form-label">{{ 'items.barcode' | translate }}</label>
+        <input class="form-control" [(ngModel)]="newBarcode.barcode" name="newBarcode"
+          [placeholder]="'items.barcode' | translate">
+      </div>
+      <div class="col-2">
+        <button class="btn btn-success w-100" (click)="addBarcode()" [disabled]="addingBarcode()">
+          @if (addingBarcode()) {
+          <span class="spinner-border spinner-border-sm me-2"></span>
+          } @else {
+          <i class="ki-outline ki-plus fs-4 me-1"></i>
+          }
+          {{ 'common.add' | translate }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Barcodes table -->
+    @if (barcodes().length === 0) {
+    <div class="text-center text-muted py-10">
+      <i class="ki-outline ki-barcode fs-3x text-gray-300 d-block mb-3"></i>
+      {{ 'items.no_barcodes' | translate }}
+    </div>
+    } @else {
+    <table class="table table-row-dashed table-row-gray-300 align-middle gs-4 gy-2">
+      <thead>
+        <tr class="fw-bold text-muted bg-light fs-7">
+          <th>{{ 'items.barcode_type' | translate }}</th>
+          <th>{{ 'items.default_uom' | translate }}</th>
+          <th>{{ 'items.barcode' | translate }}</th>
+          <th class="w-60px"></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (b of barcodes(); track b.id) {
+        <tr>
+          <td class="fw-semibold">{{ barcodeTypeName(b.barcodeTypeId) }}</td>
+          <td>{{ uomName(b.uomId) }}</td>
+          <td><code>{{ b.barcode }}</code></td>
+          <td>
+            <button class="btn btn-icon btn-sm btn-light-danger" (click)="removeBarcode(b.id)"
+              [title]="'common.delete' | translate">
+              <i class="ki-outline ki-trash fs-4"></i>
             </button>
-          </div>
-        </div>
-
-        <!-- Barcodes table -->
-        @if (barcodes().length === 0) {
-          <div class="text-center text-muted py-10">
-            <i class="ki-outline ki-barcode fs-3x text-gray-300 d-block mb-3"></i>
-            {{ 'items.no_barcodes' | translate }}
-          </div>
-        } @else {
-          <table class="table table-row-dashed table-row-gray-300 align-middle gs-4 gy-2">
-            <thead>
-              <tr class="fw-bold text-muted bg-light fs-7">
-                <th>{{ 'items.barcode_type' | translate }}</th>
-                <th>{{ 'items.default_uom' | translate }}</th>
-                <th>{{ 'items.barcode' | translate }}</th>
-                <th class="w-60px"></th>
-              </tr>
-            </thead>
-            <tbody>
-              @for (b of barcodes(); track b.id) {
-                <tr>
-                  <td class="fw-semibold">{{ barcodeTypeName(b.barcodeTypeId) }}</td>
-                  <td>{{ uomName(b.uomId) }}</td>
-                  <td><code>{{ b.barcode }}</code></td>
-                  <td>
-                    <button class="btn btn-icon btn-sm btn-light-danger" (click)="removeBarcode(b.id)"
-                      [title]="'common.delete' | translate">
-                      <i class="ki-outline ki-trash fs-4"></i>
-                    </button>
-                  </td>
-                </tr>
-              }
-            </tbody>
-          </table>
+          </td>
+        </tr>
         }
+      </tbody>
+    </table>
+    }
 
-      }
+    }
 
     }
 
   </div>
 
-  <app-regular-operation-actions
-    [saving]="saving()"
-    [savingNew]="savingNew()"
-    (save)="save()"
-    (saveAndNew)="saveAndNew()"
-    (reset)="resetForm()" />
+  <app-regular-operation-actions [saving]="saving()" [savingNew]="savingNew()" (save)="save()"
+    (saveAndNew)="saveAndNew()" (reset)="resetForm()" />
 </div>
 
 <!-- Saved rows -->
 @if (savedRows().length > 0) {
-  <div class="card mt-6">
-    <div class="card-header min-h-50px">
-      <h3 class="card-title fs-6 fw-bold text-success">
-        <i class="ki-outline ki-check-circle fs-4 text-success me-2"></i>
-        {{ savedRows().length }}
-        {{ (savedRows().length === 1 ? 'items.saved_rows_title_single' : 'items.saved_rows_title') | translate }}
-      </h3>
-    </div>
-    <div class="card-body p-0">
-      <table class="table table-row-dashed table-row-gray-300 align-middle gs-4 gy-2 mb-0">
-        <thead>
-          <tr class="fw-bold text-success bg-light-success fs-7">
-            <th class="w-40px">#</th>
-            <th>{{ 'common.internal_code' | translate }}</th>
-            <th>{{ 'common.name' | translate }} (EN)</th>
-            <th>{{ 'items.group' | translate }}</th>
-            <th>{{ 'items.type' | translate }}</th>
-            <th>{{ 'items.default_uom' | translate }}</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of savedRows(); track $index) {
-            <tr>
-              <td class="text-muted">{{ $index + 1 }}</td>
-              <td class="fw-semibold">{{ row.internalCode }}</td>
-              <td>{{ row.name_EN }}</td>
-              <td>{{ row.groupName }}</td>
-              <td>{{ row.typeName }}</td>
-              <td>{{ row.uomName }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+<div class="card mt-6">
+  <div class="card-header min-h-50px">
+    <h3 class="card-title fs-6 fw-bold text-success">
+      <i class="ki-outline ki-check-circle fs-4 text-success me-2"></i>
+      {{ savedRows().length }}
+      {{ (savedRows().length === 1 ? 'items.saved_rows_title_single' : 'items.saved_rows_title') | translate }}
+    </h3>
   </div>
+  <div class="card-body p-0">
+    <table class="table table-row-dashed table-row-gray-300 align-middle gs-4 gy-2 mb-0">
+      <thead>
+        <tr class="fw-bold text-success bg-light-success fs-7">
+          <th class="w-40px">#</th>
+          <th>{{ 'common.internal_code' | translate }}</th>
+          <th>{{ 'common.name' | translate }} (EN)</th>
+          <th>{{ 'items.group' | translate }}</th>
+          <th>{{ 'items.type' | translate }}</th>
+          <th>{{ 'items.default_uom' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of savedRows(); track $index) {
+        <tr>
+          <td class="text-muted">{{ $index + 1 }}</td>
+          <td class="fw-semibold">{{ row.internalCode }}</td>
+          <td>{{ row.name_EN }}</td>
+          <td>{{ row.groupName }}</td>
+          <td>{{ row.typeName }}</td>
+          <td>{{ row.uomName }}</td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
 }

@@ -7,8 +7,15 @@ namespace MerkERP.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class MetadataController(MerkDbContext db) : ControllerBase
+public class MetadataController : ControllerBase
 {
+	private readonly MerkDbContext _db;
+
+	public MetadataController(MerkDbContext db)
+	{
+		_db = db;
+	}
+
 	[HttpGet]
 	public async Task<IActionResult> GetAll()
 	{
@@ -19,7 +26,7 @@ public class MetadataController(MerkDbContext db) : ControllerBase
 	[HttpGet("{entity}")]
 	public async Task<IActionResult> Get(string entity)
 	{
-		var tableNameId = await db.TableName_s
+		var tableNameId = await _db.TableName_s
 			.Where(t => t.EntityKey != null && t.EntityKey.ToLower() == entity.ToLower())
 			.Select(t => t.Id)
 			.FirstOrDefaultAsync();
@@ -27,7 +34,7 @@ public class MetadataController(MerkDbContext db) : ControllerBase
 		if (tableNameId == 0)
 			return NotFound(new { message = $"No metadata registered for '{entity}'." });
 
-		var rows = await db.Database
+		var rows = await _db.Database
 			.SqlQuery<ColumnMetaRow>($"EXEC sp_GetTableMetaData @TableNameId = {tableNameId}")
 			.ToListAsync();
 
@@ -49,7 +56,7 @@ public class MetadataController(MerkDbContext db) : ControllerBase
 
 	private async Task<Dictionary<string, EntityMeta>> BuildAllAsync()
 	{
-		var rows = await db.TableMetaData
+		var rows = await _db.TableMetaData
 			.Include(t => t.TableName)
 			.Where(t => t.TableName != null && t.TableName.EntityKey != null)
 			.OrderBy(t => t.TableName!.EntityKey)

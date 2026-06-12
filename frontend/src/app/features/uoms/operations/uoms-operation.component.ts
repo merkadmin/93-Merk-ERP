@@ -32,14 +32,14 @@ interface SavedRow {
   styleUrl: './uoms-operation.component.less',
 })
 export class UomsOperationComponent implements OnInit {
-  private api       = inject(ApiService);
-  private router    = inject(Router);
-  private route     = inject(ActivatedRoute);
+  private api = inject(ApiService);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
   private translate = inject(TranslateService);
-  private toastr    = inject(ToastrService);
+  private toastr = inject(ToastrService);
 
-  isEdit    = signal(false);
-  saving    = signal(false);
+  isEdit = signal(false);
+  saving = signal(false);
   savingNew = signal(false);
   savedRows = signal<SavedRow[]>([]);
 
@@ -102,9 +102,9 @@ export class UomsOperationComponent implements OnInit {
         this.toastr.success(this.translate.instant('common.save_success'));
         if (andNew) {
           this.savedRows.update(rows => [...rows, {
-            internalCode:      this.form.internalCode ?? '',
-            name_EN:           this.form.name_EN ?? '',
-            name_AR:           this.form.name_AR ?? '',
+            internalCode: this.form.internalCode ?? '',
+            name_EN: this.form.name_EN ?? '',
+            name_AR: this.form.name_AR ?? '',
             mustBeWholeNumber: this.form.mustBeWholeNumber ?? false,
           }]);
           this.form = this.blank();
@@ -122,8 +122,8 @@ export class UomsOperationComponent implements OnInit {
     });
   }
 
-  save()       { this.submit(false); }
-  saveAndNew() { this.submit(true);  }
+  save() { this.submit(false); }
+  saveAndNew() { this.submit(true); }
 
   resetForm() {
     this.form = this.blank();

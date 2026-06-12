@@ -10,7 +10,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 })
 export class RegularOperationHeaderComponent {
   title = input.required<string>();
-  icon  = input.required<string>();
+  icon = input.required<string>();
   color = input<string>('primary');
 
   cancel = output<void>();

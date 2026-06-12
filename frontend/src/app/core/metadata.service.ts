@@ -30,7 +30,7 @@ export type SelectOption = { value: string | number; label: string };
 
 @Injectable({ providedIn: 'root' })
 export class MetadataService {
-  private api   = inject(ApiService);
+  private api = inject(ApiService);
   private cache = new Map<string, EntityMeta>();
 
   get(entity: string): Observable<EntityMeta> {
@@ -56,12 +56,12 @@ export class MetadataService {
       .sort((a, b) => a.columnOrder - b.columnOrder)
       .filter(c => c.filterType !== 'select' || c.key in selectOptions)
       .map(c => ({
-        key:     c.key,
-        label:   isRtl ? c.labelAR : c.labelEN,
-        type:    (c.filterType === 'boolean' ? 'boolean'
-                : c.filterType === 'number'  ? 'number'
-                : c.filterType === 'select'  ? 'select'
-                : 'text') as SearchField['type'],
+        key: c.key,
+        label: isRtl ? c.labelAR : c.labelEN,
+        type: (c.filterType === 'boolean' ? 'boolean'
+          : c.filterType === 'number' ? 'number'
+            : c.filterType === 'select' ? 'select'
+              : 'text') as SearchField['type'],
         options: c.filterType === 'select' ? selectOptions[c.key] : undefined,
       }));
   }

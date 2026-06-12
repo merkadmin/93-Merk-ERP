@@ -10,13 +10,22 @@ public record BulkItemActiveDto(List<long> Ids, bool IsActive);
 
 [ApiController]
 [Route("api/[controller]")]
-public class ItemsController(MerkDbContext db, ExcelService excel) : ControllerBase
+public class ItemsController : ControllerBase
 {
+	private readonly MerkDbContext _db;
+	private readonly ExcelService  _excel;
+
+	public ItemsController(MerkDbContext db, ExcelService excel)
+	{
+		_db    = db;
+		_excel = excel;
+	}
+
 	[HttpGet("nextcode")]
 	public async Task<IActionResult> NextCode()
 	{
 		const string prefix = "ITM-";
-		var codes = await db.Item_cs
+		var codes = await _db.Item_cs
 			.Where(i => i.InternalCode != null && i.InternalCode.StartsWith(prefix))
 			.Select(i => i.InternalCode)
 			.ToListAsync();
@@ -31,7 +40,7 @@ public class ItemsController(MerkDbContext db, ExcelService excel) : ControllerB
 
 	[HttpGet]
 	public async Task<IActionResult> GetAll() =>
-		Ok(await db.Item_cs
+		Ok(await _db.Item_cs
 			.Include(i => i.ItemGroup)
 			.Include(i => i.ItemType)
 			.Include(i => i.DefaultUOM)
@@ -43,9 +52,9 @@ public class ItemsController(MerkDbContext db, ExcelService excel) : ControllerB
 	[HttpGet("export-template")]
 	public async Task<IActionResult> ExportTemplate()
 	{
-		var groups = await db.ItemGroup_cs.OrderBy(g => g.Name_EN).ToListAsync();
-		var types  = await db.ItemType_s.OrderBy(t => t.Name).ToListAsync();
-		var uoms   = await db.UOM_cs.OrderBy(u => u.Name_EN).ToListAsync();
+		var groups = await _db.ItemGroup_cs.OrderBy(g => g.Name_EN).ToListAsync();
+		var types  = await _db.ItemType_s.OrderBy(t => t.Name).ToListAsync();
+		var uoms   = await _db.UOM_cs.OrderBy(u => u.Name_EN).ToListAsync();
 
 		var columns = new (string Label, int Width)[]
 		{
@@ -80,7 +89,7 @@ public class ItemsController(MerkDbContext db, ExcelService excel) : ControllerB
 				uoms.Select(u => new[] { u.InternalCode ?? "", u.Name_EN, u.Name_AR ?? "" })),
 		};
 
-		return File(excel.BuildTemplate(columns, referenceSheets),
+		return File(_excel.BuildTemplate(columns, referenceSheets),
 			"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
 			"items-template.xlsx");
 	}
@@ -91,13 +100,13 @@ public class ItemsController(MerkDbContext db, ExcelService excel) : ControllerB
 		if (file is null || file.Length == 0)
 			return BadRequest("No file uploaded.");
 
-		var groups  = await db.ItemGroup_cs.ToListAsync();
-		var types   = await db.ItemType_s.ToListAsync();
-		var uoms    = await db.UOM_cs.ToListAsync();
+		var groups  = await _db.ItemGroup_cs.ToListAsync();
+		var types   = await _db.ItemType_s.ToListAsync();
+		var uoms    = await _db.UOM_cs.ToListAsync();
 
 		var created = 0;
 		var errors  = new List<string>();
-		var rows    = excel.ReadRows(file.OpenReadStream());
+		var rows    = _excel.ReadRows(file.OpenReadStream());
 
 		for (int i = 0; i < rows.Count; i++)
 		{
@@ -140,7 +149,7 @@ public class ItemsController(MerkDbContext db, ExcelService excel) : ControllerB
 			if (uom is null)
 			{ errors.Add($"Row {rowNum}: Default UOM is required."); continue; }
 
-			db.Item_cs.Add(new Item_cs
+			_db.Item_cs.Add(new Item_cs
 			{
 				InternalCode = internalCode,
 				Name_EN      = nameEn,
@@ -155,13 +164,13 @@ public class ItemsController(MerkDbContext db, ExcelService excel) : ControllerB
 			created++;
 		}
 
-		if (created > 0) await db.SaveChangesAsync();
+		if (created > 0) await _db.SaveChangesAsync();
 		return Ok(new { created, errors });
 	}
 
 	[HttpGet("{id:long}")]
 	public async Task<IActionResult> Get(long id) =>
-		await db.Item_cs
+		await _db.Item_cs
 			.Include(i => i.ItemGroup)
 			.Include(i => i.ItemType)
 			.Include(i => i.DefaultUOM)
@@ -173,8 +182,8 @@ public class ItemsController(MerkDbContext db, ExcelService excel) : ControllerB
 	public async Task<IActionResult> Create(Item_cs e)
 	{
 		e.InsertedDate = DateTime.UtcNow;
-		db.Item_cs.Add(e);
-		await db.SaveChangesAsync();
+		_db.Item_cs.Add(e);
+		await _db.SaveChangesAsync();
 		return Ok(e);
 	}
 
@@ -182,7 +191,7 @@ public class ItemsController(MerkDbContext db, ExcelService excel) : ControllerB
 	public async Task<IActionResult> Update(long id, Item_cs e)
 	{
 		if (id != e.Id) return BadRequest();
-		var existing = await db.Item_cs.FindAsync(id);
+		var existing = await _db.Item_cs.FindAsync(id);
 		if (existing is null) return NotFound();
 		existing.InternalCode          = e.InternalCode;
 		existing.Name_EN               = e.Name_EN;
@@ -200,59 +209,59 @@ public class ItemsController(MerkDbContext db, ExcelService excel) : ControllerB
 		existing.SafetyStock           = e.SafetyStock;
 		existing.IsActive              = e.IsActive;
 		existing.IsFavorite            = e.IsFavorite;
-		await db.SaveChangesAsync();
+		await _db.SaveChangesAsync();
 		return Ok(existing);
 	}
 
 	[HttpDelete("{id:long}")]
 	public async Task<IActionResult> Delete(long id)
 	{
-		var e = await db.Item_cs.FindAsync(id);
+		var e = await _db.Item_cs.FindAsync(id);
 		if (e is null) return NotFound();
-		db.Item_cs.Remove(e);
-		await db.SaveChangesAsync();
+		_db.Item_cs.Remove(e);
+		await _db.SaveChangesAsync();
 		return NoContent();
 	}
 
 	[HttpPatch("{id:long}/toggle-favorite")]
 	public async Task<IActionResult> ToggleFavorite(long id)
 	{
-		var e = await db.Item_cs.FindAsync(id);
+		var e = await _db.Item_cs.FindAsync(id);
 		if (e is null) return NotFound();
 		e.IsFavorite = !e.IsFavorite;
-		await db.SaveChangesAsync();
+		await _db.SaveChangesAsync();
 		return Ok(e);
 	}
 
 	[HttpPatch("{id:long}/toggle-active")]
 	public async Task<IActionResult> ToggleActive(long id)
 	{
-		var e = await db.Item_cs.FindAsync(id);
+		var e = await _db.Item_cs.FindAsync(id);
 		if (e is null) return NotFound();
 		e.IsActive = !e.IsActive;
-		await db.SaveChangesAsync();
+		await _db.SaveChangesAsync();
 		return Ok(e);
 	}
 
 	[HttpPatch("bulk-active")]
 	public async Task<IActionResult> BulkSetActive([FromBody] BulkItemActiveDto dto)
 	{
-		var entities = await db.Item_cs
+		var entities = await _db.Item_cs
 			.Where(i => dto.Ids.Contains(i.Id))
 			.ToListAsync();
 		entities.ForEach(e => e.IsActive = dto.IsActive);
-		await db.SaveChangesAsync();
+		await _db.SaveChangesAsync();
 		return NoContent();
 	}
 
 	[HttpDelete("bulk")]
 	public async Task<IActionResult> DeleteBulk([FromBody] List<long> ids)
 	{
-		var entities = await db.Item_cs
+		var entities = await _db.Item_cs
 			.Where(i => ids.Contains(i.Id))
 			.ToListAsync();
-		db.Item_cs.RemoveRange(entities);
-		await db.SaveChangesAsync();
+		_db.Item_cs.RemoveRange(entities);
+		await _db.SaveChangesAsync();
 		return NoContent();
 	}
 
@@ -260,7 +269,7 @@ public class ItemsController(MerkDbContext db, ExcelService excel) : ControllerB
 
 	[HttpGet("{itemId:long}/barcodes")]
 	public async Task<IActionResult> GetBarcodes(long itemId) =>
-		Ok(await db.Item_UOM_Barcode_cs
+		Ok(await _db.Item_UOM_Barcode_cs
 			.Where(b => b.ItemId == itemId)
 			.Include(b => b.BarcodeType)
 			.Include(b => b.UOM)
@@ -270,18 +279,18 @@ public class ItemsController(MerkDbContext db, ExcelService excel) : ControllerB
 	public async Task<IActionResult> AddBarcode(long itemId, Item_UOM_Barcode_cs barcode)
 	{
 		barcode.ItemId = itemId;
-		db.Item_UOM_Barcode_cs.Add(barcode);
-		await db.SaveChangesAsync();
+		_db.Item_UOM_Barcode_cs.Add(barcode);
+		await _db.SaveChangesAsync();
 		return Ok(barcode);
 	}
 
 	[HttpDelete("{itemId:long}/barcodes/{id:long}")]
 	public async Task<IActionResult> DeleteBarcode(long itemId, long id)
 	{
-		var b = await db.Item_UOM_Barcode_cs.FindAsync(id);
+		var b = await _db.Item_UOM_Barcode_cs.FindAsync(id);
 		if (b is null || b.ItemId != itemId) return NotFound();
-		db.Item_UOM_Barcode_cs.Remove(b);
-		await db.SaveChangesAsync();
+		_db.Item_UOM_Barcode_cs.Remove(b);
+		await _db.SaveChangesAsync();
 		return NoContent();
 	}
 }

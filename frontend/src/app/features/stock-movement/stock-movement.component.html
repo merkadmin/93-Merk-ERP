@@ -14,7 +14,8 @@
         </div>
 
         <div class="col-12">
-          <label class="form-label">{{ 'stock_movement.warehouse' | translate }} <span class="text-danger">*</span></label>
+          <label class="form-label">{{ 'stock_movement.warehouse' | translate }} <span
+              class="text-danger">*</span></label>
           <select class="form-select" [(ngModel)]="form.warehouseId" name="warehouseId" required>
             <option [ngValue]="0">{{ 'stock_movement.select_warehouse' | translate }}</option>
             <option *ngFor="let w of warehouses()" [ngValue]="w.warehouseId">{{ w.name }}</option>
@@ -53,7 +54,8 @@
         </div>
 
         <div class="col-6">
-          <label class="form-label">{{ 'stock_movement.posting_date' | translate }} <span class="text-danger">*</span></label>
+          <label class="form-label">{{ 'stock_movement.posting_date' | translate }} <span
+              class="text-danger">*</span></label>
           <input class="form-control" type="date" [(ngModel)]="form.postingDate" name="postingDate" required>
         </div>
 

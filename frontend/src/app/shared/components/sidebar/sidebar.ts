@@ -23,7 +23,7 @@ export class SidebarComponent {
     this.expandedSections = new Set(sidebarService.sections.map(s => s.id));
   }
 
-  openSidebar()  { this.sidebarOpen = true; }
+  openSidebar() { this.sidebarOpen = true; }
   closeSidebar() { this.sidebarOpen = false; }
 
   toggleSection(id: string) {

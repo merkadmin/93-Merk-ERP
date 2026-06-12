@@ -10,17 +10,26 @@ public record BulkActiveDto(List<int> Ids, bool IsActive);
 
 [ApiController]
 [Route("api/[controller]")]
-public class UOMConversionGroupsController(MerkDbContext db, ExcelService excel) : ControllerBase
+public class UOMConversionGroupsController : ControllerBase
 {
+	private readonly MerkDbContext _db;
+	private readonly ExcelService  _excel;
+
+	public UOMConversionGroupsController(MerkDbContext db, ExcelService excel)
+	{
+		_db    = db;
+		_excel = excel;
+	}
+
 	[HttpGet]
 	public async Task<IActionResult> GetAll() =>
-		Ok(await db.UOMConversionGroup_cs.ToListAsync());
+		Ok(await _db.UOMConversionGroup_cs.ToListAsync());
 
 	[HttpGet("nextcode")]
 	public async Task<IActionResult> NextCode()
 	{
 		const string prefix = "UGR-";
-		var codes = await db.UOMConversionGroup_cs
+		var codes = await _db.UOMConversionGroup_cs
 			.Where(g => g.InternalCode != null && g.InternalCode.StartsWith(prefix))
 			.Select(g => g.InternalCode!)
 			.ToListAsync();
@@ -43,7 +52,7 @@ public class UOMConversionGroupsController(MerkDbContext db, ExcelService excel)
 			("Name AR",       28),
 		};
 
-		var bytes = excel.BuildTemplate(columns);
+		var bytes = _excel.BuildTemplate(columns);
 
 		return File(bytes,
 			"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
@@ -59,7 +68,7 @@ public class UOMConversionGroupsController(MerkDbContext db, ExcelService excel)
 		var created = 0;
 		var errors  = new List<string>();
 
-		var rows = excel.ReadRows(file.OpenReadStream());
+		var rows = _excel.ReadRows(file.OpenReadStream());
 
 		for (int i = 0; i < rows.Count; i++)
 		{
@@ -81,7 +90,7 @@ public class UOMConversionGroupsController(MerkDbContext db, ExcelService excel)
 			if (string.IsNullOrWhiteSpace(nameAR))
 			{ errors.Add($"Row {rowNum}: Name AR is required."); continue; }
 
-			db.UOMConversionGroup_cs.Add(new UOMConversionGroup_cs
+			_db.UOMConversionGroup_cs.Add(new UOMConversionGroup_cs
 			{
 				InternalCode = internalCode,
 				Name_EN      = nameEN,
@@ -93,20 +102,20 @@ public class UOMConversionGroupsController(MerkDbContext db, ExcelService excel)
 			created++;
 		}
 
-		if (created > 0) await db.SaveChangesAsync();
+		if (created > 0) await _db.SaveChangesAsync();
 
 		return Ok(new { created, errors });
 	}
 
 	[HttpGet("{id:int}")]
 	public async Task<IActionResult> Get(int id) =>
-		await db.UOMConversionGroup_cs.FindAsync(id) is { } e ? Ok(e) : NotFound();
+		await _db.UOMConversionGroup_cs.FindAsync(id) is { } e ? Ok(e) : NotFound();
 
 	[HttpPost]
 	public async Task<IActionResult> Create(UOMConversionGroup_cs e)
 	{
-		db.UOMConversionGroup_cs.Add(e);
-		await db.SaveChangesAsync();
+		_db.UOMConversionGroup_cs.Add(e);
+		await _db.SaveChangesAsync();
 		return Ok(e);
 	}
 
@@ -114,60 +123,60 @@ public class UOMConversionGroupsController(MerkDbContext db, ExcelService excel)
 	public async Task<IActionResult> Update(int id, UOMConversionGroup_cs e)
 	{
 		if (id != e.Id) return BadRequest();
-		db.UOMConversionGroup_cs.Update(e);
-		await db.SaveChangesAsync();
+		_db.UOMConversionGroup_cs.Update(e);
+		await _db.SaveChangesAsync();
 		return Ok(e);
 	}
 
 	[HttpDelete("{id:int}")]
 	public async Task<IActionResult> Delete(int id)
 	{
-		var e = await db.UOMConversionGroup_cs.FindAsync(id);
+		var e = await _db.UOMConversionGroup_cs.FindAsync(id);
 		if (e is null) return NotFound();
-		db.UOMConversionGroup_cs.Remove(e);
-		await db.SaveChangesAsync();
+		_db.UOMConversionGroup_cs.Remove(e);
+		await _db.SaveChangesAsync();
 		return NoContent();
 	}
 
 	[HttpPatch("{id:int}/toggle-favorite")]
 	public async Task<IActionResult> ToggleFavorite(int id)
 	{
-		var e = await db.UOMConversionGroup_cs.FindAsync(id);
+		var e = await _db.UOMConversionGroup_cs.FindAsync(id);
 		if (e is null) return NotFound();
 		e.IsFavorite = !e.IsFavorite;
-		await db.SaveChangesAsync();
+		await _db.SaveChangesAsync();
 		return Ok(e);
 	}
 
 	[HttpPatch("{id:int}/toggle-active")]
 	public async Task<IActionResult> ToggleActive(int id)
 	{
-		var e = await db.UOMConversionGroup_cs.FindAsync(id);
+		var e = await _db.UOMConversionGroup_cs.FindAsync(id);
 		if (e is null) return NotFound();
 		e.IsActive = !e.IsActive;
-		await db.SaveChangesAsync();
+		await _db.SaveChangesAsync();
 		return Ok(e);
 	}
 
 	[HttpPatch("bulk-active")]
 	public async Task<IActionResult> BulkSetActive([FromBody] BulkActiveDto dto)
 	{
-		var entities = await db.UOMConversionGroup_cs
+		var entities = await _db.UOMConversionGroup_cs
 			.Where(g => dto.Ids.Contains(g.Id))
 			.ToListAsync();
 		entities.ForEach(e => e.IsActive = dto.IsActive);
-		await db.SaveChangesAsync();
+		await _db.SaveChangesAsync();
 		return NoContent();
 	}
 
 	[HttpDelete("bulk")]
 	public async Task<IActionResult> DeleteBulk([FromBody] List<int> ids)
 	{
-		var entities = await db.UOMConversionGroup_cs
+		var entities = await _db.UOMConversionGroup_cs
 			.Where(g => ids.Contains(g.Id))
 			.ToListAsync();
-		db.UOMConversionGroup_cs.RemoveRange(entities);
-		await db.SaveChangesAsync();
+		_db.UOMConversionGroup_cs.RemoveRange(entities);
+		await _db.SaveChangesAsync();
 		return NoContent();
 	}
 }

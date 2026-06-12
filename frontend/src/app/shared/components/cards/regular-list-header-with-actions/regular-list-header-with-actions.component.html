@@ -1,4 +1,5 @@
-<div [class]="'d-flex align-items-center bg-light-' + color() + ' border border-dashed border-' + color() + ' rounded py-4 px-6 mb-8'">
+<div
+  [class]="'d-flex align-items-center bg-light-' + color() + ' border border-dashed border-' + color() + ' rounded py-4 px-6 mb-8'">
 
   <i [class]="icon() + ' fs-2tx text-' + color() + ' me-4'"></i>
 
@@ -8,10 +9,10 @@
 
   <div class="d-flex gap-2 flex-wrap">
     @if (selectedCount() > 0) {
-      <button class="btn btn-danger btn-sm" (click)="deleteSelected.emit()">
-        <i class="ki-outline ki-trash fs-4 me-1"></i>
-        {{ 'common.delete' | translate }} ({{ selectedCount() }})
-      </button>
+    <button class="btn btn-danger btn-sm" (click)="deleteSelected.emit()">
+      <i class="ki-outline ki-trash fs-4 me-1"></i>
+      {{ 'common.delete' | translate }} ({{ selectedCount() }})
+    </button>
     }
     <button [class]="'btn btn-light-' + color() + ' btn-sm'" (click)="refresh.emit()"
       [title]="'common.refresh' | translate">
@@ -19,34 +20,33 @@
     </button>
 
     @if (showImportExport()) {
-      <div class="btn-group btn-group-sm">
-        <button class="btn btn-light-info btn-sm" (click)="triggerImport()">
-          <i class="ki-outline ki-file-up fs-4 me-1"></i>
-          {{ 'common.import' | translate }}
-        </button>
-        <button class="btn btn-light-info btn-sm dropdown-toggle dropdown-toggle-split px-2"
-                data-bs-toggle="dropdown" aria-expanded="false">
-        </button>
-        <ul class="dropdown-menu dropdown-menu-end">
-          <li>
-            <a class="dropdown-item" href="#"
-               (click)="$event.preventDefault(); exportTemplate.emit()">
-              <i class="ki-outline ki-file-down fs-4 me-2"></i>
-              {{ 'common.export_template' | translate }}
-            </a>
-          </li>
-          <li><hr class="dropdown-divider"></li>
-          <li>
-            <a class="dropdown-item" href="#"
-               (click)="$event.preventDefault(); triggerImport()">
-              <i class="ki-outline ki-file-up fs-4 me-2"></i>
-              {{ 'common.import' | translate }}
-            </a>
-          </li>
-        </ul>
-      </div>
-      <input #fileInput type="file" accept=".xlsx" class="d-none"
-             (change)="onFileSelected($event)">
+    <div class="btn-group btn-group-sm">
+      <button class="btn btn-light-info btn-sm" (click)="triggerImport()">
+        <i class="ki-outline ki-file-up fs-4 me-1"></i>
+        {{ 'common.import' | translate }}
+      </button>
+      <button class="btn btn-light-info btn-sm dropdown-toggle dropdown-toggle-split px-2" data-bs-toggle="dropdown"
+        aria-expanded="false">
+      </button>
+      <ul class="dropdown-menu dropdown-menu-end">
+        <li>
+          <a class="dropdown-item" href="#" (click)="$event.preventDefault(); exportTemplate.emit()">
+            <i class="ki-outline ki-file-down fs-4 me-2"></i>
+            {{ 'common.export_template' | translate }}
+          </a>
+        </li>
+        <li>
+          <hr class="dropdown-divider">
+        </li>
+        <li>
+          <a class="dropdown-item" href="#" (click)="$event.preventDefault(); triggerImport()">
+            <i class="ki-outline ki-file-up fs-4 me-2"></i>
+            {{ 'common.import' | translate }}
+          </a>
+        </li>
+      </ul>
+    </div>
+    <input #fileInput type="file" accept=".xlsx" class="d-none" (change)="onFileSelected($event)">
     }
 
     <button class="btn btn-primary btn-sm" (click)="add.emit()">

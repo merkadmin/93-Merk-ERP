@@ -1,51 +1,34 @@
-<app-regular-list-header-with-actions
-  [title]="'items.title' | translate"
-  icon="ki-outline ki-package"
-  color="primary"
-  [selectedCount]="selectedIds().size"
-  [showImportExport]="true"
-  (add)="addNew()"
-  (refresh)="load()"
-  (deleteSelected)="deleteSelected()"
-  (exportTemplate)="exportTemplate()"
-  (importFile)="importExcel($event)" />
+<app-regular-list-header-with-actions [title]="'items.title' | translate" icon="ki-outline ki-package" color="primary"
+  [selectedCount]="selectedIds().size" [showImportExport]="true" (add)="addNew()" (refresh)="load()"
+  (deleteSelected)="deleteSelected()" (exportTemplate)="exportTemplate()" (importFile)="importExcel($event)" />
 
-<app-regular-list-search-actions
-  [fields]="searchFields"
-  (filterChange)="onFilterChange($event)" />
+<app-regular-list-search-actions [fields]="searchFields" (filterChange)="onFilterChange($event)" />
 
-<app-custom-table-with-pagination
-  entity="items"
-  [rows]="filteredItems"
-  [cellRenderers]="cellRenderers"
-  (metadataLoaded)="columnMeta.set($event)"
-  (selectionChange)="selectedIds.set($event)">
+<app-custom-table-with-pagination entity="items" [rows]="filteredItems" [cellRenderers]="cellRenderers"
+  (metadataLoaded)="columnMeta.set($event)" (selectionChange)="selectedIds.set($event)">
   <ng-template #rowActions let-item>
     <div class="d-inline-flex align-items-center gap-2">
-      <button class="btn btn-icon btn-sm" (click)="toggleFavorite(item)"
-        [class.btn-danger]="item.isFavorite"
-        [class.btn-light]="!item.isFavorite"
-        [title]="'common.favorite' | translate">
+      <button class="btn btn-icon btn-sm" (click)="toggleFavorite(item)" [class.btn-danger]="item.isFavorite"
+        [class.btn-light]="!item.isFavorite" [title]="'common.favorite' | translate">
         @if (item.isFavorite) {
-          <i class="ki-solid ki-heart fs-4"></i>
+        <i class="ki-solid ki-heart fs-4"></i>
         } @else {
-          <i class="ki-outline ki-heart fs-4"></i>
+        <i class="ki-outline ki-heart fs-4"></i>
         }
       </button>
-      <button class="btn btn-icon btn-sm btn-light-primary" (click)="edit(item.id)"
-        [title]="'common.edit' | translate">
+      <button class="btn btn-icon btn-sm btn-light-primary" (click)="edit(item.id)" [title]="'common.edit' | translate">
         <i class="ki-outline ki-pencil fs-4"></i>
       </button>
       @if (item.isActive) {
-        <button class="btn btn-sm btn-light-warning" (click)="toggleActive(item)">
-          <i class="ki-outline ki-minus-circle fs-4 me-1"></i>
-          {{ 'common.deactivate' | translate }}
-        </button>
+      <button class="btn btn-sm btn-light-warning" (click)="toggleActive(item)">
+        <i class="ki-outline ki-minus-circle fs-4 me-1"></i>
+        {{ 'common.deactivate' | translate }}
+      </button>
       } @else {
-        <button class="btn btn-sm btn-light-success" (click)="toggleActive(item)">
-          <i class="ki-outline ki-check-circle fs-4 me-1"></i>
-          {{ 'common.activate' | translate }}
-        </button>
+      <button class="btn btn-sm btn-light-success" (click)="toggleActive(item)">
+        <i class="ki-outline ki-check-circle fs-4 me-1"></i>
+        {{ 'common.activate' | translate }}
+      </button>
       }
       <button class="btn btn-icon btn-sm btn-light-danger" (click)="delete(item.id)"
         [title]="'common.delete' | translate">

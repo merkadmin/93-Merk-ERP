@@ -21,10 +21,10 @@ export class App {
   userMenuOpen = false;
 
   constructor(
-    public themeService:   ThemeService,
-    public langService:    LanguageService,
-    public serverStatus:   ServerStatusService,
-  ) {}
+    public themeService: ThemeService,
+    public langService: LanguageService,
+    public serverStatus: ServerStatusService,
+  ) { }
 
   retry() { window.location.reload(); }
 

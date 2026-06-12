@@ -8,17 +8,26 @@ namespace MerkERP.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class WareHouseCategoriesController(MerkDbContext db, ExcelService excel) : ControllerBase
+public class WareHouseCategoriesController : ControllerBase
 {
+	private readonly MerkDbContext _db;
+	private readonly ExcelService  _excel;
+
+	public WareHouseCategoriesController(MerkDbContext db, ExcelService excel)
+	{
+		_db    = db;
+		_excel = excel;
+	}
+
 	[HttpGet]
 	public async Task<IActionResult> GetAll() =>
-		Ok(await db.WareHouseCategory_cs.OrderBy(c => c.Name_EN).ToListAsync());
+		Ok(await _db.WareHouseCategory_cs.OrderBy(c => c.Name_EN).ToListAsync());
 
 	[HttpGet("nextcode")]
 	public async Task<IActionResult> NextCode()
 	{
 		const string prefix = "WHC-";
-		var codes = await db.WareHouseCategory_cs
+		var codes = await _db.WareHouseCategory_cs
 			.Where(c => c.InternalCode != null && c.InternalCode.StartsWith(prefix))
 			.Select(c => c.InternalCode!)
 			.ToListAsync();
@@ -42,7 +51,7 @@ public class WareHouseCategoriesController(MerkDbContext db, ExcelService excel)
 			("Description",   40),
 		};
 
-		return File(excel.BuildTemplate(columns),
+		return File(_excel.BuildTemplate(columns),
 			"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
 			"warehouse-categories-template.xlsx");
 	}
@@ -55,7 +64,7 @@ public class WareHouseCategoriesController(MerkDbContext db, ExcelService excel)
 
 		var created = 0;
 		var errors  = new List<string>();
-		var rows    = excel.ReadRows(file.OpenReadStream());
+		var rows    = _excel.ReadRows(file.OpenReadStream());
 
 		for (int i = 0; i < rows.Count; i++)
 		{
@@ -74,7 +83,7 @@ public class WareHouseCategoriesController(MerkDbContext db, ExcelService excel)
 			if (string.IsNullOrWhiteSpace(nameEn))
 			{ errors.Add($"Row {rowNum}: Name EN is required."); continue; }
 
-			db.WareHouseCategory_cs.Add(new WareHouseCategory_cs
+			_db.WareHouseCategory_cs.Add(new WareHouseCategory_cs
 			{
 				InternalCode = internalCode,
 				Name_EN      = nameEn,
@@ -85,19 +94,19 @@ public class WareHouseCategoriesController(MerkDbContext db, ExcelService excel)
 			created++;
 		}
 
-		if (created > 0) await db.SaveChangesAsync();
+		if (created > 0) await _db.SaveChangesAsync();
 		return Ok(new { created, errors });
 	}
 
 	[HttpGet("{id}")]
 	public async Task<IActionResult> Get(long id) =>
-		await db.WareHouseCategory_cs.FindAsync(id) is { } e ? Ok(e) : NotFound();
+		await _db.WareHouseCategory_cs.FindAsync(id) is { } e ? Ok(e) : NotFound();
 
 	[HttpPost]
 	public async Task<IActionResult> Create(WareHouseCategory_cs e)
 	{
-		db.WareHouseCategory_cs.Add(e);
-		await db.SaveChangesAsync();
+		_db.WareHouseCategory_cs.Add(e);
+		await _db.SaveChangesAsync();
 		return Ok(e);
 	}
 
@@ -105,37 +114,37 @@ public class WareHouseCategoriesController(MerkDbContext db, ExcelService excel)
 	public async Task<IActionResult> Update(long id, WareHouseCategory_cs e)
 	{
 		if (id != e.Id) return BadRequest();
-		db.WareHouseCategory_cs.Update(e);
-		await db.SaveChangesAsync();
+		_db.WareHouseCategory_cs.Update(e);
+		await _db.SaveChangesAsync();
 		return Ok(e);
 	}
 
 	[HttpDelete("{id}")]
 	public async Task<IActionResult> Delete(long id)
 	{
-		var e = await db.WareHouseCategory_cs.FindAsync(id);
+		var e = await _db.WareHouseCategory_cs.FindAsync(id);
 		if (e is null) return NotFound();
-		db.WareHouseCategory_cs.Remove(e);
-		await db.SaveChangesAsync();
+		_db.WareHouseCategory_cs.Remove(e);
+		await _db.SaveChangesAsync();
 		return NoContent();
 	}
 
 	[HttpDelete("bulk")]
 	public async Task<IActionResult> DeleteBulk([FromBody] long[] ids)
 	{
-		var entities = await db.WareHouseCategory_cs.Where(c => ids.Contains(c.Id)).ToListAsync();
-		db.WareHouseCategory_cs.RemoveRange(entities);
-		await db.SaveChangesAsync();
+		var entities = await _db.WareHouseCategory_cs.Where(c => ids.Contains(c.Id)).ToListAsync();
+		_db.WareHouseCategory_cs.RemoveRange(entities);
+		await _db.SaveChangesAsync();
 		return NoContent();
 	}
 
 	[HttpPatch("{id}/toggle-active")]
 	public async Task<IActionResult> ToggleActive(long id)
 	{
-		var e = await db.WareHouseCategory_cs.FindAsync(id);
+		var e = await _db.WareHouseCategory_cs.FindAsync(id);
 		if (e is null) return NotFound();
 		e.IsActive = !e.IsActive;
-		await db.SaveChangesAsync();
+		await _db.SaveChangesAsync();
 		return Ok(e);
 	}
 }

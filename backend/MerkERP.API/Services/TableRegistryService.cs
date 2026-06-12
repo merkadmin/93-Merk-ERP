@@ -10,12 +10,19 @@ namespace MerkERP.API.Services;
 /// New tables discovered on startup receive the next available integer Id.
 /// Existing rows are never modified or deleted so Ids remain stable.
 /// </summary>
-public class TableRegistryService(MerkDbContext db)
+public class TableRegistryService
 {
+    private readonly MerkDbContext _db;
+
+    public TableRegistryService(MerkDbContext db)
+    {
+        _db = db;
+    }
+
     public async Task SyncAsync()
     {
         // Collect every table name that EF Core maps to a physical SQL table.
-        var efTables = db.Model
+        var efTables = _db.Model
             .GetEntityTypes()
             .Select(e => e.GetTableName())
             .Where(t => !string.IsNullOrEmpty(t))
@@ -24,7 +31,7 @@ public class TableRegistryService(MerkDbContext db)
             .ToList();
 
         // Load currently registered names.
-        var existing = await db.TableName_s
+        var existing = await _db.TableName_s
             .ToDictionaryAsync(t => t.Name, t => t.Id);
 
         // Determine the next available Id (start at 1 if the table is empty).
@@ -41,8 +48,8 @@ public class TableRegistryService(MerkDbContext db)
 
         if (toAdd.Count > 0)
         {
-            db.TableName_s.AddRange(toAdd);
-            await db.SaveChangesAsync();
+            _db.TableName_s.AddRange(toAdd);
+            await _db.SaveChangesAsync();
         }
     }
 }

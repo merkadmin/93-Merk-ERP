@@ -9,7 +9,7 @@ const STORAGE_KEY = 'app-lang';
 export class LanguageService {
   private _lang = signal<Lang>(this._loadStored());
 
-  readonly lang  = this._lang.asReadonly();
+  readonly lang = this._lang.asReadonly();
   readonly isRtl = () => this._lang() === 'ar';
 
   constructor(private translate: TranslateService) {

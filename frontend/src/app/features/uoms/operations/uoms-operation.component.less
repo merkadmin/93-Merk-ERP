@@ -4,12 +4,28 @@
 
 // DOM order: [Internal Code, AR Name, EN Name, Whole Number] — matches tab order
 // LTR visual: [Internal Code] [EN Name] [AR Name] [Whole Number]
-.col-internal-code { order: 1; }
-.col-name-en       { order: 2; }
-.col-name-ar       { order: 3; }
-.col-whole-number  { order: 4; }
+.col-internal-code {
+  order: 1;
+}
+
+.col-name-en {
+  order: 2;
+}
+
+.col-name-ar {
+  order: 3;
+}
+
+.col-whole-number {
+  order: 4;
+}
 
 // RTL visual (right→left): [Internal Code] [AR Name] [EN Name] [Whole Number]
 // Whole Number stays order:4 = leftmost in RTL; Internal Code stays order:1 = rightmost
-:host-context([dir=rtl]) .col-name-ar { order: 2; }
-:host-context([dir=rtl]) .col-name-en { order: 3; }
+:host-context([dir=rtl]) .col-name-ar {
+  order: 2;
+}
+
+:host-context([dir=rtl]) .col-name-en {
+  order: 3;
+}

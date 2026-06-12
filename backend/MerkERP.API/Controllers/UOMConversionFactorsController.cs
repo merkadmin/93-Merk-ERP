@@ -11,11 +11,20 @@ public record BulkFactorActiveDto(List<long> Ids, bool IsActive);
 
 [ApiController]
 [Route("api/[controller]")]
-public class UOMConversionFactorsController(MerkDbContext db, ExcelService excel) : ControllerBase
+public class UOMConversionFactorsController : ControllerBase
 {
+	private readonly MerkDbContext _db;
+	private readonly ExcelService  _excel;
+
+	public UOMConversionFactorsController(MerkDbContext db, ExcelService excel)
+	{
+		_db    = db;
+		_excel = excel;
+	}
+
 	[HttpGet]
 	public async Task<IActionResult> GetAll() =>
-		Ok(await db.UOMConversionFactor_cs
+		Ok(await _db.UOMConversionFactor_cs
 			.Include(f => f.UOMFrom)
 			.Include(f => f.UOMTo)
 			.Include(f => f.UOMConversionGroup)
@@ -26,7 +35,7 @@ public class UOMConversionFactorsController(MerkDbContext db, ExcelService excel
 	public async Task<IActionResult> NextCode()
 	{
 		const string prefix = "UCF-";
-		var codes = await db.UOMConversionFactor_cs
+		var codes = await _db.UOMConversionFactor_cs
 			.Where(f => f.InternalCode != null && f.InternalCode.StartsWith(prefix))
 			.Select(f => f.InternalCode!)
 			.ToListAsync();
@@ -42,8 +51,8 @@ public class UOMConversionFactorsController(MerkDbContext db, ExcelService excel
 	[HttpGet("export-template")]
 	public async Task<IActionResult> ExportTemplate()
 	{
-		var groups = await db.UOMConversionGroup_cs.OrderBy(g => g.Name_EN).ToListAsync();
-		var uoms   = await db.UOM_cs.OrderBy(u => u.Name_EN).ToListAsync();
+		var groups = await _db.UOMConversionGroup_cs.OrderBy(g => g.Name_EN).ToListAsync();
+		var uoms   = await _db.UOM_cs.OrderBy(u => u.Name_EN).ToListAsync();
 
 		var columns = new (string Label, int Width)[]
 		{
@@ -65,7 +74,7 @@ public class UOMConversionFactorsController(MerkDbContext db, ExcelService excel
 				uoms.Select(u => new[] { u.InternalCode ?? "", u.Name_EN, u.Name_AR ?? "" })),
 		};
 
-		var bytes = excel.BuildTemplate(columns, referenceSheets);
+		var bytes = _excel.BuildTemplate(columns, referenceSheets);
 
 		return File(bytes,
 			"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
@@ -78,18 +87,18 @@ public class UOMConversionFactorsController(MerkDbContext db, ExcelService excel
 		if (file is null || file.Length == 0)
 			return BadRequest("No file uploaded.");
 
-		var groups = await db.UOMConversionGroup_cs.ToListAsync();
-		var uoms   = await db.UOM_cs.ToListAsync();
+		var groups = await _db.UOMConversionGroup_cs.ToListAsync();
+		var uoms   = await _db.UOM_cs.ToListAsync();
 
 		var created = 0;
 		var errors  = new List<string>();
 
-		var rows = excel.ReadRows(file.OpenReadStream());
+		var rows = _excel.ReadRows(file.OpenReadStream());
 
 		for (int i = 0; i < rows.Count; i++)
 		{
 			var row          = rows[i];
-			var rowNum       = i + 2; // 1-based, skipping header
+			var rowNum       = i + 2;
 			var internalCode = row.Length > 0 ? row[0] : "";
 			var groupName    = row.Length > 1 ? row[1] : "";
 			var fromName     = row.Length > 2 ? row[2] : "";
@@ -123,7 +132,7 @@ public class UOMConversionFactorsController(MerkDbContext db, ExcelService excel
 			if (!double.TryParse(factorStr, NumberStyles.Any, CultureInfo.InvariantCulture, out var factor) || factor <= 0)
 			{ errors.Add($"Row {rowNum}: Invalid factor \"{factorStr}\". Must be a positive number."); continue; }
 
-			db.UOMConversionFactor_cs.Add(new UOMConversionFactor_cs
+			_db.UOMConversionFactor_cs.Add(new UOMConversionFactor_cs
 			{
 				InternalCode         = string.IsNullOrWhiteSpace(internalCode) ? null : internalCode,
 				UOMConversionGroupId = group.Id,
@@ -136,14 +145,14 @@ public class UOMConversionFactorsController(MerkDbContext db, ExcelService excel
 			created++;
 		}
 
-		if (created > 0) await db.SaveChangesAsync();
+		if (created > 0) await _db.SaveChangesAsync();
 
 		return Ok(new { created, errors });
 	}
 
 	[HttpGet("{id:long}")]
 	public async Task<IActionResult> Get(long id) =>
-		await db.UOMConversionFactor_cs
+		await _db.UOMConversionFactor_cs
 			.Include(f => f.UOMFrom)
 			.Include(f => f.UOMTo)
 			.Include(f => f.UOMConversionGroup)
@@ -156,8 +165,8 @@ public class UOMConversionFactorsController(MerkDbContext db, ExcelService excel
 		e.UOMTo              = null;
 		e.UOMConversionGroup = null;
 		e.InsertedDate       = DateTime.UtcNow;
-		db.UOMConversionFactor_cs.Add(e);
-		await db.SaveChangesAsync();
+		_db.UOMConversionFactor_cs.Add(e);
+		await _db.SaveChangesAsync();
 		return Ok(e);
 	}
 
@@ -165,7 +174,7 @@ public class UOMConversionFactorsController(MerkDbContext db, ExcelService excel
 	public async Task<IActionResult> Update(long id, UOMConversionFactor_cs e)
 	{
 		if (id != e.Id) return BadRequest();
-		var existing = await db.UOMConversionFactor_cs.FindAsync(id);
+		var existing = await _db.UOMConversionFactor_cs.FindAsync(id);
 		if (existing is null) return NotFound();
 		existing.UOMFromId             = e.UOMFromId;
 		existing.UOMToId               = e.UOMToId;
@@ -174,59 +183,59 @@ public class UOMConversionFactorsController(MerkDbContext db, ExcelService excel
 		existing.InternalCode          = e.InternalCode;
 		existing.IsActive              = e.IsActive;
 		existing.IsFavorite            = e.IsFavorite;
-		await db.SaveChangesAsync();
+		await _db.SaveChangesAsync();
 		return Ok(existing);
 	}
 
 	[HttpDelete("{id:long}")]
 	public async Task<IActionResult> Delete(long id)
 	{
-		var e = await db.UOMConversionFactor_cs.FindAsync(id);
+		var e = await _db.UOMConversionFactor_cs.FindAsync(id);
 		if (e is null) return NotFound();
-		db.UOMConversionFactor_cs.Remove(e);
-		await db.SaveChangesAsync();
+		_db.UOMConversionFactor_cs.Remove(e);
+		await _db.SaveChangesAsync();
 		return NoContent();
 	}
 
 	[HttpPatch("{id:long}/toggle-favorite")]
 	public async Task<IActionResult> ToggleFavorite(long id)
 	{
-		var e = await db.UOMConversionFactor_cs.FindAsync(id);
+		var e = await _db.UOMConversionFactor_cs.FindAsync(id);
 		if (e is null) return NotFound();
 		e.IsFavorite = !e.IsFavorite;
-		await db.SaveChangesAsync();
+		await _db.SaveChangesAsync();
 		return Ok(e);
 	}
 
 	[HttpPatch("{id:long}/toggle-active")]
 	public async Task<IActionResult> ToggleActive(long id)
 	{
-		var e = await db.UOMConversionFactor_cs.FindAsync(id);
+		var e = await _db.UOMConversionFactor_cs.FindAsync(id);
 		if (e is null) return NotFound();
 		e.IsActive = !e.IsActive;
-		await db.SaveChangesAsync();
+		await _db.SaveChangesAsync();
 		return Ok(e);
 	}
 
 	[HttpPatch("bulk-active")]
 	public async Task<IActionResult> BulkSetActive([FromBody] BulkFactorActiveDto dto)
 	{
-		var entities = await db.UOMConversionFactor_cs
+		var entities = await _db.UOMConversionFactor_cs
 			.Where(f => dto.Ids.Contains(f.Id))
 			.ToListAsync();
 		entities.ForEach(e => e.IsActive = dto.IsActive);
-		await db.SaveChangesAsync();
+		await _db.SaveChangesAsync();
 		return NoContent();
 	}
 
 	[HttpDelete("bulk")]
 	public async Task<IActionResult> DeleteBulk([FromBody] List<long> ids)
 	{
-		var entities = await db.UOMConversionFactor_cs
+		var entities = await _db.UOMConversionFactor_cs
 			.Where(f => ids.Contains(f.Id))
 			.ToListAsync();
-		db.UOMConversionFactor_cs.RemoveRange(entities);
-		await db.SaveChangesAsync();
+		_db.UOMConversionFactor_cs.RemoveRange(entities);
+		await _db.SaveChangesAsync();
 		return NoContent();
 	}
 }

@@ -4,7 +4,7 @@ import { NgFor, NgIf } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ApiService } from '../../core/api.service';
 
-interface Item      { id: number; internalCode: string; name_EN: string; name_AR?: string; }
+interface Item { id: number; internalCode: string; name_EN: string; name_AR?: string; }
 interface Warehouse { warehouseId: number; name: string; }
 
 interface MovementForm {
@@ -26,12 +26,12 @@ interface MovementForm {
   styleUrl: './stock-movement.component.less',
 })
 export class StockMovementComponent implements OnInit {
-  api        = inject(ApiService);
-  items      = signal<Item[]>([]);
+  api = inject(ApiService);
+  items = signal<Item[]>([]);
   warehouses = signal<Warehouse[]>([]);
-  posting    = signal(false);
-  success    = signal(false);
-  error      = signal('');
+  posting = signal(false);
+  success = signal(false);
+  error = signal('');
   form: MovementForm = this.blank();
 
   blank(): MovementForm {

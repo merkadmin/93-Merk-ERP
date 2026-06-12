@@ -1,4 +1,6 @@
-:host { display: block; }
+:host {
+  display: block;
+}
 
 // ── Wrapper ──────────────────────────────────────────────────────────────────
 .csi-wrap {
@@ -35,14 +37,19 @@
   }
 }
 
-.csi-placeholder { color: var(--bs-secondary-color); }
+.csi-placeholder {
+  color: var(--bs-secondary-color);
+}
 
 .csi-arrow {
   flex-shrink: 0;
   margin-inline-start: auto;
   color: var(--bs-secondary-color);
   transition: transform 0.2s;
-  &.rotated { transform: rotate(180deg); }
+
+  &.rotated {
+    transform: rotate(180deg);
+  }
 }
 
 // ── Clear × button (absolute, sits before the arrow) ─────────────────────────
@@ -61,7 +68,10 @@
   z-index: 2;
   padding: 0;
   transition: color 0.15s;
-  &:hover { color: var(--bs-danger); }
+
+  &:hover {
+    color: var(--bs-danger);
+  }
 }
 
 // ── Dropdown panel ───────────────────────────────────────────────────────────
@@ -100,7 +110,10 @@
   font-size: 0.9rem;
   color: var(--bs-body-color);
   min-width: 0;
-  &::placeholder { color: var(--bs-secondary-color); }
+
+  &::placeholder {
+    color: var(--bs-secondary-color);
+  }
 }
 
 .csi-search-clear {
@@ -111,7 +124,10 @@
   cursor: pointer;
   padding: 2px;
   color: var(--bs-secondary-color);
-  &:hover { color: var(--bs-danger); }
+
+  &:hover {
+    color: var(--bs-danger);
+  }
 }
 
 // ── Option items ─────────────────────────────────────────────────────────────
@@ -124,8 +140,13 @@
   font-size: 0.9rem;
   transition: background 0.1s;
 
-  &:not(:last-child) { border-bottom: 1px solid var(--bs-border-color-translucent); }
-  &:hover            { background: var(--bs-primary-bg-subtle); }
+  &:not(:last-child) {
+    border-bottom: 1px solid var(--bs-border-color-translucent);
+  }
+
+  &:hover {
+    background: var(--bs-primary-bg-subtle);
+  }
 
   &--active {
     background: var(--bs-primary-bg-subtle);
@@ -134,8 +155,14 @@
   }
 }
 
-.csi-item-label { font-weight: 500; }
-.csi-item-sub   { font-size: 0.8rem; color: var(--bs-secondary-color); }
+.csi-item-label {
+  font-weight: 500;
+}
+
+.csi-item-sub {
+  font-size: 0.8rem;
+  color: var(--bs-secondary-color);
+}
 
 // ── Empty state ───────────────────────────────────────────────────────────────
 .csi-empty {

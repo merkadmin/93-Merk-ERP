@@ -9,10 +9,10 @@ import { RegularOperationHeaderComponent } from '../../../shared/components/card
 import { RegularOperationActionsComponent } from '../../../shared/components/cards/regular-operation-actions/regular-operation-actions.component';
 import { CustomSelectInputComponent, SelectOption } from '../../../shared/components/custom-controls/custom-select-input/custom-select-input.component';
 
-interface Warehouse         { id: number; internalCode: string | null; name_EN: string; name_AR: string | null; description: string | null; parentWarehouseId: number | null; wareHouseTypeId: number | null; wareHouseCategoryId: number | null; isParent: boolean; isActive: boolean; }
-interface WareHouseType     { id: number; name_EN: string; name_AR: string | null; }
+interface Warehouse { id: number; internalCode: string | null; name_EN: string; name_AR: string | null; description: string | null; parentWarehouseId: number | null; wareHouseTypeId: number | null; wareHouseCategoryId: number | null; isParent: boolean; isActive: boolean; }
+interface WareHouseType { id: number; name_EN: string; name_AR: string | null; }
 interface WareHouseCategory { id: number; name_EN: string; name_AR: string | null; }
-interface SavedRow          { name_EN: string; name_AR: string; parentName: string; isParent: boolean; }
+interface SavedRow { name_EN: string; name_AR: string; parentName: string; isParent: boolean; }
 
 @Component({
   selector: 'app-warehouses-operation',
@@ -22,22 +22,22 @@ interface SavedRow          { name_EN: string; name_AR: string; parentName: stri
   styleUrl: './warehouses-operation.component.less',
 })
 export class WarehousesOperationComponent implements OnInit {
-  private api       = inject(ApiService);
-  private router    = inject(Router);
-  private route     = inject(ActivatedRoute);
+  private api = inject(ApiService);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
   private translate = inject(TranslateService);
-  private toastr    = inject(ToastrService);
-  private doc       = inject(DOCUMENT);
+  private toastr = inject(ToastrService);
+  private doc = inject(DOCUMENT);
 
   get isRtl() { return this.doc.documentElement.dir === 'rtl'; }
 
-  isEdit    = signal(false);
-  saving    = signal(false);
+  isEdit = signal(false);
+  saving = signal(false);
   savingNew = signal(false);
   savedRows = signal<SavedRow[]>([]);
 
-  warehouses       = signal<Warehouse[]>([]);
-  wareHouseTypes   = signal<WareHouseType[]>([]);
+  warehouses = signal<Warehouse[]>([]);
+  wareHouseTypes = signal<WareHouseType[]>([]);
   wareHouseCategories = signal<WareHouseCategory[]>([]);
   form: Partial<Warehouse> = this.blank();
 
@@ -106,10 +106,10 @@ export class WarehousesOperationComponent implements OnInit {
         if (andNew) {
           const parent = this.warehouses().find(w => w.id === this.form.parentWarehouseId);
           this.savedRows.update(rows => [...rows, {
-            name_EN:    this.form.name_EN ?? '',
-            name_AR:    this.form.name_AR ?? '',
+            name_EN: this.form.name_EN ?? '',
+            name_AR: this.form.name_AR ?? '',
             parentName: parent ? this.label(parent) : '—',
-            isParent:   this.form.isParent ?? false,
+            isParent: this.form.isParent ?? false,
           }]);
           this.form = this.blank();
           this.isEdit.set(false);
@@ -124,8 +124,8 @@ export class WarehousesOperationComponent implements OnInit {
     });
   }
 
-  save()       { this.submit(false); }
-  saveAndNew() { this.submit(true);  }
-  resetForm()  { this.form = this.blank(); this.loadNextCode(); }
-  back()       { this.router.navigate(['/stock/warehouses']); }
+  save() { this.submit(false); }
+  saveAndNew() { this.submit(true); }
+  resetForm() { this.form = this.blank(); this.loadNextCode(); }
+  back() { this.router.navigate(['/stock/warehouses']); }
 }

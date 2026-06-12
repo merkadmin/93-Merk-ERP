@@ -5,17 +5,24 @@ using MerkERP.DAL.Context;
 
 namespace MerkERP.DAL.Repositories;
 
-public class StockService(MerkDbContext db)
+public class StockService
 {
+	private readonly MerkDbContext _db;
+
+	public StockService(MerkDbContext db)
+	{
+		_db = db;
+	}
+
 	public async Task<StockLedgerTransaction> PostMovementAsync(StockMovementDto dto)
 	{
-		var bin = await db.WarehouseTransaction
+		var bin = await _db.WarehouseTransaction
 			.FirstOrDefaultAsync(b => b.ItemId == dto.ItemId && b.WarehouseId == dto.WarehouseId);
 
 		if (bin is null)
 		{
 			bin = new WarehouseTransaction { ItemId = dto.ItemId, WarehouseId = dto.WarehouseId };
-			db.WarehouseTransaction.Add(bin);
+			_db.WarehouseTransaction.Add(bin);
 		}
 
 		var qtyBefore = bin.ActualQty;
@@ -42,8 +49,8 @@ public class StockService(MerkDbContext db)
 			BatchNo = dto.BatchNo,
 		};
 
-		db.StockLedgerTransaction.Add(slt);
-		await db.SaveChangesAsync();
+		_db.StockLedgerTransaction.Add(slt);
+		await _db.SaveChangesAsync();
 		return slt;
 	}
 }

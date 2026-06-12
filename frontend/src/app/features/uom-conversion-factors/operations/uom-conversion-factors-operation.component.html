@@ -1,8 +1,6 @@
 <app-regular-operation-header
   [title]="(isEdit() ? 'uom_conversion_factors.edit_title' : 'uom_conversion_factors.add_title') | translate"
-  icon="ki-outline ki-arrows-circle"
-  color="success"
-  (cancel)="back()" />
+  icon="ki-outline ki-arrows-circle" color="success" (cancel)="back()" />
 
 <!-- Form card -->
 <div class="card">
@@ -12,17 +10,13 @@
     <div class="row g-4 mb-4">
       <div class="col-4">
         <label class="form-label required">{{ 'uom_conversion_factors.conversion_group' | translate }}</label>
-        <app-custom-select-input
-          [options]="groupOptions"
-          [value]="form.uomConversionGroupId ?? null"
+        <app-custom-select-input [options]="groupOptions" [value]="form.uomConversionGroupId ?? null"
           (valueChange)="form.uomConversionGroupId = $event !== null ? +$event : null"
-          [placeholder]="'common.select' | translate"
-          [searchPlaceholder]="'common.search' | translate" />
+          [placeholder]="'common.select' | translate" [searchPlaceholder]="'common.search' | translate" />
       </div>
       <div class="col-4">
         <label class="form-label required">{{ 'common.internal_code' | translate }}</label>
-        <input class="form-control" type="text"
-          [(ngModel)]="form.internalCode" name="internalCode"
+        <input class="form-control" type="text" [(ngModel)]="form.internalCode" name="internalCode"
           [placeholder]="'common.internal_code' | translate">
       </div>
     </div>
@@ -32,32 +26,24 @@
 
       <div class="col-4">
         <label class="form-label required">{{ 'uom_conversion_factors.from_uom' | translate }}</label>
-        <app-custom-select-input
-          [options]="uomOptions"
-          [value]="form.uomFromId || null"
-          (valueChange)="form.uomFromId = +($event ?? 0)"
-          [placeholder]="'common.select' | translate"
+        <app-custom-select-input [options]="uomOptions" [value]="form.uomFromId || null"
+          (valueChange)="form.uomFromId = +($event ?? 0)" [placeholder]="'common.select' | translate"
           [searchPlaceholder]="'common.search' | translate" />
       </div>
 
       <div class="col-4">
         <label class="form-label required">{{ 'uom_conversion_factors.to_uom' | translate }}</label>
-        <app-custom-select-input
-          [options]="uomOptions"
-          [value]="form.uomToId || null"
-          (valueChange)="form.uomToId = +($event ?? 0)"
-          [placeholder]="'common.select' | translate"
+        <app-custom-select-input [options]="uomOptions" [value]="form.uomToId || null"
+          (valueChange)="form.uomToId = +($event ?? 0)" [placeholder]="'common.select' | translate"
           [searchPlaceholder]="'common.search' | translate" />
       </div>
 
       <div class="col-4">
         <label class="form-label required">{{ 'uom_conversion_factors.value' | translate }}</label>
-        <input class="form-control" type="text" inputmode="decimal"
-          [(ngModel)]="valueExpression" name="value"
-          (blur)="evaluateExpression()"
-          placeholder="e.g. 1/12">
+        <input class="form-control" type="text" inputmode="decimal" [(ngModel)]="valueExpression" name="value"
+          (blur)="evaluateExpression()" placeholder="e.g. 1/12">
         @if (form.value && form.value.toString() !== valueExpression) {
-          <div class="text-muted fs-7 mt-1">= {{ form.value }}</div>
+        <div class="text-muted fs-7 mt-1">= {{ form.value }}</div>
         }
       </div>
 
@@ -65,49 +51,46 @@
 
   </div>
 
-  <app-regular-operation-actions
-    [saving]="saving()"
-    [savingNew]="savingNew()"
-    (save)="save()"
-    (saveAndNew)="saveAndNew()"
-    (reset)="resetForm()" />
+  <app-regular-operation-actions [saving]="saving()" [savingNew]="savingNew()" (save)="save()"
+    (saveAndNew)="saveAndNew()" (reset)="resetForm()" />
 </div>
 
 <!-- Saved rows (visible only after at least one Save & New) -->
 @if (savedRows().length > 0) {
-  <div class="card mt-6">
-    <div class="card-header min-h-50px">
-      <h3 class="card-title fs-6 fw-bold text-success">
-        <i class="ki-outline ki-check-circle fs-4 text-success me-2"></i>
-        {{ savedRows().length }}
-        {{ (savedRows().length === 1 ? 'uom_conversion_factors.saved_rows_title_single' : 'uom_conversion_factors.saved_rows_title') | translate }}
-      </h3>
-    </div>
-    <div class="card-body p-0">
-      <table class="table table-row-dashed table-row-gray-300 align-middle gs-4 gy-2 mb-0">
-        <thead>
-          <tr class="fw-bold text-success bg-light-success fs-7">
-            <th class="w-40px">#</th>
-            <th>{{ 'common.internal_code' | translate }}</th>
-            <th>{{ 'uom_conversion_factors.conversion_group' | translate }}</th>
-            <th>{{ 'uom_conversion_factors.from_uom' | translate }}</th>
-            <th>{{ 'uom_conversion_factors.to_uom' | translate }}</th>
-            <th>{{ 'uom_conversion_factors.value' | translate }}</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of savedRows(); track $index) {
-            <tr>
-              <td class="text-muted">{{ $index + 1 }}</td>
-              <td class="fw-semibold">{{ row.internalCode }}</td>
-              <td>{{ row.groupLabel }}</td>
-              <td>{{ row.fromUomLabel }}</td>
-              <td>{{ row.toUomLabel }}</td>
-              <td class="fw-semibold">{{ row.value }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+<div class="card mt-6">
+  <div class="card-header min-h-50px">
+    <h3 class="card-title fs-6 fw-bold text-success">
+      <i class="ki-outline ki-check-circle fs-4 text-success me-2"></i>
+      {{ savedRows().length }}
+      {{ (savedRows().length === 1 ? 'uom_conversion_factors.saved_rows_title_single' :
+      'uom_conversion_factors.saved_rows_title') | translate }}
+    </h3>
   </div>
+  <div class="card-body p-0">
+    <table class="table table-row-dashed table-row-gray-300 align-middle gs-4 gy-2 mb-0">
+      <thead>
+        <tr class="fw-bold text-success bg-light-success fs-7">
+          <th class="w-40px">#</th>
+          <th>{{ 'common.internal_code' | translate }}</th>
+          <th>{{ 'uom_conversion_factors.conversion_group' | translate }}</th>
+          <th>{{ 'uom_conversion_factors.from_uom' | translate }}</th>
+          <th>{{ 'uom_conversion_factors.to_uom' | translate }}</th>
+          <th>{{ 'uom_conversion_factors.value' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of savedRows(); track $index) {
+        <tr>
+          <td class="text-muted">{{ $index + 1 }}</td>
+          <td class="fw-semibold">{{ row.internalCode }}</td>
+          <td>{{ row.groupLabel }}</td>
+          <td>{{ row.fromUomLabel }}</td>
+          <td>{{ row.toUomLabel }}</td>
+          <td class="fw-semibold">{{ row.value }}</td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
 }

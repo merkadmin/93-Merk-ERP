@@ -9,18 +9,18 @@
 
     <button class="btn btn-primary" (click)="save.emit()" [disabled]="saving() || savingNew()">
       @if (saving()) {
-        <span class="spinner-border spinner-border-sm me-2"></span>
+      <span class="spinner-border spinner-border-sm me-2"></span>
       } @else {
-        <i class="ki-outline ki-check fs-4 me-1"></i>
+      <i class="ki-outline ki-check fs-4 me-1"></i>
       }
       {{ 'common.save' | translate }}
     </button>
 
     <button class="btn btn-success" (click)="saveAndNew.emit()" [disabled]="saving() || savingNew()">
       @if (savingNew()) {
-        <span class="spinner-border spinner-border-sm me-2"></span>
+      <span class="spinner-border spinner-border-sm me-2"></span>
       } @else {
-        <i class="ki-outline ki-plus fs-4 me-1"></i>
+      <i class="ki-outline ki-plus fs-4 me-1"></i>
       }
       {{ 'common.save_and_new' | translate }}
     </button>

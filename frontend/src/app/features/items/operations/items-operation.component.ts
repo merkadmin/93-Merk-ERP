@@ -9,12 +9,12 @@ import { RegularOperationHeaderComponent } from '../../../shared/components/card
 import { RegularOperationActionsComponent } from '../../../shared/components/cards/regular-operation-actions/regular-operation-actions.component';
 import { CustomSelectInputComponent, SelectOption } from '../../../shared/components/custom-controls/custom-select-input/custom-select-input.component';
 
-interface ItemGroup                  { itemGroupId: number; name_EN: string; name_AR?: string; }
-interface ItemType                   { itemTypeId: number;  name: string; }
-interface ItemUOM                    { id: number; name_EN: string; name_AR?: string; }
-interface BarcodeType                { barcodeTypeId: number; name: string; }
-interface InventoryValidationMethod  { inventoryValidationMethodId: number; name: string; }
-interface Warehouse                  { id: number; name_EN: string; name_AR: string | null; isParent: boolean; }
+interface ItemGroup { itemGroupId: number; name_EN: string; name_AR?: string; }
+interface ItemType { itemTypeId: number; name: string; }
+interface ItemUOM { id: number; name_EN: string; name_AR?: string; }
+interface BarcodeType { barcodeTypeId: number; name: string; }
+interface InventoryValidationMethod { inventoryValidationMethodId: number; name: string; }
+interface Warehouse { id: number; name_EN: string; name_AR: string | null; isParent: boolean; }
 
 interface ItemBarcode {
   id: number;
@@ -64,29 +64,29 @@ interface SavedRow {
   styleUrl: './items-operation.component.less',
 })
 export class ItemsOperationComponent implements OnInit {
-  private api       = inject(ApiService);
-  private router    = inject(Router);
-  private route     = inject(ActivatedRoute);
+  private api = inject(ApiService);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
   private translate = inject(TranslateService);
-  private toastr    = inject(ToastrService);
-  private doc       = inject(DOCUMENT);
+  private toastr = inject(ToastrService);
+  private doc = inject(DOCUMENT);
 
   get isRtl() { return this.doc.documentElement.dir === 'rtl'; }
 
-  isEdit        = signal(false);
-  saving        = signal(false);
-  savingNew     = signal(false);
+  isEdit = signal(false);
+  saving = signal(false);
+  savingNew = signal(false);
   addingBarcode = signal(false);
-  savedRows     = signal<SavedRow[]>([]);
-  activeTab     = signal<'general' | 'inventory' | 'barcodes'>('general');
+  savedRows = signal<SavedRow[]>([]);
+  activeTab = signal<'general' | 'inventory' | 'barcodes'>('general');
 
-  groups                    = signal<ItemGroup[]>([]);
-  types                     = signal<ItemType[]>([]);
-  uoms                      = signal<ItemUOM[]>([]);
-  barcodeTypes              = signal<BarcodeType[]>([]);
+  groups = signal<ItemGroup[]>([]);
+  types = signal<ItemType[]>([]);
+  uoms = signal<ItemUOM[]>([]);
+  barcodeTypes = signal<BarcodeType[]>([]);
   inventoryValidationMethods = signal<InventoryValidationMethod[]>([]);
-  warehouses                = signal<Warehouse[]>([]);
-  barcodes                  = signal<ItemBarcode[]>([]);
+  warehouses = signal<Warehouse[]>([]);
+  barcodes = signal<ItemBarcode[]>([]);
 
   form: Partial<Item> = this.blank();
   newBarcode = this.blankBarcode();
@@ -242,14 +242,14 @@ export class ItemsOperationComponent implements OnInit {
         this.toastr.success(this.translate.instant('common.save_success'));
         if (andNew) {
           const group = this.groups().find(g => g.itemGroupId === this.form.itemGroupId);
-          const type  = this.types().find(t => t.itemTypeId  === this.form.itemTypeId);
-          const uom   = this.uoms().find(u => u.id           === this.form.defaultUOMId);
+          const type = this.types().find(t => t.itemTypeId === this.form.itemTypeId);
+          const uom = this.uoms().find(u => u.id === this.form.defaultUOMId);
           this.savedRows.update(rows => [...rows, {
             internalCode: this.form.internalCode ?? '',
-            name_EN:      this.form.name_EN      ?? '',
-            groupName:    group ? this.groupLabel(group) : '—',
-            typeName:     type?.name             ?? '—',
-            uomName:      uom ? this.uomLabel(uom) : '—',
+            name_EN: this.form.name_EN ?? '',
+            groupName: group ? this.groupLabel(group) : '—',
+            typeName: type?.name ?? '—',
+            uomName: uom ? this.uomLabel(uom) : '—',
           }]);
           this.form = this.blank();
           this.isEdit.set(false);
@@ -267,8 +267,8 @@ export class ItemsOperationComponent implements OnInit {
     });
   }
 
-  save()       { this.submit(false); }
-  saveAndNew() { this.submit(true);  }
+  save() { this.submit(false); }
+  saveAndNew() { this.submit(true); }
 
   resetForm() { this.form = this.blank(); this.activeTab.set('general'); this.loadNextCode(); }
 

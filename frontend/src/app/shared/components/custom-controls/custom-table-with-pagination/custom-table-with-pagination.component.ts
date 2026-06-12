@@ -16,26 +16,26 @@ import { CustomTablePaginationComponent } from '../../custom-table-pagination/cu
 })
 export class CustomTableWithPaginationComponent implements OnInit {
   private meta = inject(MetadataService);
-  private doc  = inject(DOCUMENT);
+  private doc = inject(DOCUMENT);
 
   // ── Inputs ────────────────────────────────────────────────────────────────
-  entity        = input.required<string>();
-  rows          = input<any[]>([]);
-  idKey         = input<string>('id');
+  entity = input.required<string>();
+  rows = input<any[]>([]);
+  idKey = input<string>('id');
   cellRenderers = input<Record<string, (row: any) => string>>({});
 
   // ── Outputs ───────────────────────────────────────────────────────────────
-  metadataLoaded  = output<ColumnMeta[]>();
+  metadataLoaded = output<ColumnMeta[]>();
   selectionChange = output<Set<any>>();
 
   // ── Content templates ─────────────────────────────────────────────────────
   @ContentChild('rowActions') rowActionsTemplate?: TemplateRef<{ $implicit: any }>;
-  @ContentChild('treeCell')   treeCellTemplate?:   TemplateRef<{ $implicit: any }>;
+  @ContentChild('treeCell') treeCellTemplate?: TemplateRef<{ $implicit: any }>;
 
   // ── State ─────────────────────────────────────────────────────────────────
-  columnMeta   = signal<ColumnMeta[]>([]);
-  selectedIds  = signal<Set<any>>(new Set());
-  displayRows  = signal<any[]>([]);
+  columnMeta = signal<ColumnMeta[]>([]);
+  selectedIds = signal<Set<any>>(new Set());
+  displayRows = signal<any[]>([]);
 
   constructor() {
     effect(() => {
@@ -77,7 +77,7 @@ export class CustomTableWithPaginationComponent implements OnInit {
   }
 
   toggleOne(row: any): void {
-    const s  = new Set(this.selectedIds());
+    const s = new Set(this.selectedIds());
     const id = row[this.idKey()];
     s.has(id) ? s.delete(id) : s.add(id);
     this.selectedIds.set(s);

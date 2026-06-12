@@ -9,7 +9,7 @@ import { RegularOperationHeaderComponent } from '../../../shared/components/card
 import { RegularOperationActionsComponent } from '../../../shared/components/cards/regular-operation-actions/regular-operation-actions.component';
 
 interface WareHouseCategory { id: number; internalCode: string | null; name_EN: string; name_AR: string | null; description: string | null; isActive: boolean; }
-interface SavedRow           { internalCode: string; name_EN: string; name_AR: string; }
+interface SavedRow { internalCode: string; name_EN: string; name_AR: string; }
 
 @Component({
   selector: 'app-warehouse-categories-operation',
@@ -19,17 +19,17 @@ interface SavedRow           { internalCode: string; name_EN: string; name_AR: s
   styleUrl: './warehouse-categories-operation.component.less',
 })
 export class WarehouseCategoriesOperationComponent implements OnInit {
-  private api       = inject(ApiService);
-  private router    = inject(Router);
-  private route     = inject(ActivatedRoute);
+  private api = inject(ApiService);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
   private translate = inject(TranslateService);
-  private toastr    = inject(ToastrService);
-  private doc       = inject(DOCUMENT);
+  private toastr = inject(ToastrService);
+  private doc = inject(DOCUMENT);
 
   get isRtl() { return this.doc.documentElement.dir === 'rtl'; }
 
-  isEdit    = signal(false);
-  saving    = signal(false);
+  isEdit = signal(false);
+  saving = signal(false);
   savingNew = signal(false);
   savedRows = signal<SavedRow[]>([]);
 
@@ -89,8 +89,8 @@ export class WarehouseCategoriesOperationComponent implements OnInit {
     });
   }
 
-  save()       { this.submit(false); }
-  saveAndNew() { this.submit(true);  }
-  resetForm()  { this.form = this.blank(); this.loadNextCode(); }
-  back()       { this.router.navigate(['/stock/warehouse-categories']); }
+  save() { this.submit(false); }
+  saveAndNew() { this.submit(true); }
+  resetForm() { this.form = this.blank(); this.loadNextCode(); }
+  back() { this.router.navigate(['/stock/warehouse-categories']); }
 }

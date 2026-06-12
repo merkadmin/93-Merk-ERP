@@ -28,19 +28,19 @@ interface UOM {
   styleUrl: './uoms.component.less',
 })
 export class UomsComponent implements OnInit {
-  private api      = inject(ApiService);
-  private router   = inject(Router);
+  private api = inject(ApiService);
+  private router = inject(Router);
   private translate = inject(TranslateService);
-  private toastr   = inject(ToastrService);
-  private doc      = inject(DOCUMENT);
-  private meta     = inject(MetadataService);
+  private toastr = inject(ToastrService);
+  private doc = inject(DOCUMENT);
+  private meta = inject(MetadataService);
 
   get isRtl() { return this.doc.documentElement.dir === 'rtl'; }
 
-  uoms         = signal<UOM[]>([]);
-  selectedIds  = signal<Set<any>>(new Set());
+  uoms = signal<UOM[]>([]);
+  selectedIds = signal<Set<any>>(new Set());
   activeFilter = signal<Record<string, string | number | null>>({});
-  columnMeta   = signal<ColumnMeta[]>([]);
+  columnMeta = signal<ColumnMeta[]>([]);
 
   nameLabel(u: UOM): string {
     return this.isRtl ? (u.name_AR || u.name_EN) : (u.name_EN || u.name_AR);
@@ -60,11 +60,11 @@ export class UomsComponent implements OnInit {
   get filteredUoms(): UOM[] {
     const f = this.activeFilter();
     return this.sortedUoms.filter(u => {
-      if (f['internalCode']      != null && !(u.internalCode ?? '').toLowerCase().includes((f['internalCode'] as string).toLowerCase())) return false;
-      if (f['name_AR']           != null && !(u.name_AR ?? '').toLowerCase().includes((f['name_AR'] as string).toLowerCase())) return false;
-      if (f['name_EN']           != null && !(u.name_EN ?? '').toLowerCase().includes((f['name_EN'] as string).toLowerCase())) return false;
+      if (f['internalCode'] != null && !(u.internalCode ?? '').toLowerCase().includes((f['internalCode'] as string).toLowerCase())) return false;
+      if (f['name_AR'] != null && !(u.name_AR ?? '').toLowerCase().includes((f['name_AR'] as string).toLowerCase())) return false;
+      if (f['name_EN'] != null && !(u.name_EN ?? '').toLowerCase().includes((f['name_EN'] as string).toLowerCase())) return false;
       if (f['mustBeWholeNumber'] != null && u.mustBeWholeNumber !== (f['mustBeWholeNumber'] === 1)) return false;
-      if (f['isActive']          != null && u.isActive          !== (f['isActive']          === 1)) return false;
+      if (f['isActive'] != null && u.isActive !== (f['isActive'] === 1)) return false;
       return true;
     });
   }
@@ -86,8 +86,8 @@ export class UomsComponent implements OnInit {
   exportTemplate() {
     this.api.getBlob('uoms/export-template').subscribe(blob => {
       const url = URL.createObjectURL(blob);
-      const a   = document.createElement('a');
-      a.href     = url;
+      const a = document.createElement('a');
+      a.href = url;
       a.download = 'uoms-template.xlsx';
       a.click();
       URL.revokeObjectURL(url);
@@ -117,11 +117,11 @@ export class UomsComponent implements OnInit {
   delete(id: number) {
     Swal.fire({
       title: this.translate.instant('common.swal_delete_title'),
-      text:  this.translate.instant('uoms.delete_confirm'),
-      icon:  'warning',
-      showCancelButton:  true,
+      text: this.translate.instant('uoms.delete_confirm'),
+      icon: 'warning',
+      showCancelButton: true,
       confirmButtonText: this.translate.instant('common.delete'),
-      cancelButtonText:  this.translate.instant('common.cancel'),
+      cancelButtonText: this.translate.instant('common.cancel'),
       confirmButtonColor: '#f1416c',
       reverseButtons: this.isRtl,
     }).then(result => {
@@ -147,11 +147,11 @@ export class UomsComponent implements OnInit {
     if (!ids.length) return;
     Swal.fire({
       title: this.translate.instant('common.swal_delete_title'),
-      text:  this.translate.instant('uoms.delete_selected_confirm', { count: ids.length }),
-      icon:  'warning',
-      showCancelButton:  true,
+      text: this.translate.instant('uoms.delete_selected_confirm', { count: ids.length }),
+      icon: 'warning',
+      showCancelButton: true,
       confirmButtonText: this.translate.instant('common.delete'),
-      cancelButtonText:  this.translate.instant('common.cancel'),
+      cancelButtonText: this.translate.instant('common.cancel'),
       confirmButtonColor: '#f1416c',
       reverseButtons: this.isRtl,
     }).then(result => {

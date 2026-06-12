@@ -10,17 +10,26 @@ public record BulkItemGroupActiveDto(List<long> Ids, bool IsActive);
 
 [ApiController]
 [Route("api/[controller]")]
-public class ItemGroupsController(MerkDbContext db, ExcelService excel) : ControllerBase
+public class ItemGroupsController : ControllerBase
 {
+	private readonly MerkDbContext _db;
+	private readonly ExcelService  _excel;
+
+	public ItemGroupsController(MerkDbContext db, ExcelService excel)
+	{
+		_db    = db;
+		_excel = excel;
+	}
+
 	[HttpGet]
 	public async Task<IActionResult> GetAll() =>
-		Ok(await db.ItemGroup_cs.OrderBy(g => g.Name_EN).ToListAsync());
+		Ok(await _db.ItemGroup_cs.OrderBy(g => g.Name_EN).ToListAsync());
 
 	[HttpGet("nextcode")]
 	public async Task<IActionResult> NextCode()
 	{
 		const string prefix = "GRP-";
-		var codes = await db.ItemGroup_cs
+		var codes = await _db.ItemGroup_cs
 			.Where(g => g.InternalCode != null && g.InternalCode.StartsWith(prefix))
 			.Select(g => g.InternalCode!)
 			.ToListAsync();
@@ -45,7 +54,7 @@ public class ItemGroupsController(MerkDbContext db, ExcelService excel) : Contro
 			("Is Main (yes/no)",  20),
 		};
 
-		return File(excel.BuildTemplate(columns),
+		return File(_excel.BuildTemplate(columns),
 			"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
 			"item-groups-template.xlsx");
 	}
@@ -56,10 +65,10 @@ public class ItemGroupsController(MerkDbContext db, ExcelService excel) : Contro
 		if (file is null || file.Length == 0)
 			return BadRequest("No file uploaded.");
 
-		var existing = await db.ItemGroup_cs.ToListAsync();
+		var existing = await _db.ItemGroup_cs.ToListAsync();
 		var created  = 0;
 		var errors   = new List<string>();
-		var rows     = excel.ReadRows(file.OpenReadStream());
+		var rows     = _excel.ReadRows(file.OpenReadStream());
 
 		for (int i = 0; i < rows.Count; i++)
 		{
@@ -86,7 +95,7 @@ public class ItemGroupsController(MerkDbContext db, ExcelService excel) : Contro
 
 			var isMain = isMainStr.Trim().ToLowerInvariant() is "yes" or "true" or "1";
 
-			db.ItemGroup_cs.Add(new ItemGroup_cs
+			_db.ItemGroup_cs.Add(new ItemGroup_cs
 			{
 				InternalCode      = string.IsNullOrWhiteSpace(internalCode) ? null : internalCode,
 				Name_EN           = nameEN,
@@ -99,20 +108,20 @@ public class ItemGroupsController(MerkDbContext db, ExcelService excel) : Contro
 			created++;
 		}
 
-		if (created > 0) await db.SaveChangesAsync();
+		if (created > 0) await _db.SaveChangesAsync();
 		return Ok(new { created, errors });
 	}
 
 	[HttpGet("{id:long}")]
 	public async Task<IActionResult> Get(long id) =>
-		await db.ItemGroup_cs.FindAsync(id) is { } e ? Ok(e) : NotFound();
+		await _db.ItemGroup_cs.FindAsync(id) is { } e ? Ok(e) : NotFound();
 
 	[HttpPost]
 	public async Task<IActionResult> Create(ItemGroup_cs e)
 	{
 		e.InsertedDate = DateTime.UtcNow;
-		db.ItemGroup_cs.Add(e);
-		await db.SaveChangesAsync();
+		_db.ItemGroup_cs.Add(e);
+		await _db.SaveChangesAsync();
 		return Ok(e);
 	}
 
@@ -120,7 +129,7 @@ public class ItemGroupsController(MerkDbContext db, ExcelService excel) : Contro
 	public async Task<IActionResult> Update(long id, ItemGroup_cs e)
 	{
 		if (id != e.ItemGroupId) return BadRequest();
-		var existing = await db.ItemGroup_cs.FindAsync(id);
+		var existing = await _db.ItemGroup_cs.FindAsync(id);
 		if (existing is null) return NotFound();
 		existing.InternalCode      = e.InternalCode;
 		existing.Name_EN           = e.Name_EN;
@@ -129,65 +138,65 @@ public class ItemGroupsController(MerkDbContext db, ExcelService excel) : Contro
 		existing.IsMain            = e.IsMain;
 		existing.IsActive          = e.IsActive;
 		existing.IsFavorite        = e.IsFavorite;
-		await db.SaveChangesAsync();
+		await _db.SaveChangesAsync();
 		return Ok(existing);
 	}
 
 	[HttpDelete("{id:long}")]
 	public async Task<IActionResult> Delete(long id)
 	{
-		var e = await db.ItemGroup_cs.FindAsync(id);
+		var e = await _db.ItemGroup_cs.FindAsync(id);
 		if (e is null) return NotFound();
 
-		var children = await db.ItemGroup_cs
+		var children = await _db.ItemGroup_cs
 			.Where(g => g.ParentItemGroupId == id)
 			.ToListAsync();
 		children.ForEach(c => c.ParentItemGroupId = null);
 
-		db.ItemGroup_cs.Remove(e);
-		await db.SaveChangesAsync();
+		_db.ItemGroup_cs.Remove(e);
+		await _db.SaveChangesAsync();
 		return NoContent();
 	}
 
 	[HttpPatch("{id:long}/toggle-favorite")]
 	public async Task<IActionResult> ToggleFavorite(long id)
 	{
-		var e = await db.ItemGroup_cs.FindAsync(id);
+		var e = await _db.ItemGroup_cs.FindAsync(id);
 		if (e is null) return NotFound();
 		e.IsFavorite = !e.IsFavorite;
-		await db.SaveChangesAsync();
+		await _db.SaveChangesAsync();
 		return Ok(e);
 	}
 
 	[HttpPatch("{id:long}/toggle-active")]
 	public async Task<IActionResult> ToggleActive(long id)
 	{
-		var e = await db.ItemGroup_cs.FindAsync(id);
+		var e = await _db.ItemGroup_cs.FindAsync(id);
 		if (e is null) return NotFound();
 		e.IsActive = !e.IsActive;
-		await db.SaveChangesAsync();
+		await _db.SaveChangesAsync();
 		return Ok(e);
 	}
 
 	[HttpPatch("bulk-active")]
 	public async Task<IActionResult> BulkSetActive([FromBody] BulkItemGroupActiveDto dto)
 	{
-		var entities = await db.ItemGroup_cs
+		var entities = await _db.ItemGroup_cs
 			.Where(g => dto.Ids.Contains(g.ItemGroupId))
 			.ToListAsync();
 		entities.ForEach(e => e.IsActive = dto.IsActive);
-		await db.SaveChangesAsync();
+		await _db.SaveChangesAsync();
 		return NoContent();
 	}
 
 	[HttpDelete("bulk")]
 	public async Task<IActionResult> DeleteBulk([FromBody] List<long> ids)
 	{
-		var entities = await db.ItemGroup_cs
+		var entities = await _db.ItemGroup_cs
 			.Where(g => ids.Contains(g.ItemGroupId))
 			.ToListAsync();
-		db.ItemGroup_cs.RemoveRange(entities);
-		await db.SaveChangesAsync();
+		_db.ItemGroup_cs.RemoveRange(entities);
+		await _db.SaveChangesAsync();
 		return NoContent();
 	}
 }

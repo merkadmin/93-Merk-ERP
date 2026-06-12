@@ -9,10 +9,10 @@ import { TranslatePipe } from '@ngx-translate/core';
   styleUrl: './regular-operation-actions.component.less',
 })
 export class RegularOperationActionsComponent {
-  saving    = input<boolean>(false);
+  saving = input<boolean>(false);
   savingNew = input<boolean>(false);
 
-  save       = output<void>();
+  save = output<void>();
   saveAndNew = output<void>();
-  reset      = output<void>();
+  reset = output<void>();
 }
