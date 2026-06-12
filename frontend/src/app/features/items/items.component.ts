@@ -5,8 +5,10 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2';
 import { ApiService } from '../../core/api.service';
+import { ColumnMeta, MetadataService } from '../../core/metadata.service';
 import { RegularListSearchActionsComponent, SearchField } from '../../shared/components/cards/regular-list-search-actions/regular-list-search-actions.component';
 import { RegularListHeaderWithActionsComponent } from '../../shared/components/cards/regular-list-header-with-actions/regular-list-header-with-actions.component';
+import { CustomTableWithPaginationComponent } from '../../shared/components/custom-controls/custom-table-with-pagination/custom-table-with-pagination.component';
 
 interface ItemGroup { itemGroupId: number; name_EN: string; name_AR?: string; }
 interface ItemType  { itemTypeId: number;  name: string; }
@@ -40,22 +42,24 @@ interface Item {
 @Component({
   selector: 'app-items',
   standalone: true,
-  imports: [TranslatePipe, RegularListSearchActionsComponent, RegularListHeaderWithActionsComponent],
+  imports: [TranslatePipe, RegularListSearchActionsComponent, RegularListHeaderWithActionsComponent, CustomTableWithPaginationComponent],
   templateUrl: './items.component.html',
   styleUrl: './items.component.less',
 })
 export class ItemsComponent implements OnInit {
-  private api       = inject(ApiService);
-  private router    = inject(Router);
+  private api      = inject(ApiService);
+  private router   = inject(Router);
   private translate = inject(TranslateService);
-  private toastr    = inject(ToastrService);
-  private doc       = inject(DOCUMENT);
+  private toastr   = inject(ToastrService);
+  private doc      = inject(DOCUMENT);
+  private meta     = inject(MetadataService);
 
   get isRtl() { return this.doc.documentElement.dir === 'rtl'; }
 
   items        = signal<Item[]>([]);
-  selectedIds  = signal<Set<number>>(new Set());
+  selectedIds  = signal<Set<any>>(new Set());
   activeFilter = signal<Record<string, string | number | null>>({});
+  columnMeta   = signal<ColumnMeta[]>([]);
 
   uomLabel(uom?: ItemUOM): string {
     if (!uom) return '—';
@@ -81,13 +85,10 @@ export class ItemsComponent implements OnInit {
     const groupOpts = [...groupMap.entries()].map(([value, label]) => ({ value, label })).sort((a, b) => a.label.localeCompare(b.label));
     const typeOpts  = [...typeMap.entries()].map(([value, label])  => ({ value, label })).sort((a, b) => a.label.localeCompare(b.label));
 
-    return [
-      { key: 'internalCode', label: this.translate.instant('items.code'),                 type: 'text'   },
-      { key: 'name_AR',      label: this.translate.instant('common.name') + ' (AR)',      type: 'text'   },
-      { key: 'name_EN',      label: this.translate.instant('common.name') + ' (EN)',      type: 'text'   },
-      { key: 'groupId',      label: this.translate.instant('items.group'),                type: 'select', options: groupOpts },
-      { key: 'typeId',       label: this.translate.instant('items.type'),                 type: 'select', options: typeOpts  },
-    ];
+    return this.meta.toSearchFields(this.columnMeta(), this.isRtl, {
+      itemGroup: groupOpts,
+      itemType:  typeOpts,
+    });
   }
 
   get sortedItems(): Item[] {
@@ -103,49 +104,29 @@ export class ItemsComponent implements OnInit {
       if (f['internalCode'] != null && !item.internalCode.toLowerCase().includes((f['internalCode'] as string).toLowerCase())) return false;
       if (f['name_AR']      != null && !(item.name_AR ?? '').toLowerCase().includes((f['name_AR'] as string).toLowerCase())) return false;
       if (f['name_EN']      != null && !item.name_EN.toLowerCase().includes((f['name_EN'] as string).toLowerCase())) return false;
-      if (f['groupId']      != null && item.itemGroupId !== f['groupId'])  return false;
-      if (f['typeId']       != null && item.itemTypeId  !== f['typeId'])   return false;
+      if (f['itemGroup']    != null && item.itemGroupId !== f['itemGroup']) return false;
+      if (f['itemType']     != null && item.itemTypeId  !== f['itemType'])  return false;
+      if (f['isActive']     != null && item.isActive    !== (f['isActive'] === 1)) return false;
       return true;
     });
   }
 
+  readonly cellRenderers: Record<string, (item: any) => string> = {
+    itemGroup:  (item) => this.groupLabel(item.itemGroup),
+    itemType:   (item) => item.itemType?.name ?? '—',
+    defaultUOM: (item) => this.uomLabel(item.defaultUOM),
+  };
+
   onFilterChange(filter: Record<string, string | number | null>) {
     this.activeFilter.set(filter);
-    this.selectedIds.set(new Set());
   }
 
-  ngOnInit() { this.load(); }
+  ngOnInit() {
+    this.load();
+  }
 
   load() {
-    this.api.get<Item[]>('items').subscribe(d => {
-      this.items.set(d);
-      this.selectedIds.set(new Set());
-    });
-  }
-
-  isSelected(id: number) { return this.selectedIds().has(id); }
-
-  get isAllSelected() {
-    const items = this.filteredItems;
-    return items.length > 0 && items.every(item => this.selectedIds().has(item.id));
-  }
-
-  get isIndeterminate() {
-    return this.selectedIds().size > 0 && !this.isAllSelected;
-  }
-
-  toggleOne(id: number) {
-    const s = new Set(this.selectedIds());
-    s.has(id) ? s.delete(id) : s.add(id);
-    this.selectedIds.set(s);
-  }
-
-  toggleAll() {
-    if (this.isAllSelected) {
-      this.selectedIds.set(new Set());
-    } else {
-      this.selectedIds.set(new Set(this.filteredItems.map(i => i.id)));
-    }
+    this.api.get<Item[]>('items').subscribe(d => this.items.set(d));
   }
 
   addNew() { this.router.navigate(['/stock/items/operation']); }

@@ -17,6 +17,13 @@
               (valueChange)="onValueChange(field.key, $event)"
               [placeholder]="'common.all' | translate"
               [searchPlaceholder]="'common.search' | translate" />
+          } @else if (field.type === 'boolean') {
+            <app-custom-select-input
+              [options]="booleanOptions"
+              [value]="values[field.key] ?? null"
+              (valueChange)="onValueChange(field.key, $event)"
+              [placeholder]="'common.all' | translate"
+              [searchPlaceholder]="'common.search' | translate" />
           } @else if (field.type === 'number') {
             <input class="form-control form-control-sm" type="number"
               [ngModel]="values[field.key] ?? null"

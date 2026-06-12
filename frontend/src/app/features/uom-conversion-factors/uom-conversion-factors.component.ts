@@ -5,8 +5,10 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2';
 import { ApiService } from '../../core/api.service';
+import { ColumnMeta, MetadataService } from '../../core/metadata.service';
 import { RegularListSearchActionsComponent, SearchField } from '../../shared/components/cards/regular-list-search-actions/regular-list-search-actions.component';
 import { RegularListHeaderWithActionsComponent } from '../../shared/components/cards/regular-list-header-with-actions/regular-list-header-with-actions.component';
+import { CustomTableWithPaginationComponent } from '../../shared/components/custom-controls/custom-table-with-pagination/custom-table-with-pagination.component';
 
 interface UOM   { id: number; name_EN: string; name_AR: string; }
 interface Group { id: number; name_EN: string; name_AR: string; }
@@ -28,22 +30,24 @@ interface UomConversionFactor {
 @Component({
   selector: 'app-uom-conversion-factors',
   standalone: true,
-  imports: [TranslatePipe, RegularListSearchActionsComponent, RegularListHeaderWithActionsComponent],
+  imports: [TranslatePipe, RegularListSearchActionsComponent, RegularListHeaderWithActionsComponent, CustomTableWithPaginationComponent],
   templateUrl: './uom-conversion-factors.component.html',
   styleUrl: './uom-conversion-factors.component.less',
 })
 export class UomConversionFactorsComponent implements OnInit {
-  private api       = inject(ApiService);
-  private router    = inject(Router);
+  private api      = inject(ApiService);
+  private router   = inject(Router);
   private translate = inject(TranslateService);
-  private toastr    = inject(ToastrService);
-  private doc       = inject(DOCUMENT);
+  private toastr   = inject(ToastrService);
+  private doc      = inject(DOCUMENT);
+  private meta     = inject(MetadataService);
 
   get isRtl() { return this.doc.documentElement.dir === 'rtl'; }
 
   factors      = signal<UomConversionFactor[]>([]);
-  selectedIds  = signal<Set<number>>(new Set());
+  selectedIds  = signal<Set<any>>(new Set());
   activeFilter = signal<Record<string, string | number | null>>({});
+  columnMeta   = signal<ColumnMeta[]>([]);
 
   uomLabel(uom?: UOM): string {
     if (!uom) return '';
@@ -56,11 +60,10 @@ export class UomConversionFactorsComponent implements OnInit {
   }
 
   get searchFields(): SearchField[] {
-    const factors = this.factors();
     const fromMap  = new Map<number, UOM>();
     const toMap    = new Map<number, UOM>();
     const groupMap = new Map<number, Group>();
-    for (const f of factors) {
+    for (const f of this.factors()) {
       if (f.uomFrom)            fromMap.set(f.uomFromId, f.uomFrom);
       if (f.uomTo)              toMap.set(f.uomToId, f.uomTo);
       if (f.uomConversionGroup && f.uomConversionGroupId != null)
@@ -73,12 +76,11 @@ export class UomConversionFactorsComponent implements OnInit {
       .map(g => ({ value: g.id, label: this.groupLabel(g) }))
       .sort((a, b) => a.label.localeCompare(b.label));
 
-    return [
-      { key: 'internalCode', label: this.translate.instant('common.internal_code'),                    type: 'text'                              },
-      { key: 'groupId',      label: this.translate.instant('uom_conversion_factors.conversion_group'), type: 'select', options: grpOpts          },
-      { key: 'uomFrom',      label: this.translate.instant('uom_conversion_factors.from_uom'),         type: 'select', options: uomOpts(fromMap) },
-      { key: 'uomTo',        label: this.translate.instant('uom_conversion_factors.to_uom'),           type: 'select', options: uomOpts(toMap)   },
-    ];
+    return this.meta.toSearchFields(this.columnMeta(), this.isRtl, {
+      uomConversionGroup: grpOpts,
+      uomFrom:            uomOpts(fromMap),
+      uomTo:              uomOpts(toMap),
+    });
   }
 
   get sortedFactors(): UomConversionFactor[] {
@@ -91,53 +93,31 @@ export class UomConversionFactorsComponent implements OnInit {
   get filteredFactors(): UomConversionFactor[] {
     const f = this.activeFilter();
     return this.sortedFactors.filter(x => {
-      if (f['groupId']      != null && x.uomConversionGroupId !== f['groupId'])                              return false;
-      if (f['internalCode'] != null && !(x.internalCode ?? '').toLowerCase().includes((f['internalCode'] as string).toLowerCase())) return false;
-      if (f['uomFrom']      != null && x.uomFromId            !== f['uomFrom'])                              return false;
-      if (f['uomTo']        != null && x.uomToId              !== f['uomTo'])                                return false;
+      if (f['internalCode']       != null && !(x.internalCode ?? '').toLowerCase().includes((f['internalCode'] as string).toLowerCase())) return false;
+      if (f['uomFrom']            != null && x.uomFromId            !== f['uomFrom'])            return false;
+      if (f['uomTo']              != null && x.uomToId              !== f['uomTo'])              return false;
+      if (f['uomConversionGroup'] != null && x.uomConversionGroupId !== f['uomConversionGroup']) return false;
+      if (f['isActive']           != null && x.isActive             !== (f['isActive'] === 1))   return false;
       return true;
     });
   }
 
+  readonly cellRenderers: Record<string, (item: any) => string> = {
+    uomFrom:            (item) => this.uomLabel(item.uomFrom),
+    uomTo:              (item) => this.uomLabel(item.uomTo),
+    uomConversionGroup: (item) => this.groupLabel(item.uomConversionGroup),
+  };
+
   onFilterChange(filter: Record<string, string | number | null>) {
     this.activeFilter.set(filter);
-    this.selectedIds.set(new Set());
   }
 
-  ngOnInit() { this.load(); }
+  ngOnInit() {
+    this.load();
+  }
 
   load() {
-    this.api.get<UomConversionFactor[]>('uomconversionfactors').subscribe(d => {
-      this.factors.set(d);
-      this.selectedIds.set(new Set());
-    });
-  }
-
-  // ── Selection ──────────────────────────────────────────────────────────────
-
-  isSelected(id: number) { return this.selectedIds().has(id); }
-
-  get isAllSelected() {
-    const f = this.filteredFactors;
-    return f.length > 0 && f.every(item => this.selectedIds().has(item.id));
-  }
-
-  get isIndeterminate() {
-    return this.selectedIds().size > 0 && !this.isAllSelected;
-  }
-
-  toggleOne(id: number) {
-    const s = new Set(this.selectedIds());
-    s.has(id) ? s.delete(id) : s.add(id);
-    this.selectedIds.set(s);
-  }
-
-  toggleAll() {
-    if (this.isAllSelected) {
-      this.selectedIds.set(new Set());
-    } else {
-      this.selectedIds.set(new Set(this.filteredFactors.map(f => f.id)));
-    }
+    this.api.get<UomConversionFactor[]>('uomconversionfactors').subscribe(d => this.factors.set(d));
   }
 
   // ── CRUD ───────────────────────────────────────────────────────────────────

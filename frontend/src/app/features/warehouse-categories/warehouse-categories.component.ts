@@ -5,41 +5,41 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2';
 import { ApiService } from '../../core/api.service';
+import { ColumnMeta, MetadataService } from '../../core/metadata.service';
 import { RegularListHeaderWithActionsComponent } from '../../shared/components/cards/regular-list-header-with-actions/regular-list-header-with-actions.component';
 import { RegularListSearchActionsComponent, SearchField } from '../../shared/components/cards/regular-list-search-actions/regular-list-search-actions.component';
+import { CustomTableWithPaginationComponent } from '../../shared/components/custom-controls/custom-table-with-pagination/custom-table-with-pagination.component';
 
 interface WareHouseCategory { id: number; internalCode: string | null; name_EN: string; name_AR: string | null; description: string | null; isActive: boolean; }
 
 @Component({
   selector: 'app-warehouse-categories',
   standalone: true,
-  imports: [TranslatePipe, RegularListHeaderWithActionsComponent, RegularListSearchActionsComponent],
+  imports: [TranslatePipe, RegularListHeaderWithActionsComponent, RegularListSearchActionsComponent, CustomTableWithPaginationComponent],
   templateUrl: './warehouse-categories.component.html',
   styleUrl: './warehouse-categories.component.less',
 })
 export class WarehouseCategoriesComponent implements OnInit {
-  private api       = inject(ApiService);
-  private router    = inject(Router);
+  private api      = inject(ApiService);
+  private router   = inject(Router);
   private translate = inject(TranslateService);
-  private toastr    = inject(ToastrService);
-  private doc       = inject(DOCUMENT);
+  private toastr   = inject(ToastrService);
+  private doc      = inject(DOCUMENT);
+  private meta     = inject(MetadataService);
 
   get isRtl() { return this.doc.documentElement.dir === 'rtl'; }
 
   categories   = signal<WareHouseCategory[]>([]);
-  selectedIds  = signal<Set<number>>(new Set());
+  selectedIds  = signal<Set<any>>(new Set());
   activeFilter = signal<Record<string, string | number | null>>({});
+  columnMeta   = signal<ColumnMeta[]>([]);
 
   label(c: WareHouseCategory): string {
     return this.isRtl ? (c.name_AR || c.name_EN) : (c.name_EN || c.name_AR || '');
   }
 
   get searchFields(): SearchField[] {
-    return [
-      { key: 'internalCode', label: this.translate.instant('common.internal_code'), type: 'text' },
-      { key: 'name_AR',      label: this.translate.instant('common.name') + ' (AR)', type: 'text' },
-      { key: 'name_EN',      label: this.translate.instant('common.name') + ' (EN)', type: 'text' },
-    ];
+    return this.meta.toSearchFields(this.columnMeta(), this.isRtl);
   }
 
   get filtered(): WareHouseCategory[] {
@@ -48,43 +48,21 @@ export class WarehouseCategoriesComponent implements OnInit {
       if (f['internalCode'] != null && !(c.internalCode ?? '').toLowerCase().includes((f['internalCode'] as string).toLowerCase())) return false;
       if (f['name_AR']      != null && !(c.name_AR ?? '').toLowerCase().includes((f['name_AR'] as string).toLowerCase())) return false;
       if (f['name_EN']      != null && !c.name_EN.toLowerCase().includes((f['name_EN'] as string).toLowerCase())) return false;
+      if (f['isActive']     != null && c.isActive !== (f['isActive'] === 1)) return false;
       return true;
     });
   }
 
   onFilterChange(filter: Record<string, string | number | null>) {
     this.activeFilter.set(filter);
-    this.selectedIds.set(new Set());
   }
 
-  ngOnInit() { this.load(); }
+  ngOnInit() {
+    this.load();
+  }
 
   load() {
-    this.api.get<WareHouseCategory[]>('warehousecategories').subscribe(d => {
-      this.categories.set(d);
-      this.selectedIds.set(new Set());
-    });
-  }
-
-  isSelected(id: number) { return this.selectedIds().has(id); }
-
-  get isAllSelected() {
-    const rows = this.filtered;
-    return rows.length > 0 && rows.every(c => this.selectedIds().has(c.id));
-  }
-
-  get isIndeterminate() { return this.selectedIds().size > 0 && !this.isAllSelected; }
-
-  toggleOne(id: number) {
-    const s = new Set(this.selectedIds());
-    s.has(id) ? s.delete(id) : s.add(id);
-    this.selectedIds.set(s);
-  }
-
-  toggleAll() {
-    this.isAllSelected
-      ? this.selectedIds.set(new Set())
-      : this.selectedIds.set(new Set(this.filtered.map(c => c.id)));
+    this.api.get<WareHouseCategory[]>('warehousecategories').subscribe(d => this.categories.set(d));
   }
 
   addNew()         { this.router.navigate(['/stock/warehouse-categories/operation']); }

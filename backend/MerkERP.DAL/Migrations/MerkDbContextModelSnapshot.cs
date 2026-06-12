@@ -530,7 +530,7 @@ namespace MerkERP.DAL.Migrations
                     b.Property<int?>("MinWidth")
                         .HasColumnType("int");
 
-                    b.Property<int>("Order")
+                    b.Property<int>("ColumnOrder")
                         .HasColumnType("int");
 
                     b.Property<string>("RenderAs")
@@ -560,7 +560,7 @@ namespace MerkERP.DAL.Migrations
                             Key = "internalCode",
                             LabelAR = "الكود",
                             LabelEN = "Code",
-                            Order = 1,
+                            ColumnOrder =1,
                             RenderAs = "text",
                             TableNameId = 4
                         },
@@ -576,7 +576,7 @@ namespace MerkERP.DAL.Migrations
                             Key = "name_AR",
                             LabelAR = "الاسم (AR)",
                             LabelEN = "Name (AR)",
-                            Order = 2,
+                            ColumnOrder =2,
                             RenderAs = "text",
                             TableNameId = 4
                         },
@@ -592,7 +592,7 @@ namespace MerkERP.DAL.Migrations
                             Key = "name_EN",
                             LabelAR = "الاسم (EN)",
                             LabelEN = "Name (EN)",
-                            Order = 3,
+                            ColumnOrder =3,
                             RenderAs = "text",
                             TableNameId = 4
                         },
@@ -609,7 +609,7 @@ namespace MerkERP.DAL.Migrations
                             Key = "itemGroup",
                             LabelAR = "مجموعة الصنف",
                             LabelEN = "Item Group",
-                            Order = 4,
+                            ColumnOrder =4,
                             RenderAs = "text",
                             TableNameId = 4
                         },
@@ -626,7 +626,7 @@ namespace MerkERP.DAL.Migrations
                             Key = "itemType",
                             LabelAR = "نوع الصنف",
                             LabelEN = "Item Type",
-                            Order = 5,
+                            ColumnOrder =5,
                             RenderAs = "text",
                             TableNameId = 4
                         },
@@ -643,7 +643,7 @@ namespace MerkERP.DAL.Migrations
                             Key = "defaultUOM",
                             LabelAR = "وحدة القياس",
                             LabelEN = "Default UOM",
-                            Order = 6,
+                            ColumnOrder =6,
                             RenderAs = "text",
                             TableNameId = 4
                         },
@@ -659,7 +659,7 @@ namespace MerkERP.DAL.Migrations
                             Key = "isActive",
                             LabelAR = "نشط",
                             LabelEN = "Active",
-                            Order = 7,
+                            ColumnOrder =7,
                             RenderAs = "badge",
                             TableNameId = 4
                         },
@@ -675,7 +675,7 @@ namespace MerkERP.DAL.Migrations
                             Key = "internalCode",
                             LabelAR = "الكود الداخلي",
                             LabelEN = "Internal Code",
-                            Order = 1,
+                            ColumnOrder =1,
                             RenderAs = "text",
                             TableNameId = 6
                         },
@@ -691,7 +691,7 @@ namespace MerkERP.DAL.Migrations
                             Key = "name_AR",
                             LabelAR = "الاسم (AR)",
                             LabelEN = "Name (AR)",
-                            Order = 2,
+                            ColumnOrder =2,
                             RenderAs = "text",
                             TableNameId = 6
                         },
@@ -707,7 +707,7 @@ namespace MerkERP.DAL.Migrations
                             Key = "name_EN",
                             LabelAR = "الاسم (EN)",
                             LabelEN = "Name (EN)",
-                            Order = 3,
+                            ColumnOrder =3,
                             RenderAs = "text",
                             TableNameId = 6
                         },
@@ -724,7 +724,7 @@ namespace MerkERP.DAL.Migrations
                             Key = "parentItemGroup",
                             LabelAR = "المجموعة الأصل",
                             LabelEN = "Parent Group",
-                            Order = 4,
+                            ColumnOrder =4,
                             RenderAs = "text",
                             TableNameId = 6
                         },
@@ -740,8 +740,8 @@ namespace MerkERP.DAL.Migrations
                             Key = "isMain",
                             LabelAR = "أصل",
                             LabelEN = "Is Main",
-                            Order = 5,
-                            RenderAs = "badge",
+                            ColumnOrder =5,
+                            RenderAs = "yesno",
                             TableNameId = 6
                         },
                         new
@@ -756,7 +756,7 @@ namespace MerkERP.DAL.Migrations
                             Key = "isActive",
                             LabelAR = "نشط",
                             LabelEN = "Active",
-                            Order = 6,
+                            ColumnOrder =6,
                             RenderAs = "badge",
                             TableNameId = 6
                         },
@@ -772,7 +772,7 @@ namespace MerkERP.DAL.Migrations
                             Key = "internalCode",
                             LabelAR = "الكود الداخلي",
                             LabelEN = "Internal Code",
-                            Order = 1,
+                            ColumnOrder =1,
                             RenderAs = "text",
                             TableNameId = 11
                         },
@@ -788,7 +788,7 @@ namespace MerkERP.DAL.Migrations
                             Key = "name_AR",
                             LabelAR = "الاسم (AR)",
                             LabelEN = "Name (AR)",
-                            Order = 2,
+                            ColumnOrder =2,
                             RenderAs = "text",
                             TableNameId = 11
                         },
@@ -804,7 +804,7 @@ namespace MerkERP.DAL.Migrations
                             Key = "name_EN",
                             LabelAR = "الاسم (EN)",
                             LabelEN = "Name (EN)",
-                            Order = 3,
+                            ColumnOrder =3,
                             RenderAs = "text",
                             TableNameId = 11
                         },
@@ -820,7 +820,7 @@ namespace MerkERP.DAL.Migrations
                             Key = "mustBeWholeNumber",
                             LabelAR = "يجب أن يكون صحيحاً",
                             LabelEN = "Must Be Whole No.",
-                            Order = 4,
+                            ColumnOrder =4,
                             RenderAs = "yesno",
                             TableNameId = 11
                         },
@@ -836,7 +836,7 @@ namespace MerkERP.DAL.Migrations
                             Key = "isActive",
                             LabelAR = "نشط",
                             LabelEN = "Active",
-                            Order = 5,
+                            ColumnOrder =5,
                             RenderAs = "badge",
                             TableNameId = 11
                         },
@@ -852,7 +852,7 @@ namespace MerkERP.DAL.Migrations
                             Key = "internalCode",
                             LabelAR = "الكود الداخلي",
                             LabelEN = "Internal Code",
-                            Order = 1,
+                            ColumnOrder =1,
                             RenderAs = "text",
                             TableNameId = 13
                         },
@@ -868,7 +868,7 @@ namespace MerkERP.DAL.Migrations
                             Key = "name_AR",
                             LabelAR = "الاسم (AR)",
                             LabelEN = "Name (AR)",
-                            Order = 2,
+                            ColumnOrder =2,
                             RenderAs = "text",
                             TableNameId = 13
                         },
@@ -884,7 +884,7 @@ namespace MerkERP.DAL.Migrations
                             Key = "name_EN",
                             LabelAR = "الاسم (EN)",
                             LabelEN = "Name (EN)",
-                            Order = 3,
+                            ColumnOrder =3,
                             RenderAs = "text",
                             TableNameId = 13
                         },
@@ -900,7 +900,7 @@ namespace MerkERP.DAL.Migrations
                             Key = "isActive",
                             LabelAR = "نشط",
                             LabelEN = "Active",
-                            Order = 4,
+                            ColumnOrder =4,
                             RenderAs = "badge",
                             TableNameId = 13
                         },
@@ -916,7 +916,7 @@ namespace MerkERP.DAL.Migrations
                             Key = "internalCode",
                             LabelAR = "الكود الداخلي",
                             LabelEN = "Internal Code",
-                            Order = 1,
+                            ColumnOrder =1,
                             RenderAs = "text",
                             TableNameId = 12
                         },
@@ -933,7 +933,7 @@ namespace MerkERP.DAL.Migrations
                             Key = "uomFrom",
                             LabelAR = "من وحدة القياس",
                             LabelEN = "From UOM",
-                            Order = 2,
+                            ColumnOrder =2,
                             RenderAs = "text",
                             TableNameId = 12
                         },
@@ -950,7 +950,7 @@ namespace MerkERP.DAL.Migrations
                             Key = "uomTo",
                             LabelAR = "إلى وحدة القياس",
                             LabelEN = "To UOM",
-                            Order = 3,
+                            ColumnOrder =3,
                             RenderAs = "text",
                             TableNameId = 12
                         },
@@ -966,7 +966,7 @@ namespace MerkERP.DAL.Migrations
                             Key = "value",
                             LabelAR = "معامل التحويل",
                             LabelEN = "Factor",
-                            Order = 4,
+                            ColumnOrder =4,
                             RenderAs = "text",
                             TableNameId = 12
                         },
@@ -983,7 +983,7 @@ namespace MerkERP.DAL.Migrations
                             Key = "uomConversionGroup",
                             LabelAR = "مجموعة التحويل",
                             LabelEN = "Conversion Group",
-                            Order = 5,
+                            ColumnOrder =5,
                             RenderAs = "text",
                             TableNameId = 12
                         },
@@ -999,7 +999,7 @@ namespace MerkERP.DAL.Migrations
                             Key = "isActive",
                             LabelAR = "نشط",
                             LabelEN = "Active",
-                            Order = 6,
+                            ColumnOrder =6,
                             RenderAs = "badge",
                             TableNameId = 12
                         },
@@ -1015,7 +1015,7 @@ namespace MerkERP.DAL.Migrations
                             Key = "internalCode",
                             LabelAR = "الكود الداخلي",
                             LabelEN = "Internal Code",
-                            Order = 1,
+                            ColumnOrder =1,
                             RenderAs = "text",
                             TableNameId = 14
                         },
@@ -1031,7 +1031,7 @@ namespace MerkERP.DAL.Migrations
                             Key = "name_AR",
                             LabelAR = "الاسم (AR)",
                             LabelEN = "Name (AR)",
-                            Order = 2,
+                            ColumnOrder =2,
                             RenderAs = "text",
                             TableNameId = 14
                         },
@@ -1047,7 +1047,7 @@ namespace MerkERP.DAL.Migrations
                             Key = "name_EN",
                             LabelAR = "الاسم (EN)",
                             LabelEN = "Name (EN)",
-                            Order = 3,
+                            ColumnOrder =3,
                             RenderAs = "tree",
                             TableNameId = 14
                         },
@@ -1064,7 +1064,7 @@ namespace MerkERP.DAL.Migrations
                             Key = "wareHouseType",
                             LabelAR = "النوع",
                             LabelEN = "Type",
-                            Order = 4,
+                            ColumnOrder =4,
                             RenderAs = "text",
                             TableNameId = 14
                         },
@@ -1081,7 +1081,7 @@ namespace MerkERP.DAL.Migrations
                             Key = "wareHouseCategory",
                             LabelAR = "الفئة",
                             LabelEN = "Category",
-                            Order = 5,
+                            ColumnOrder =5,
                             RenderAs = "text",
                             TableNameId = 14
                         },
@@ -1097,8 +1097,8 @@ namespace MerkERP.DAL.Migrations
                             Key = "isParent",
                             LabelAR = "أصل",
                             LabelEN = "Is Parent",
-                            Order = 6,
-                            RenderAs = "badge",
+                            ColumnOrder =6,
+                            RenderAs = "yesno",
                             TableNameId = 14
                         },
                         new
@@ -1113,7 +1113,7 @@ namespace MerkERP.DAL.Migrations
                             Key = "isActive",
                             LabelAR = "نشط",
                             LabelEN = "Active",
-                            Order = 7,
+                            ColumnOrder =7,
                             RenderAs = "badge",
                             TableNameId = 14
                         },
@@ -1129,7 +1129,7 @@ namespace MerkERP.DAL.Migrations
                             Key = "internalCode",
                             LabelAR = "الكود الداخلي",
                             LabelEN = "Internal Code",
-                            Order = 1,
+                            ColumnOrder =1,
                             RenderAs = "text",
                             TableNameId = 15
                         },
@@ -1145,7 +1145,7 @@ namespace MerkERP.DAL.Migrations
                             Key = "name_AR",
                             LabelAR = "الاسم (AR)",
                             LabelEN = "Name (AR)",
-                            Order = 2,
+                            ColumnOrder =2,
                             RenderAs = "text",
                             TableNameId = 15
                         },
@@ -1161,7 +1161,7 @@ namespace MerkERP.DAL.Migrations
                             Key = "name_EN",
                             LabelAR = "الاسم (EN)",
                             LabelEN = "Name (EN)",
-                            Order = 3,
+                            ColumnOrder =3,
                             RenderAs = "text",
                             TableNameId = 15
                         },
@@ -1177,7 +1177,7 @@ namespace MerkERP.DAL.Migrations
                             Key = "description",
                             LabelAR = "الوصف",
                             LabelEN = "Description",
-                            Order = 4,
+                            ColumnOrder =4,
                             RenderAs = "text",
                             TableNameId = 15
                         },
@@ -1193,7 +1193,7 @@ namespace MerkERP.DAL.Migrations
                             Key = "isActive",
                             LabelAR = "نشط",
                             LabelEN = "Active",
-                            Order = 5,
+                            ColumnOrder =5,
                             RenderAs = "badge",
                             TableNameId = 15
                         },
@@ -1209,7 +1209,7 @@ namespace MerkERP.DAL.Migrations
                             Key = "name_AR",
                             LabelAR = "الاسم (AR)",
                             LabelEN = "Name (AR)",
-                            Order = 1,
+                            ColumnOrder =1,
                             RenderAs = "text",
                             TableNameId = 2
                         },
@@ -1225,7 +1225,7 @@ namespace MerkERP.DAL.Migrations
                             Key = "name_EN",
                             LabelAR = "الاسم (EN)",
                             LabelEN = "Name (EN)",
-                            Order = 2,
+                            ColumnOrder =2,
                             RenderAs = "text",
                             TableNameId = 2
                         },
@@ -1241,7 +1241,7 @@ namespace MerkERP.DAL.Migrations
                             Key = "description",
                             LabelAR = "الوصف",
                             LabelEN = "Description",
-                            Order = 3,
+                            ColumnOrder =3,
                             RenderAs = "text",
                             TableNameId = 2
                         },
@@ -1257,7 +1257,7 @@ namespace MerkERP.DAL.Migrations
                             Key = "isActive",
                             LabelAR = "نشط",
                             LabelEN = "Active",
-                            Order = 4,
+                            ColumnOrder =4,
                             RenderAs = "badge",
                             TableNameId = 2
                         });

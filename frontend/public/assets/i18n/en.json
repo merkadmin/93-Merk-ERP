@@ -58,6 +58,11 @@
     "general": "Details",
     "is_parent": "Is Parent"
   },
+  "pagination": {
+    "rows_per_page": "Rows per page",
+    "of": "of",
+    "no_records": "No records"
+  },
   "items": {
     "title": "Items",
     "add_title": "New Item",

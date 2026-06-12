@@ -19,20 +19,29 @@ public class MetadataController(MerkDbContext db) : ControllerBase
 	[HttpGet("{entity}")]
 	public async Task<IActionResult> Get(string entity)
 	{
-		var rows = await db.TableMetaData
-			.Include(t => t.TableName)
-			.Where(t => t.TableName != null &&
-						t.TableName.EntityKey != null &&
-						t.TableName.EntityKey.ToLower() == entity.ToLower())
-			.OrderBy(t => t.Order)
+		var tableNameId = await db.TableName_s
+			.Where(t => t.EntityKey != null && t.EntityKey.ToLower() == entity.ToLower())
+			.Select(t => t.Id)
+			.FirstOrDefaultAsync();
+
+		if (tableNameId == 0)
+			return NotFound(new { message = $"No metadata registered for '{entity}'." });
+
+		var rows = await db.Database
+			.SqlQuery<ColumnMetaRow>($"EXEC sp_GetTableMetaData @TableNameId = {tableNameId}")
 			.ToListAsync();
 
 		if (rows.Count == 0)
 			return NotFound(new { message = $"No metadata registered for '{entity}'." });
 
 		var first = rows.First();
-		var tn = first.TableName!;
-		var meta = new EntityMeta(tn.EntityKey!, tn.Name, tn.Name, rows.Select(ToColumnMeta).ToArray());
+		var meta = new EntityMeta(
+			first.EntityKey, first.TableName, first.TableName,
+			rows.Select(r => new ColumnMeta(
+				r.Key, r.LabelEN, r.LabelAR, r.ColumnOrder, r.EntityProperty,
+				r.ForeignKeyProperty, r.FilterType, r.DataType, r.RenderAs,
+				r.IsSortable, r.IsFilterable, r.IsVisible, r.MinWidth))
+			.ToArray());
 		return Ok(meta);
 	}
 
@@ -44,7 +53,7 @@ public class MetadataController(MerkDbContext db) : ControllerBase
 			.Include(t => t.TableName)
 			.Where(t => t.TableName != null && t.TableName.EntityKey != null)
 			.OrderBy(t => t.TableName!.EntityKey)
-			.ThenBy(t => t.Order)
+			.ThenBy(t => t.ColumnOrder)
 			.ToListAsync();
 
 		return rows
@@ -59,7 +68,7 @@ public class MetadataController(MerkDbContext db) : ControllerBase
 	}
 
 	private static ColumnMeta ToColumnMeta(MerkERP.Core.Models.TableMetaData r) =>
-		new(r.Key, r.LabelEN, r.LabelAR, r.Order, r.EntityProperty,
+		new(r.Key, r.LabelEN, r.LabelAR, r.ColumnOrder, r.EntityProperty,
 			r.ForeignKeyProperty, r.FilterType, r.DataType, r.RenderAs,
 			r.IsSortable, r.IsFilterable, r.IsVisible, r.MinWidth);
 }

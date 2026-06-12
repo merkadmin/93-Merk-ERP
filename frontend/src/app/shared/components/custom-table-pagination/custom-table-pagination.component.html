@@ -1,0 +1,56 @@
+<div class="pagination-bar d-flex align-items-center justify-content-between flex-wrap gap-3 py-4 px-6 border-top">
+
+  <!-- Rows per page -->
+  <div class="d-flex align-items-center gap-2">
+    <span class="text-muted fs-6 text-nowrap">{{ 'pagination.rows_per_page' | translate }}</span>
+    <select class="form-select form-select-sm form-select-solid fs-6" style="width:80px"
+      [ngModel]="pageSize" (ngModelChange)="onPageSizeChange($event)">
+      @for (opt of pageSizeOptions; track opt) {
+        <option [ngValue]="opt">{{ opt }}</option>
+      }
+    </select>
+  </div>
+
+  <!-- Record range -->
+  <span class="text-muted fs-6">
+    @if (total === 0) {
+      {{ 'pagination.no_records' | translate }}
+    } @else {
+      {{ rangeFrom }}–{{ rangeTo }} {{ 'pagination.of' | translate }} {{ total }}
+    }
+  </span>
+
+  <!-- Page controls -->
+  <ul class="pagination mb-0">
+    <li class="page-item" [class.disabled]="currentPage === 1">
+      <button class="page-link" (click)="goFirst()">
+        <i class="ki-outline fs-6" [ngClass]="isAr ? 'ki-double-right' : 'ki-double-left'"></i>
+      </button>
+    </li>
+    <li class="page-item" [class.disabled]="currentPage === 1">
+      <button class="page-link" (click)="goToPage(currentPage - 1)">
+        <i class="ki-outline fs-6" [ngClass]="isAr ? 'ki-right' : 'ki-left'"></i>
+      </button>
+    </li>
+    @for (p of visiblePages; track $index) {
+      @if (p === '...') {
+        <li class="page-item disabled"><span class="page-link">…</span></li>
+      } @else {
+        <li class="page-item" [class.active]="p === currentPage">
+          <button class="page-link" (click)="goToPage(+p)">{{ p }}</button>
+        </li>
+      }
+    }
+    <li class="page-item" [class.disabled]="currentPage === totalPages">
+      <button class="page-link" (click)="goToPage(currentPage + 1)">
+        <i class="ki-outline fs-6" [ngClass]="isAr ? 'ki-left' : 'ki-right'"></i>
+      </button>
+    </li>
+    <li class="page-item" [class.disabled]="currentPage === totalPages">
+      <button class="page-link" (click)="goLast()">
+        <i class="ki-outline fs-6" [ngClass]="isAr ? 'ki-double-left' : 'ki-double-right'"></i>
+      </button>
+    </li>
+  </ul>
+
+</div>

@@ -5,8 +5,10 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2';
 import { ApiService } from '../../core/api.service';
+import { ColumnMeta, MetadataService } from '../../core/metadata.service';
 import { RegularListHeaderWithActionsComponent } from '../../shared/components/cards/regular-list-header-with-actions/regular-list-header-with-actions.component';
 import { RegularListSearchActionsComponent, SearchField } from '../../shared/components/cards/regular-list-search-actions/regular-list-search-actions.component';
+import { CustomTableWithPaginationComponent } from '../../shared/components/custom-controls/custom-table-with-pagination/custom-table-with-pagination.component';
 
 interface Warehouse         { id: number; internalCode: string | null; name_EN: string; name_AR: string | null; parentWarehouseId: number | null; wareHouseTypeId: number | null; wareHouseCategoryId: number | null; isParent: boolean; isActive: boolean; }
 interface WarehouseNode     extends Warehouse { level: number; }
@@ -16,31 +18,39 @@ interface WareHouseCategory { id: number; name_EN: string; name_AR: string | nul
 @Component({
   selector: 'app-warehouses',
   standalone: true,
-  imports: [TranslatePipe, RegularListHeaderWithActionsComponent, RegularListSearchActionsComponent],
+  imports: [TranslatePipe, RegularListHeaderWithActionsComponent, RegularListSearchActionsComponent, CustomTableWithPaginationComponent],
   templateUrl: './warehouses.component.html',
   styleUrl: './warehouses.component.less',
 })
 export class WarehousesComponent implements OnInit {
-  private api       = inject(ApiService);
-  private router    = inject(Router);
+  private api      = inject(ApiService);
+  private router   = inject(Router);
   private translate = inject(TranslateService);
-  private toastr    = inject(ToastrService);
-  private doc       = inject(DOCUMENT);
+  private toastr   = inject(ToastrService);
+  private doc      = inject(DOCUMENT);
+  private meta     = inject(MetadataService);
 
   get isRtl() { return this.doc.documentElement.dir === 'rtl'; }
 
-  warehouses        = signal<Warehouse[]>([]);
-  wareHouseTypes    = signal<WareHouseType[]>([]);
+  warehouses          = signal<Warehouse[]>([]);
+  wareHouseTypes      = signal<WareHouseType[]>([]);
   wareHouseCategories = signal<WareHouseCategory[]>([]);
-  selectedIds  = signal<Set<number>>(new Set());
-  activeFilter = signal<Record<string, string | number | null>>({});
+  selectedIds         = signal<Set<any>>(new Set());
+  activeFilter        = signal<Record<string, string | number | null>>({});
+  columnMeta          = signal<ColumnMeta[]>([]);
 
   get searchFields(): SearchField[] {
-    return [
-      { key: 'internalCode', label: this.translate.instant('common.internal_code'), type: 'text' },
-      { key: 'name_AR',      label: this.translate.instant('common.name') + ' (AR)', type: 'text' },
-      { key: 'name_EN',      label: this.translate.instant('common.name') + ' (EN)', type: 'text' },
-    ];
+    const typeOpts = this.wareHouseTypes()
+      .map(t => ({ value: t.id, label: this.isRtl ? (t.name_AR || t.name_EN) : (t.name_EN || t.name_AR || '') }))
+      .sort((a, b) => a.label.localeCompare(b.label));
+    const catOpts = this.wareHouseCategories()
+      .map(c => ({ value: c.id, label: this.isRtl ? (c.name_AR || c.name_EN) : (c.name_EN || c.name_AR || '') }))
+      .sort((a, b) => a.label.localeCompare(b.label));
+
+    return this.meta.toSearchFields(this.columnMeta(), this.isRtl, {
+      wareHouseType:     typeOpts,
+      wareHouseCategory: catOpts,
+    });
   }
 
   label(w: Warehouse): string {
@@ -56,9 +66,13 @@ export class WarehousesComponent implements OnInit {
     const f = this.activeFilter();
     return [...this.warehouses()]
       .filter(w => {
-        if (f['internalCode'] != null && !(w.internalCode ?? '').toLowerCase().includes((f['internalCode'] as string).toLowerCase())) return false;
-        if (f['name_AR']      != null && !(w.name_AR ?? '').toLowerCase().includes((f['name_AR'] as string).toLowerCase())) return false;
-        if (f['name_EN']      != null && !w.name_EN.toLowerCase().includes((f['name_EN'] as string).toLowerCase())) return false;
+        if (f['internalCode']      != null && !(w.internalCode ?? '').toLowerCase().includes((f['internalCode'] as string).toLowerCase())) return false;
+        if (f['name_AR']           != null && !(w.name_AR ?? '').toLowerCase().includes((f['name_AR'] as string).toLowerCase())) return false;
+        if (f['name_EN']           != null && !w.name_EN.toLowerCase().includes((f['name_EN'] as string).toLowerCase())) return false;
+        if (f['wareHouseType']     != null && w.wareHouseTypeId     !== f['wareHouseType'])     return false;
+        if (f['wareHouseCategory'] != null && w.wareHouseCategoryId !== f['wareHouseCategory']) return false;
+        if (f['isParent']          != null && w.isParent  !== (f['isParent']  === 1)) return false;
+        if (f['isActive']          != null && w.isActive  !== (f['isActive']  === 1)) return false;
         return true;
       })
       .sort((a, b) => a.name_EN.localeCompare(b.name_EN))
@@ -86,9 +100,13 @@ export class WarehousesComponent implements OnInit {
     return this.isFiltering ? this.flatFiltered : this.treeFlat;
   }
 
+  readonly cellRenderers: Record<string, (item: any) => string> = {
+    wareHouseType:     (item) => this.typeLabel(item.wareHouseTypeId),
+    wareHouseCategory: (item) => this.categoryLabel(item.wareHouseCategoryId),
+  };
+
   onFilterChange(filter: Record<string, string | number | null>) {
     this.activeFilter.set(filter);
-    this.selectedIds.set(new Set());
   }
 
   typeLabel(id: number | null): string {
@@ -103,36 +121,14 @@ export class WarehousesComponent implements OnInit {
     return c ? (this.isRtl ? (c.name_AR || c.name_EN) : (c.name_EN || c.name_AR || '')) : '—';
   }
 
-  ngOnInit() { this.load(); }
+  ngOnInit() {
+    this.load();
+  }
 
   load() {
-    this.api.get<Warehouse[]>('warehouses').subscribe(d => {
-      this.warehouses.set(d);
-      this.selectedIds.set(new Set());
-    });
+    this.api.get<Warehouse[]>('warehouses').subscribe(d => this.warehouses.set(d));
     this.api.get<WareHouseType[]>('warehousetypes').subscribe(d => this.wareHouseTypes.set(d));
     this.api.get<WareHouseCategory[]>('warehousecategories').subscribe(d => this.wareHouseCategories.set(d));
-  }
-
-  isSelected(id: number) { return this.selectedIds().has(id); }
-
-  get isAllSelected() {
-    const rows = this.displayRows;
-    return rows.length > 0 && rows.every(w => this.selectedIds().has(w.id));
-  }
-
-  get isIndeterminate() { return this.selectedIds().size > 0 && !this.isAllSelected; }
-
-  toggleOne(id: number) {
-    const s = new Set(this.selectedIds());
-    s.has(id) ? s.delete(id) : s.add(id);
-    this.selectedIds.set(s);
-  }
-
-  toggleAll() {
-    this.isAllSelected
-      ? this.selectedIds.set(new Set())
-      : this.selectedIds.set(new Set(this.displayRows.map(w => w.id)));
   }
 
   addNew()         { this.router.navigate(['/stock/warehouses/operation']); }

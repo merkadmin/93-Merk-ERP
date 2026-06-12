@@ -58,6 +58,11 @@
     "general": "رئيسي",
     "is_parent": "أصل"
   },
+  "pagination": {
+    "rows_per_page": "صفوف في الصفحة",
+    "of": "من",
+    "no_records": "لا توجد سجلات"
+  },
   "items": {
     "title": "الأصناف",
     "add_title": "صنف جديد",

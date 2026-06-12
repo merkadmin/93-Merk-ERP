@@ -7,7 +7,7 @@ public class TableMetaData
     public string  Key                { get; set; } = string.Empty;
     public string  LabelEN            { get; set; } = string.Empty;
     public string  LabelAR            { get; set; } = string.Empty;
-    public int     Order              { get; set; }
+    public int     ColumnOrder        { get; set; }
     public string  EntityProperty     { get; set; } = string.Empty;
     public string? ForeignKeyProperty { get; set; }
     public string  FilterType         { get; set; } = "text";

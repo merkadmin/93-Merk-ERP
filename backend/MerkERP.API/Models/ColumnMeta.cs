@@ -7,7 +7,7 @@ namespace MerkERP.API.Models;
 /// <param name="Key">camelCase property name used in the frontend interface.</param>
 /// <param name="LabelEN">English column header.</param>
 /// <param name="LabelAR">Arabic column header.</param>
-/// <param name="Order">1-based display order (RTL-aware; lower = rightmost in Arabic).</param>
+/// <param name="ColumnOrder">1-based display order (RTL-aware; lower = rightmost in Arabic).</param>
 /// <param name="EntityProperty">
 ///   Exact PascalCase property name on the C# model class.
 ///   For navigation columns this is the navigation property (e.g. "WareHouseCategory"), not the FK.
@@ -27,7 +27,7 @@ public record ColumnMeta(
     string  Key,
     string  LabelEN,
     string  LabelAR,
-    int     Order,
+    int     ColumnOrder,
     string  EntityProperty,
     string? ForeignKeyProperty = null,   // 6
     string  FilterType         = "text", // 7
