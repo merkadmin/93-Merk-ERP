@@ -43,17 +43,12 @@
           </div>
         </div>
 
-        <button type="submit" class="btn btn-primary w-100 btn-lg mb-4" [disabled]="loading()">
+        <button type="submit" class="btn btn-primary w-100 btn-lg" [disabled]="loading()">
           @if (loading()) {
             <span class="spinner-border spinner-border-sm me-2"></span>
           }
           {{ 'login.sign_in' | translate }}
         </button>
-
-        <div class="text-center fs-6 text-muted">
-          {{ 'login.no_account' | translate }}
-          <a routerLink="/register" class="fw-semibold text-primary ms-1">{{ 'login.register_link' | translate }}</a>
-        </div>
 
       </form>
     </div>

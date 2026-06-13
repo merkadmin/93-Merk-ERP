@@ -1,7 +1,7 @@
 import { DOCUMENT, NgClass } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { ApiService } from '../../core/api.service';
@@ -12,7 +12,7 @@ import { ThemeService } from '../../services/theme.service';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule, NgClass, RouterLink, TranslatePipe],
+  imports: [FormsModule, NgClass, TranslatePipe],
   templateUrl: './login.component.html',
   styleUrl: './login.component.less',
 })

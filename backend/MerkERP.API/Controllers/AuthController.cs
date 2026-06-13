@@ -34,6 +34,32 @@ public class AuthController : ControllerBase
         return Ok(BuildUserResponse(user));
     }
 
+    [HttpPost("register-root")]
+    public async Task<IActionResult> RegisterRoot([FromBody] InitRequest req)
+    {
+        if (string.IsNullOrWhiteSpace(req.Login) || string.IsNullOrWhiteSpace(req.Password))
+            return BadRequest(new { message = "Login and password are required." });
+
+        if (await _db.User_cs.AnyAsync(u => u.UserTypeId == (long)UserTypeEnum.Root))
+            return Conflict(new { message = "A root user already exists. This endpoint is disabled." });
+
+        var user = new User_cs
+        {
+            Name_EN    = string.IsNullOrWhiteSpace(req.Name_EN) ? "Root" : req.Name_EN,
+            Name_AR    = req.Name_AR,
+            Login      = req.Login,
+            Password   = BCrypt.Net.BCrypt.HashPassword(req.Password),
+            Email      = req.Email,
+            UserTypeId = (long)UserTypeEnum.Root,
+        };
+
+        _db.User_cs.Add(user);
+        await _db.SaveChangesAsync();
+        await _db.Entry(user).Reference(u => u.UserType).LoadAsync();
+
+        return Ok(BuildUserResponse(user));
+    }
+
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterRequest req)
     {
@@ -75,4 +101,5 @@ public class AuthController : ControllerBase
 }
 
 public record LoginRequest(string Login, string Password);
+public record InitRequest(string Login, string Password, string? Name_EN, string? Name_AR, string? Email);
 public record RegisterRequest(string Name_EN, string? Name_AR, string Login, string Password, string? Email);

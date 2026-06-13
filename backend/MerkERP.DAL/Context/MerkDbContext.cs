@@ -58,6 +58,8 @@ public class MerkDbContext : DbContext
 		m.Entity<User_cs>().HasKey(e => e.Id);
 		m.Entity<User_cs>()
 			.HasOne(u => u.UserType).WithMany().HasForeignKey(u => u.UserTypeId).OnDelete(DeleteBehavior.Restrict);
+		m.Entity<User_cs>()
+			.HasOne<User_cs>().WithMany().HasForeignKey(u => u.InsertedBy).OnDelete(DeleteBehavior.NoAction);
 		m.Entity<BarcodeType_s>().HasKey(e => e.BarcodeTypeId);
 		m.Entity<InventoryValidationMethod_s>().HasKey(e => e.InventoryValidationMethodId);
 		m.Entity<Item_UOM_Barcode_cs>().HasKey(e => e.Id);
@@ -253,7 +255,7 @@ public class MerkDbContext : DbContext
 		);
 
 		m.Entity<User_cs>().HasData(
-			new User_cs { Id = 1, Name_EN = "Admin", Name_AR = "مدير", Login = "admin", Password = "admin", UserTypeId = 2 }
+			new User_cs { Id = 1, Name_EN = "Admin", Name_AR = "مدير", Login = "admin", Password = "admin", UserTypeId = 2, IsActive = true }
 		);
 
 		m.Entity<TableName_s>().HasData(

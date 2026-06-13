@@ -11,4 +11,7 @@ public class User_cs
 	public UserType_s? UserType { get; set; }
 	public string? Email { get; set; }
 	public string? Description { get; set; }
+	public long? InsertedBy { get; set; }
+	public DateTime? InsertedDate { get; set; }
+	public bool IsActive { get; set; } = true;
 }
