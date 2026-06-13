@@ -134,10 +134,10 @@
           [placeholder]="'common.select' | translate" [searchPlaceholder]="'common.search' | translate" />
       </div>
       <div class="col-3 d-flex align-items-end pb-2">
-        <div class="form-check form-check-custom form-check-solid">
+        <div class="form-check form-check-custom form-check-solid gap-3">
           <input class="form-check-input" type="checkbox" [(ngModel)]="form.acceptSelling" name="acceptSelling"
             id="acceptSelling">
-          <label class="form-check-label fw-semibold" for="acceptSelling" [style.marginRight]="isRtl ? '0.5rem' : null">
+          <label class="form-check-label fw-semibold" for="acceptSelling">
             {{ 'items.accept_selling' | translate }}
           </label>
         </div>
