@@ -6,6 +6,7 @@ import { filter } from 'rxjs/operators';
 import { ThemeService } from './services/theme.service';
 import { LanguageService } from './services/language.service';
 import { ServerStatusService } from './services/server-status.service';
+import { AuthService } from './core/auth.service';
 import { SidebarComponent } from './shared/components/sidebar/sidebar';
 import { LoadingSpinnerComponent } from './shared/components/loading-spinner/loading-spinner';
 
@@ -26,6 +27,7 @@ export class App {
     public themeService: ThemeService,
     public langService: LanguageService,
     public serverStatus: ServerStatusService,
+    public auth: AuthService,
     private router: Router,
   ) {
     this.router.events
@@ -37,6 +39,11 @@ export class App {
   }
 
   retry() { window.location.reload(); }
+
+  logout(): void {
+    this.auth.logout();
+    this.router.navigate(['/login']);
+  }
 
   @HostListener('document:click')
   closeMenus() { this.userMenuOpen = false; }

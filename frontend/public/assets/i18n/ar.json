@@ -56,7 +56,9 @@
     "server_offline_title": "الخادم لا يستجيب",
     "server_offline_message": "تعذر الوصول إلى الخادم. يرجى التأكد من تشغيل الخادم والمحاولة مجدداً.",
     "general": "رئيسي",
-    "is_parent": "أصل"
+    "is_parent": "أصل",
+    "logout": "تسجيل الخروج",
+    "description": "الوصف"
   },
   "pagination": {
     "rows_per_page": "صفوف في الصفحة",
@@ -157,7 +159,7 @@
     "add": "إضافة مخزن",
     "parent_warehouse": "المخزن الأصل",
     "type": "نوع المخزن",
-    "category": "تصنيف المخزن",
+    "category": "فئة المخزن",
     "delete_confirm": "حذف هذا المخزن؟",
     "delete_selected_confirm": "حذف {{count}} مخزن محدد؟",
     "saved_rows_title_single": "سجل تم حفظه في هذه الجلسة",

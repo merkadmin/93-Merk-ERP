@@ -34,6 +34,39 @@
           <span class="fw-bold fs-7">{{ langService.lang() === 'ar' ? 'English' : 'عربي' }}</span>
         </button>
 
+        <!-- User menu -->
+        @if (auth.user(); as user) {
+          <div class="position-relative">
+            <button class="qa-btn user-menu-btn d-flex align-items-center gap-2" (click)="toggleUserMenu($event)">
+              <span class="user-avatar symbol symbol-35px">
+                <span class="symbol-label fw-bold fs-7 text-uppercase bg-light-primary text-primary">
+                  {{ user.name_EN.charAt(0) }}
+                </span>
+              </span>
+              <span class="d-none d-lg-flex flex-column align-items-start lh-sm">
+                <span class="fw-bold fs-7 text-body">{{ user.name_EN }}</span>
+                <span class="text-muted fs-8">{{ user.userTypeName_EN }}</span>
+              </span>
+              <i class="ki-outline ki-down fs-8 text-muted d-none d-lg-block"></i>
+            </button>
+
+            @if (userMenuOpen) {
+              <div class="user-dropdown card shadow border-0 py-2">
+                <div class="px-4 pb-2 mb-1 border-bottom">
+                  <div class="fw-bold fs-6 text-gray-800">{{ user.name_EN }}</div>
+                  <div class="text-muted fs-7">{{ user.login }}</div>
+                  <span class="badge badge-light-primary fs-8 mt-1">{{ user.userTypeName_EN }}</span>
+                </div>
+                <button class="dropdown-item d-flex align-items-center gap-2 px-4 py-2 text-danger"
+                  (click)="logout()">
+                  <i class="ki-outline ki-exit-right fs-5 text-danger"></i>
+                  {{ 'common.logout' | translate }}
+                </button>
+              </div>
+            }
+          </div>
+        }
+
       </div>
     </ng-template>
 

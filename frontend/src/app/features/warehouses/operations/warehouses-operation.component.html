@@ -24,6 +24,7 @@
 
       <div class="w-100"></div>
 
+      <!-- Row 2: Type + Category -->
       <div class="col-3">
         <label class="form-label">{{ 'warehouses.type' | translate }}</label>
         <app-custom-select-input [options]="typeOptions" [value]="form.wareHouseTypeId ?? null"
@@ -38,31 +39,32 @@
           [searchPlaceholder]="'common.search' | translate" />
       </div>
 
-      <div class="col-3">
-        <label class="form-label">{{ 'warehouses.parent_warehouse' | translate }}</label>
-        <app-custom-select-input [options]="parentOptions" [value]="form.parentWarehouseId ?? null"
-          (valueChange)="form.parentWarehouseId = $event ? +$event : null" [placeholder]="'common.none' | translate"
-          [searchPlaceholder]="'common.search' | translate" />
-      </div>
+      <div class="w-100"></div>
 
-      <div class="col-3 d-flex align-items-end pb-2 gap-6">
+      <!-- Row 3: IsParent + Parent Warehouse -->
+      <div class="col-auto d-flex align-items-end pb-2">
         <div class="form-check form-check-custom form-check-solid">
-          <input class="form-check-input" type="checkbox" [(ngModel)]="form.isParent" name="isParent" id="isParent">
+          <input class="form-check-input" type="checkbox" [(ngModel)]="form.isParent" name="isParent" id="isParent"
+            (ngModelChange)="$event && (form.parentWarehouseId = null)">
           <label class="form-check-label fw-semibold" for="isParent">
             {{ 'common.is_parent' | translate }}
           </label>
         </div>
-        <div class="form-check form-check-custom form-check-solid">
-          <input class="form-check-input" type="checkbox" [(ngModel)]="form.isActive" name="isActive" id="isActive">
-          <label class="form-check-label fw-semibold" for="isActive">
-            {{ 'common.active' | translate }}
-          </label>
-        </div>
       </div>
+
+      @if (!form.isParent) {
+        <div class="col-3">
+          <label class="form-label">{{ 'warehouses.parent_warehouse' | translate }}</label>
+          <app-custom-select-input [options]="parentOptions" [value]="form.parentWarehouseId ?? null"
+            (valueChange)="form.parentWarehouseId = $event ? +$event : null" [placeholder]="'common.none' | translate"
+            [searchPlaceholder]="'common.search' | translate" />
+        </div>
+      }
 
       <div class="w-100"></div>
 
-      <div class="col-6">
+      <!-- Row 4: Description -->
+      <div class="col-12">
         <label class="form-label">{{ 'common.description' | translate }}</label>
         <textarea class="form-control" [(ngModel)]="form.description" name="description" rows="3"
           [placeholder]="'common.description' | translate"></textarea>

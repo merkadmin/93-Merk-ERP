@@ -56,7 +56,9 @@
     "server_offline_title": "Server Not Responding",
     "server_offline_message": "Unable to reach the server. Please check that the backend is running and try again.",
     "general": "Details",
-    "is_parent": "Is Parent"
+    "is_parent": "Is Parent",
+    "logout": "Logout",
+    "description": "Description"
   },
   "pagination": {
     "rows_per_page": "Rows per page",
