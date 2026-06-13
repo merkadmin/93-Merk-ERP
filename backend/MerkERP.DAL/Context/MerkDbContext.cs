@@ -23,8 +23,6 @@ public class MerkDbContext : DbContext
 	public DbSet<UOMConversionFactor_cs> UOMConversionFactor_cs { get; set; }
 	public DbSet<UOMConversionGroup_cs> UOMConversionGroup_cs { get; set; }
 	public DbSet<WareHouse_cs> WareHouse_cs { get; set; }
-	public DbSet<WarehouseTransaction> WarehouseTransaction { get; set; }
-	public DbSet<StockLedgerTransaction> StockLedgerTransaction { get; set; }
 	public DbSet<UserType_s> UserType_s { get; set; }
 	public DbSet<User_cs> User_cs { get; set; }
 
@@ -71,8 +69,6 @@ public class MerkDbContext : DbContext
 		m.Entity<UOMConversionFactor_cs>().HasKey(e => e.Id);
 		m.Entity<UOMConversionGroup_cs>().HasKey(e => e.Id);
 		m.Entity<WareHouse_cs>().HasKey(e => e.Id);
-		m.Entity<WarehouseTransaction>().HasKey(e => e.BinId);
-		m.Entity<StockLedgerTransaction>().HasKey(e => e.SLTId);
 
 		m.Entity<ItemGroup_cs>()
 			.HasOne(g => g.ParentItemGroup)
@@ -126,20 +122,6 @@ public class MerkDbContext : DbContext
 		m.Entity<UOMConversionFactor_cs>()
 			.HasOne(g => g.UOMConversionGroup).WithMany().HasForeignKey(g => g.UOMConversionGroupId).OnDelete(DeleteBehavior.SetNull);
 
-		m.Entity<WarehouseTransaction>()
-			.HasOne(b => b.Item).WithMany(i => i.WarehouseTransactions).HasForeignKey(b => b.ItemId).OnDelete(DeleteBehavior.Restrict);
-		m.Entity<WarehouseTransaction>()
-			.HasOne(b => b.Warehouse).WithMany(w => w.Transactions).HasForeignKey(b => b.WarehouseId).OnDelete(DeleteBehavior.Restrict);
-
-		m.Entity<StockLedgerTransaction>()
-			.HasOne(s => s.Item).WithMany(i => i.StockLedgerTransactions).HasForeignKey(s => s.ItemId).OnDelete(DeleteBehavior.Restrict);
-		m.Entity<StockLedgerTransaction>()
-			.HasOne(s => s.Warehouse).WithMany(w => w.StockLedgerTransactions).HasForeignKey(s => s.WarehouseId).OnDelete(DeleteBehavior.Restrict);
-
-		m.Entity<WarehouseTransaction>()
-			.HasIndex(b => new { b.ItemId, b.WarehouseId })
-			.IsUnique();
-
 		// InsertedBy → User_cs (nullable FK, set null on user delete)
 		m.Entity<Branch_cs>()            .HasOne<User_cs>().WithMany().HasForeignKey(e => e.InsertedBy).OnDelete(DeleteBehavior.SetNull);
 		m.Entity<WareHouseCategory_cs>() .HasOne<User_cs>().WithMany().HasForeignKey(e => e.InsertedBy).OnDelete(DeleteBehavior.SetNull);
@@ -151,29 +133,9 @@ public class MerkDbContext : DbContext
 		m.Entity<Item_cs>()              .HasOne<User_cs>().WithMany().HasForeignKey(e => e.InsertedBy).OnDelete(DeleteBehavior.SetNull);
 		m.Entity<ItemType_s>()           .HasOne<User_cs>().WithMany().HasForeignKey(e => e.InsertedBy).OnDelete(DeleteBehavior.SetNull);
 		m.Entity<ItemUOMConversion_cs>() .HasOne<User_cs>().WithMany().HasForeignKey(e => e.InsertedBy).OnDelete(DeleteBehavior.SetNull);
-		m.Entity<WarehouseTransaction>() .HasOne<User_cs>().WithMany().HasForeignKey(e => e.InsertedBy).OnDelete(DeleteBehavior.SetNull);
-		m.Entity<StockLedgerTransaction>().HasOne<User_cs>().WithMany().HasForeignKey(e => e.InsertedBy).OnDelete(DeleteBehavior.SetNull);
 
 		m.Entity<ItemUOMConversion_cs>()
 			.Property(e => e.ConversionFactor).HasColumnType("decimal(18,2)");
-
-		m.Entity<WarehouseTransaction>()
-			.Property(e => e.ActualQty).HasColumnType("decimal(18,2)");
-		m.Entity<WarehouseTransaction>()
-			.Property(e => e.OrderedQty).HasColumnType("decimal(18,2)");
-		m.Entity<WarehouseTransaction>()
-			.Property(e => e.ReservedQty).HasColumnType("decimal(18,2)");
-		m.Entity<WarehouseTransaction>()
-			.Property(e => e.ValuationRate).HasColumnType("decimal(18,2)");
-
-		m.Entity<StockLedgerTransaction>()
-			.Property(e => e.ActualQty).HasColumnType("decimal(18,2)");
-		m.Entity<StockLedgerTransaction>()
-			.Property(e => e.QtyAfterTransaction).HasColumnType("decimal(18,2)");
-		m.Entity<StockLedgerTransaction>()
-			.Property(e => e.StockValue).HasColumnType("decimal(18,2)");
-		m.Entity<StockLedgerTransaction>()
-			.Property(e => e.ValuationRate).HasColumnType("decimal(18,2)");
 
 		m.Entity<Item_cs>()
 			.HasIndex(i => i.InternalCode)
@@ -267,7 +229,6 @@ public class MerkDbContext : DbContext
 			new TableName_s { Id = 6, Name = "ItemGroup_cs", EntityKey = "itemgroups" },
 			new TableName_s { Id = 7, Name = "ItemType_s", EntityKey = null },
 			new TableName_s { Id = 8, Name = "ItemUOMConversion_cs", EntityKey = null },
-			new TableName_s { Id = 9, Name = "StockLedgerTransaction", EntityKey = null },
 			new TableName_s { Id = 10, Name = "TableName_s", EntityKey = null },
 			new TableName_s { Id = 11, Name = "UOM_cs", EntityKey = "uoms" },
 			new TableName_s { Id = 12, Name = "UOMConversionFactor_cs", EntityKey = "uomconversionfactors" },
@@ -275,7 +236,6 @@ public class MerkDbContext : DbContext
 			new TableName_s { Id = 14, Name = "WareHouse_cs", EntityKey = "warehouses" },
 			new TableName_s { Id = 15, Name = "WareHouseCategory_cs", EntityKey = "warehousecategories" },
 			new TableName_s { Id = 16, Name = "WareHouseType_s", EntityKey = null },
-			new TableName_s { Id = 17, Name = "WarehouseTransaction", EntityKey = null },
 			new TableName_s { Id = 18, Name = "TableMetaData",        EntityKey = null },
 			new TableName_s { Id = 19, Name = "UserType_s",           EntityKey = null },
 			new TableName_s { Id = 20, Name = "User_cs",              EntityKey = null }

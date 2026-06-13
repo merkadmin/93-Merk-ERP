@@ -96,6 +96,8 @@
     "barcode_type": "Barcode Type",
     "no_barcodes": "No barcodes added yet.",
     "barcode_fill_all": "Please fill in Barcode Type, UOM and Barcode value.",
+    "barcode_duplicate_this": "This barcode is already assigned to this item.",
+    "barcode_duplicate_other": "This barcode is already used by another item.",
     "barcodes_save_first": "Save the item first, then you can add barcodes.",
     "inventory_validation_method": "Inventory Valuation Method",
     "default_warehouse": "Default Warehouse"

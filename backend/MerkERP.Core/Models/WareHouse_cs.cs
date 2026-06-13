@@ -20,6 +20,4 @@ public class WareHouse_cs
 	public WareHouseType_s? WareHouseType { get; set; }
 	public WareHouseCategory_cs? WareHouseCategory { get; set; }
 	public ICollection<WareHouse_cs> Children { get; set; } = [];
-	public ICollection<WarehouseTransaction> Transactions { get; set; } = [];
-	public ICollection<StockLedgerTransaction> StockLedgerTransactions { get; set; } = [];
 }

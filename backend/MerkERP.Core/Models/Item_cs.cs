@@ -33,6 +33,4 @@ public class Item_cs
 	public UOM_cs? DefaultSellingUOM { get; set; }
 	public ICollection<ItemUOMConversion_cs> UOMConversions { get; set; } = [];
 	public ICollection<Item_UOM_Barcode_cs> Barcodes { get; set; } = [];
-	public ICollection<WarehouseTransaction> WarehouseTransactions { get; set; } = [];
-	public ICollection<StockLedgerTransaction> StockLedgerTransactions { get; set; } = [];
 }

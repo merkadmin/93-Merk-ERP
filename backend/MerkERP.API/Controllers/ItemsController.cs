@@ -278,6 +278,22 @@ public class ItemsController : ControllerBase
 	[HttpPost("{itemId:long}/barcodes")]
 	public async Task<IActionResult> AddBarcode(long itemId, Item_UOM_Barcode_cs barcode)
 	{
+		var existing = await _db.Item_UOM_Barcode_cs
+			.Where(b => b.Barcode == barcode.Barcode)
+			.Select(b => new { b.ItemId })
+			.FirstOrDefaultAsync();
+
+		if (existing != null)
+		{
+			var isSameItem = existing.ItemId == itemId;
+			return Conflict(new
+			{
+				message = isSameItem
+					? "This barcode is already assigned to this item."
+					: "This barcode is already used by another item."
+			});
+		}
+
 		barcode.ItemId = itemId;
 		_db.Item_UOM_Barcode_cs.Add(barcode);
 		await _db.SaveChangesAsync();

@@ -429,75 +429,6 @@ namespace MerkERP.DAL.Migrations
                     b.ToTable("Item_cs");
                 });
 
-            modelBuilder.Entity("MerkERP.Core.Models.StockLedgerTransaction", b =>
-                {
-                    b.Property<long>("SLTId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("SLTId"));
-
-                    b.Property<decimal>("ActualQty")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("BatchNo")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("InsertedBy")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("InsertedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsFavorite")
-                        .HasColumnType("bit");
-
-                    b.Property<long>("ItemId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateOnly>("PostingDate")
-                        .HasColumnType("date");
-
-                    b.Property<TimeOnly>("PostingTime")
-                        .HasColumnType("time");
-
-                    b.Property<decimal>("QtyAfterTransaction")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("StockValue")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("ValuationRate")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("VoucherNo")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("VoucherType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<long>("WarehouseId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("SLTId");
-
-                    b.HasIndex("InsertedBy");
-
-                    b.HasIndex("ItemId");
-
-                    b.HasIndex("WarehouseId");
-
-                    b.ToTable("StockLedgerTransaction");
-                });
-
             modelBuilder.Entity("MerkERP.Core.Models.TableMetaData", b =>
                 {
                     b.Property<long>("Id")
@@ -1374,11 +1305,6 @@ namespace MerkERP.DAL.Migrations
                         },
                         new
                         {
-                            Id = 9,
-                            Name = "StockLedgerTransaction"
-                        },
-                        new
-                        {
                             Id = 10,
                             Name = "TableName_s"
                         },
@@ -1416,11 +1342,6 @@ namespace MerkERP.DAL.Migrations
                         {
                             Id = 16,
                             Name = "WareHouseType_s"
-                        },
-                        new
-                        {
-                            Id = 17,
-                            Name = "WarehouseTransaction"
                         },
                         new
                         {
@@ -1807,56 +1728,6 @@ namespace MerkERP.DAL.Migrations
                     b.ToTable("WareHouse_cs");
                 });
 
-            modelBuilder.Entity("MerkERP.Core.Models.WarehouseTransaction", b =>
-                {
-                    b.Property<long>("BinId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("BinId"));
-
-                    b.Property<decimal>("ActualQty")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<long?>("InsertedBy")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("InsertedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsFavorite")
-                        .HasColumnType("bit");
-
-                    b.Property<long>("ItemId")
-                        .HasColumnType("bigint");
-
-                    b.Property<decimal>("OrderedQty")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("ReservedQty")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("ValuationRate")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<long>("WarehouseId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("BinId");
-
-                    b.HasIndex("InsertedBy");
-
-                    b.HasIndex("WarehouseId");
-
-                    b.HasIndex("ItemId", "WarehouseId")
-                        .IsUnique();
-
-                    b.ToTable("WarehouseTransaction");
-                });
-
             modelBuilder.Entity("MerkERP.Core.Models.Branch_cs", b =>
                 {
                     b.HasOne("MerkERP.Core.Models.User_cs", null)
@@ -1999,30 +1870,6 @@ namespace MerkERP.DAL.Migrations
                     b.Navigation("ItemType");
                 });
 
-            modelBuilder.Entity("MerkERP.Core.Models.StockLedgerTransaction", b =>
-                {
-                    b.HasOne("MerkERP.Core.Models.User_cs", null)
-                        .WithMany()
-                        .HasForeignKey("InsertedBy")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.HasOne("MerkERP.Core.Models.Item_cs", "Item")
-                        .WithMany("StockLedgerTransactions")
-                        .HasForeignKey("ItemId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("MerkERP.Core.Models.WareHouse_cs", "Warehouse")
-                        .WithMany("StockLedgerTransactions")
-                        .HasForeignKey("WarehouseId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Item");
-
-                    b.Navigation("Warehouse");
-                });
-
             modelBuilder.Entity("MerkERP.Core.Models.TableMetaData", b =>
                 {
                     b.HasOne("MerkERP.Core.Models.TableName_s", "TableName")
@@ -2136,30 +1983,6 @@ namespace MerkERP.DAL.Migrations
                     b.Navigation("WareHouseType");
                 });
 
-            modelBuilder.Entity("MerkERP.Core.Models.WarehouseTransaction", b =>
-                {
-                    b.HasOne("MerkERP.Core.Models.User_cs", null)
-                        .WithMany()
-                        .HasForeignKey("InsertedBy")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.HasOne("MerkERP.Core.Models.Item_cs", "Item")
-                        .WithMany("WarehouseTransactions")
-                        .HasForeignKey("ItemId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("MerkERP.Core.Models.WareHouse_cs", "Warehouse")
-                        .WithMany("Transactions")
-                        .HasForeignKey("WarehouseId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Item");
-
-                    b.Navigation("Warehouse");
-                });
-
             modelBuilder.Entity("MerkERP.Core.Models.ItemGroup_cs", b =>
                 {
                     b.Navigation("Children");
@@ -2176,11 +1999,7 @@ namespace MerkERP.DAL.Migrations
                 {
                     b.Navigation("Barcodes");
 
-                    b.Navigation("StockLedgerTransactions");
-
                     b.Navigation("UOMConversions");
-
-                    b.Navigation("WarehouseTransactions");
                 });
 
             modelBuilder.Entity("MerkERP.Core.Models.UOM_cs", b =>
@@ -2193,10 +2012,6 @@ namespace MerkERP.DAL.Migrations
             modelBuilder.Entity("MerkERP.Core.Models.WareHouse_cs", b =>
                 {
                     b.Navigation("Children");
-
-                    b.Navigation("StockLedgerTransactions");
-
-                    b.Navigation("Transactions");
                 });
 #pragma warning restore 612, 618
         }

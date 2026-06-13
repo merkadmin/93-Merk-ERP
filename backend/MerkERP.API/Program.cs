@@ -12,7 +12,6 @@ builder.Services.AddDbContext<MerkDbContext>(o =>
      .ConfigureWarnings(w => w.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.PendingModelChangesWarning)));
 
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-builder.Services.AddScoped<StockService>();
 builder.Services.AddScoped<TableRegistryService>();
 builder.Services.AddSingleton<ExcelService>();
 

@@ -96,6 +96,8 @@
     "barcode_type": "نوع الباركود",
     "no_barcodes": "لم يتم إضافة باركودات بعد.",
     "barcode_fill_all": "يرجى تعبئة نوع الباركود ووحدة القياس وقيمة الباركود.",
+    "barcode_duplicate_this": "هذا الباركود مخصص بالفعل لهذا الصنف.",
+    "barcode_duplicate_other": "هذا الباركود مستخدم بالفعل في صنف آخر.",
     "barcodes_save_first": "احفظ الصنف أولاً، ثم يمكنك إضافة الباركودات.",
     "inventory_validation_method": "طريقة تقييم المخزون",
     "default_warehouse": "المخزن الافتراضي"

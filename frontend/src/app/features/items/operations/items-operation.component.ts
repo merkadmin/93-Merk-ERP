@@ -1,5 +1,6 @@
 import { DOCUMENT } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
+import { forkJoin, of, switchMap } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
@@ -25,6 +26,9 @@ interface ItemBarcode {
   barcodeType?: BarcodeType;
   uom?: ItemUOM;
 }
+
+interface PendingBarcode { barcodeTypeId: number; uomId: number; barcode: string; }
+interface DisplayBarcode { id?: number; barcodeTypeId: number; uomId: number; barcode: string; }
 
 interface Item {
   id: number;
@@ -87,9 +91,16 @@ export class ItemsOperationComponent implements OnInit {
   inventoryValidationMethods = signal<InventoryValidationMethod[]>([]);
   warehouses = signal<Warehouse[]>([]);
   barcodes = signal<ItemBarcode[]>([]);
+  pendingBarcodes = signal<PendingBarcode[]>([]);
 
   form: Partial<Item> = this.blank();
   newBarcode = this.blankBarcode();
+
+  get displayBarcodes(): DisplayBarcode[] {
+    return this.isEdit()
+      ? this.barcodes().map(b => ({ id: b.id, barcodeTypeId: b.barcodeTypeId, uomId: b.uomId, barcode: b.barcode }))
+      : this.pendingBarcodes();
+  }
 
   ngOnInit() {
     this.api.get<ItemGroup[]>('itemgroups').subscribe(d => this.groups.set(d));
@@ -128,6 +139,21 @@ export class ItemsOperationComponent implements OnInit {
       this.toastr.warning(this.translate.instant('items.barcode_fill_all'));
       return;
     }
+
+    const duplicate = this.displayBarcodes.find(
+      b => b.barcode.toLowerCase() === this.newBarcode.barcode.trim().toLowerCase()
+    );
+    if (duplicate) {
+      this.toastr.error(this.translate.instant('items.barcode_duplicate_this'));
+      return;
+    }
+
+    if (!this.isEdit()) {
+      this.pendingBarcodes.update(list => [...list, { ...this.newBarcode }]);
+      this.newBarcode = this.blankBarcode();
+      return;
+    }
+
     this.addingBarcode.set(true);
     this.api.post<ItemBarcode>(`items/${this.form.id}/barcodes`, this.newBarcode).subscribe({
       next: () => {
@@ -135,8 +161,21 @@ export class ItemsOperationComponent implements OnInit {
         this.newBarcode = this.blankBarcode();
         this.addingBarcode.set(false);
       },
-      error: () => this.addingBarcode.set(false),
+      error: (err) => {
+        if (err?.status === 409) {
+          const msg = err?.error?.message ?? '';
+          const key = msg.includes('another item')
+            ? 'items.barcode_duplicate_other'
+            : 'items.barcode_duplicate_this';
+          this.toastr.error(this.translate.instant(key));
+        }
+        this.addingBarcode.set(false);
+      },
     });
+  }
+
+  removePendingBarcode(index: number) {
+    this.pendingBarcodes.update(list => list.filter((_, i) => i !== index));
   }
 
   removeBarcode(id: number) {
@@ -233,11 +272,21 @@ export class ItemsOperationComponent implements OnInit {
 
     andNew ? this.savingNew.set(true) : this.saving.set(true);
 
-    const req = this.isEdit()
+    const itemReq = this.isEdit()
       ? this.api.put<Item>(`items/${this.form.id}`, this.form)
       : this.api.post<Item>('items', this.form);
 
-    req.subscribe({
+    itemReq.pipe(
+      switchMap(savedItem => {
+        const pending = this.pendingBarcodes();
+        if (!this.isEdit() && pending.length > 0) {
+          return forkJoin(
+            pending.map(b => this.api.post<ItemBarcode>(`items/${savedItem.id}/barcodes`, { ...b, itemId: savedItem.id }))
+          );
+        }
+        return of(null);
+      })
+    ).subscribe({
       next: () => {
         this.toastr.success(this.translate.instant('common.save_success'));
         if (andNew) {
@@ -252,6 +301,7 @@ export class ItemsOperationComponent implements OnInit {
             uomName: uom ? this.uomLabel(uom) : '—',
           }]);
           this.form = this.blank();
+          this.pendingBarcodes.set([]);
           this.isEdit.set(false);
           this.savingNew.set(false);
           this.activeTab.set('general');
@@ -270,7 +320,7 @@ export class ItemsOperationComponent implements OnInit {
   save() { this.submit(false); }
   saveAndNew() { this.submit(true); }
 
-  resetForm() { this.form = this.blank(); this.activeTab.set('general'); this.loadNextCode(); }
+  resetForm() { this.form = this.blank(); this.pendingBarcodes.set([]); this.activeTab.set('general'); this.loadNextCode(); }
 
   back() { this.router.navigate(['/stock/items']); }
 }
