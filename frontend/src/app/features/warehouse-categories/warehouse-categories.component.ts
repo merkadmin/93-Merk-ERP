@@ -10,7 +10,8 @@ import { RegularListHeaderWithActionsComponent } from '../../shared/components/c
 import { RegularListSearchActionsComponent, SearchField } from '../../shared/components/cards/regular-list-search-actions/regular-list-search-actions.component';
 import { CustomTableWithPaginationComponent } from '../../shared/components/custom-controls/custom-table-with-pagination/custom-table-with-pagination.component';
 
-interface WareHouseCategory { id: number; internalCode: string | null; name_EN: string; name_AR: string | null; description: string | null; isActive: boolean; }
+interface WareHouseType { id: number; name_EN: string; name_AR: string | null; }
+interface WareHouseCategory { id: number; internalCode: string | null; name_EN: string; name_AR: string | null; description: string | null; isActive: boolean; wareHouseTypeId: number | null; wareHouseType?: WareHouseType; }
 
 @Component({
   selector: 'app-warehouse-categories',
@@ -38,6 +39,13 @@ export class WarehouseCategoriesComponent implements OnInit {
   label(c: WareHouseCategory): string {
     return this.isRtl ? (c.name_AR || c.name_EN) : (c.name_EN || c.name_AR || '');
   }
+
+  readonly cellRenderers: Record<string, (item: any) => string> = {
+    wareHouseType: (c: WareHouseCategory) => {
+      if (!c.wareHouseType) return '—';
+      return this.isRtl ? (c.wareHouseType.name_AR || c.wareHouseType.name_EN) : c.wareHouseType.name_EN;
+    },
+  };
 
   get searchFields(): SearchField[] {
     return this.meta.toSearchFields(this.columnMeta(), this.isRtl);

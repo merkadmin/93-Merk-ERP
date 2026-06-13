@@ -5,7 +5,7 @@
 
 <app-regular-list-search-actions [fields]="searchFields" (filterChange)="onFilterChange($event)" />
 
-<app-custom-table-with-pagination entity="warehousecategories" [rows]="filtered"
+<app-custom-table-with-pagination entity="warehousecategories" [rows]="filtered" [cellRenderers]="cellRenderers"
   (metadataLoaded)="columnMeta.set($event)" (selectionChange)="selectedIds.set($event)" [reload]="metaReloadKey()">
   <ng-template #rowActions let-c>
     <div class="d-inline-flex align-items-center gap-2">

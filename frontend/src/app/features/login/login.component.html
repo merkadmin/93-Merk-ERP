@@ -1,0 +1,62 @@
+<div class="login-page d-flex flex-column align-items-center justify-content-center min-vh-100">
+
+  <!-- Quick-access bar (top-right) -->
+  <div class="login-qa-bar position-fixed top-0 end-0 p-4 d-flex gap-3">
+    <button class="btn btn-icon btn-sm btn-light" (click)="themeService.toggle()" [title]="'common.toggle_theme' | translate">
+      <i class="ki-outline fs-5" [ngClass]="themeService.isDark() ? 'ki-night-day' : 'ki-moon'"></i>
+    </button>
+    <button class="btn btn-sm btn-light fw-bold fs-7" (click)="langService.toggle()">
+      {{ langService.lang() === 'ar' ? 'English' : 'عربي' }}
+    </button>
+  </div>
+
+  <!-- Login card -->
+  <div class="card shadow w-100" style="max-width: 420px;">
+    <div class="card-body p-10">
+
+      <!-- Logo / Title -->
+      <div class="text-center mb-10">
+        <i class="ki-outline ki-abstract-26 fs-4x text-primary mb-4 d-block"></i>
+        <h2 class="fw-bold text-gray-800 mb-2">{{ 'app.title' | translate }}</h2>
+        <p class="text-muted fs-6">{{ 'login.subtitle' | translate }}</p>
+      </div>
+
+      <!-- Form -->
+      <form (ngSubmit)="submit()" #f="ngForm">
+
+        <div class="mb-6">
+          <label class="form-label required fw-semibold">{{ 'login.login_label' | translate }}</label>
+          <input class="form-control form-control-lg" [(ngModel)]="login" name="login" required
+            [placeholder]="'login.login_placeholder' | translate" autocomplete="username">
+        </div>
+
+        <div class="mb-8">
+          <label class="form-label required fw-semibold">{{ 'login.password_label' | translate }}</label>
+          <div class="position-relative">
+            <input class="form-control form-control-lg pe-12" [(ngModel)]="password" name="password" required
+              [type]="showPwd() ? 'text' : 'password'"
+              [placeholder]="'login.password_placeholder' | translate" autocomplete="current-password">
+            <button type="button" class="btn btn-icon btn-sm position-absolute top-50 end-0 translate-middle-y me-2"
+              (click)="showPwd.update(v => !v)">
+              <i class="ki-outline fs-4" [ngClass]="showPwd() ? 'ki-eye-slash' : 'ki-eye'"></i>
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100 btn-lg mb-4" [disabled]="loading()">
+          @if (loading()) {
+            <span class="spinner-border spinner-border-sm me-2"></span>
+          }
+          {{ 'login.sign_in' | translate }}
+        </button>
+
+        <div class="text-center fs-6 text-muted">
+          {{ 'login.no_account' | translate }}
+          <a routerLink="/register" class="fw-semibold text-primary ms-1">{{ 'login.register_link' | translate }}</a>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+</div>

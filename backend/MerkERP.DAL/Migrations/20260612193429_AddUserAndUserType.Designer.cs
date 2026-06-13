@@ -4,6 +4,7 @@ using MerkERP.DAL.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MerkERP.DAL.Migrations
 {
     [DbContext(typeof(MerkDbContext))]
-    partial class MerkDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260612193429_AddUserAndUserType")]
+    partial class AddUserAndUserType
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1588,24 +1591,18 @@ namespace MerkERP.DAL.Migrations
                         new
                         {
                             Id = 1L,
-                            Name_AR = "روت",
-                            Name_EN = "Root"
-                        },
-                        new
-                        {
-                            Id = 2L,
                             Name_AR = "مدير ميرك",
                             Name_EN = "Merk Admin"
                         },
                         new
                         {
-                            Id = 3L,
+                            Id = 2L,
                             Name_AR = "مدير",
                             Name_EN = "Admin"
                         },
                         new
                         {
-                            Id = 4L,
+                            Id = 3L,
                             Name_AR = "مستخدم عادي",
                             Name_EN = "Regular User"
                         });
@@ -1648,17 +1645,6 @@ namespace MerkERP.DAL.Migrations
                     b.HasIndex("UserTypeId");
 
                     b.ToTable("User_cs");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1L,
-                            Login = "admin",
-                            Name_AR = "مدير",
-                            Name_EN = "Admin",
-                            Password = "admin",
-                            UserTypeId = 2L
-                        });
                 });
 
             modelBuilder.Entity("MerkERP.Core.Models.WareHouseCategory_cs", b =>

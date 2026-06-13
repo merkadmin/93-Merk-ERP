@@ -11,7 +11,7 @@ import { CustomSelectInputComponent, SelectOption } from '../../../shared/compon
 
 interface Warehouse { id: number; internalCode: string | null; name_EN: string; name_AR: string | null; description: string | null; parentWarehouseId: number | null; wareHouseTypeId: number | null; wareHouseCategoryId: number | null; isParent: boolean; isActive: boolean; }
 interface WareHouseType { id: number; name_EN: string; name_AR: string | null; }
-interface WareHouseCategory { id: number; name_EN: string; name_AR: string | null; }
+interface WareHouseCategory { id: number; name_EN: string; name_AR: string | null; wareHouseTypeId: number | null; }
 interface SavedRow { name_EN: string; name_AR: string; parentName: string; isParent: boolean; }
 
 @Component({
@@ -122,6 +122,17 @@ export class WarehousesOperationComponent implements OnInit {
       },
       error: () => { this.saving.set(false); this.savingNew.set(false); },
     });
+  }
+
+  onCategoryChange(value: string | number | null): void {
+    const id = value ? +value : null;
+    this.form.wareHouseCategoryId = id;
+    if (id != null) {
+      const cat = this.wareHouseCategories().find(c => c.id === id);
+      if (cat?.wareHouseTypeId != null) {
+        this.form.wareHouseTypeId = cat.wareHouseTypeId;
+      }
+    }
   }
 
   save() { this.submit(false); }

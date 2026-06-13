@@ -1,3 +1,4 @@
+using BCrypt.Net;
 using Microsoft.EntityFrameworkCore;
 using MerkERP.API.Services;
 using MerkERP.Core.Interfaces;
@@ -28,10 +29,16 @@ var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
-    var db      = scope.ServiceProvider.GetRequiredService<MerkDbContext>();
+    var db       = scope.ServiceProvider.GetRequiredService<MerkDbContext>();
     var registry = scope.ServiceProvider.GetRequiredService<TableRegistryService>();
     db.Database.Migrate();
     await registry.SyncAsync();
+
+    // One-time upgrade: hash any plain-text passwords still in the DB
+    var users = await db.User_cs.ToListAsync();
+    foreach (var u in users.Where(u => !u.Password.StartsWith("$2")))
+        u.Password = BCrypt.Net.BCrypt.HashPassword(u.Password);
+    await db.SaveChangesAsync();
 }
 
 app.UseSwagger();

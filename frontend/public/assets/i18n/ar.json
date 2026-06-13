@@ -175,6 +175,37 @@
     "stock_value": "قيمة المخزون",
     "no_entries": "لا توجد قيود مخزون."
   },
+  "login": {
+    "subtitle": "تسجيل الدخول إلى حسابك",
+    "login_label": "اسم المستخدم",
+    "login_placeholder": "أدخل اسم المستخدم",
+    "password_label": "كلمة المرور",
+    "password_placeholder": "أدخل كلمة المرور",
+    "sign_in": "تسجيل الدخول",
+    "invalid_credentials": "اسم المستخدم أو كلمة المرور غير صحيحة.",
+    "fields_required": "اسم المستخدم وكلمة المرور مطلوبان.",
+    "no_account": "ليس لديك حساب؟",
+    "register_link": "إنشاء حساب"
+  },
+  "register": {
+    "title": "إنشاء حساب",
+    "subtitle": "أدخل البيانات أدناه للتسجيل",
+    "name_en": "الاسم الكامل (إنجليزي)",
+    "name_en_placeholder": "أدخل اسمك بالإنجليزية",
+    "name_ar": "الاسم الكامل (عربي)",
+    "name_ar_placeholder": "أدخل اسمك بالعربية",
+    "email": "البريد الإلكتروني",
+    "email_placeholder": "أدخل بريدك الإلكتروني (اختياري)",
+    "confirm_password": "تأكيد كلمة المرور",
+    "confirm_password_placeholder": "أعد إدخال كلمة المرور",
+    "sign_up": "إنشاء الحساب",
+    "fields_required": "الاسم واسم المستخدم وكلمة المرور مطلوبة.",
+    "password_mismatch": "كلمتا المرور غير متطابقتين.",
+    "login_taken": "اسم المستخدم هذا مستخدم بالفعل.",
+    "error": "فشل التسجيل. يرجى المحاولة مجدداً.",
+    "have_account": "لديك حساب بالفعل؟",
+    "sign_in_link": "تسجيل الدخول"
+  },
   "stock_movement": {
     "title": "ترحيل حركة مخزون",
     "item": "الصنف",

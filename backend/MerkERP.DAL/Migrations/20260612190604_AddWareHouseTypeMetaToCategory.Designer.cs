@@ -4,6 +4,7 @@ using MerkERP.DAL.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MerkERP.DAL.Migrations
 {
     [DbContext(typeof(MerkDbContext))]
-    partial class MerkDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260612190604_AddWareHouseTypeMetaToCategory")]
+    partial class AddWareHouseTypeMetaToCategory
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -125,8 +128,6 @@ namespace MerkERP.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("InsertedBy");
-
                     b.ToTable("Branch_cs");
                 });
 
@@ -202,8 +203,6 @@ namespace MerkERP.DAL.Migrations
 
                     b.HasKey("ItemGroupId");
 
-                    b.HasIndex("InsertedBy");
-
                     b.HasIndex("ParentItemGroupId");
 
                     b.ToTable("ItemGroup_cs");
@@ -234,8 +233,6 @@ namespace MerkERP.DAL.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ItemTypeId");
-
-                    b.HasIndex("InsertedBy");
 
                     b.ToTable("ItemType_s");
 
@@ -293,8 +290,6 @@ namespace MerkERP.DAL.Migrations
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("InsertedBy");
 
                     b.HasIndex("ItemId");
 
@@ -415,8 +410,6 @@ namespace MerkERP.DAL.Migrations
 
                     b.HasIndex("DefaultWarehouseId");
 
-                    b.HasIndex("InsertedBy");
-
                     b.HasIndex("InternalCode")
                         .IsUnique();
 
@@ -488,8 +481,6 @@ namespace MerkERP.DAL.Migrations
                         .HasColumnType("bigint");
 
                     b.HasKey("SLTId");
-
-                    b.HasIndex("InsertedBy");
 
                     b.HasIndex("ItemId");
 
@@ -1066,7 +1057,7 @@ namespace MerkERP.DAL.Migrations
                         new
                         {
                             Id = 32L,
-                            ColumnOrder = 6,
+                            ColumnOrder = 4,
                             DataType = "string",
                             EntityProperty = "WareHouseType",
                             FilterType = "select",
@@ -1083,7 +1074,7 @@ namespace MerkERP.DAL.Migrations
                         new
                         {
                             Id = 33L,
-                            ColumnOrder = 7,
+                            ColumnOrder = 5,
                             DataType = "string",
                             EntityProperty = "WareHouseCategory",
                             FilterType = "select",
@@ -1100,7 +1091,7 @@ namespace MerkERP.DAL.Migrations
                         new
                         {
                             Id = 34L,
-                            ColumnOrder = 4,
+                            ColumnOrder = 6,
                             DataType = "boolean",
                             EntityProperty = "IsParent",
                             FilterType = "boolean",
@@ -1116,7 +1107,7 @@ namespace MerkERP.DAL.Migrations
                         new
                         {
                             Id = 35L,
-                            ColumnOrder = 8,
+                            ColumnOrder = 7,
                             DataType = "boolean",
                             EntityProperty = "IsActive",
                             FilterType = "boolean",
@@ -1127,23 +1118,6 @@ namespace MerkERP.DAL.Migrations
                             LabelAR = "نشط",
                             LabelEN = "Active",
                             RenderAs = "badge",
-                            TableNameId = 14
-                        },
-                        new
-                        {
-                            Id = 46L,
-                            ColumnOrder = 5,
-                            DataType = "string",
-                            EntityProperty = "ParentWareHouse",
-                            FilterType = "select",
-                            ForeignKeyProperty = "ParentWareHouse",
-                            IsFilterable = true,
-                            IsSortable = true,
-                            IsVisible = true,
-                            Key = "parentWareHouse",
-                            LabelAR = "الرئيسي",
-                            LabelEN = "Parent",
-                            RenderAs = "text",
                             TableNameId = 14
                         },
                         new
@@ -1197,7 +1171,7 @@ namespace MerkERP.DAL.Migrations
                         new
                         {
                             Id = 39L,
-                            ColumnOrder = 5,
+                            ColumnOrder = 4,
                             DataType = "string",
                             EntityProperty = "Description",
                             FilterType = "text",
@@ -1213,7 +1187,7 @@ namespace MerkERP.DAL.Migrations
                         new
                         {
                             Id = 40L,
-                            ColumnOrder = 6,
+                            ColumnOrder = 5,
                             DataType = "boolean",
                             EntityProperty = "IsActive",
                             FilterType = "boolean",
@@ -1229,7 +1203,7 @@ namespace MerkERP.DAL.Migrations
                         new
                         {
                             Id = 45L,
-                            ColumnOrder = 4,
+                            ColumnOrder = 6,
                             DataType = "string",
                             EntityProperty = "WareHouseType",
                             FilterType = "select",
@@ -1426,16 +1400,6 @@ namespace MerkERP.DAL.Migrations
                         {
                             Id = 18,
                             Name = "TableMetaData"
-                        },
-                        new
-                        {
-                            Id = 19,
-                            Name = "UserType_s"
-                        },
-                        new
-                        {
-                            Id = 20,
-                            Name = "User_cs"
                         });
                 });
 
@@ -1475,8 +1439,6 @@ namespace MerkERP.DAL.Migrations
                         .HasColumnType("float");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("InsertedBy");
 
                     b.HasIndex("UOMConversionGroupId");
 
@@ -1520,8 +1482,6 @@ namespace MerkERP.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("InsertedBy");
-
                     b.ToTable("UOMConversionGroup_cs");
                 });
 
@@ -1560,105 +1520,7 @@ namespace MerkERP.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("InsertedBy");
-
                     b.ToTable("UOM_cs");
-                });
-
-            modelBuilder.Entity("MerkERP.Core.Models.UserType_s", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<string>("Name_AR")
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("Name_EN")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(200)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("UserType_s");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1L,
-                            Name_AR = "روت",
-                            Name_EN = "Root"
-                        },
-                        new
-                        {
-                            Id = 2L,
-                            Name_AR = "مدير ميرك",
-                            Name_EN = "Merk Admin"
-                        },
-                        new
-                        {
-                            Id = 3L,
-                            Name_AR = "مدير",
-                            Name_EN = "Admin"
-                        },
-                        new
-                        {
-                            Id = 4L,
-                            Name_AR = "مستخدم عادي",
-                            Name_EN = "Regular User"
-                        });
-                });
-
-            modelBuilder.Entity("MerkERP.Core.Models.User_cs", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Email")
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("Login")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("Name_AR")
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("Name_EN")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<long>("UserTypeId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserTypeId");
-
-                    b.ToTable("User_cs");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1L,
-                            Login = "admin",
-                            Name_AR = "مدير",
-                            Name_EN = "Admin",
-                            Password = "admin",
-                            UserTypeId = 2L
-                        });
                 });
 
             modelBuilder.Entity("MerkERP.Core.Models.WareHouseCategory_cs", b =>
@@ -1695,8 +1557,6 @@ namespace MerkERP.DAL.Migrations
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("InsertedBy");
 
                     b.HasIndex("WareHouseTypeId");
 
@@ -1796,8 +1656,6 @@ namespace MerkERP.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("InsertedBy");
-
                     b.HasIndex("ParentWarehouseId");
 
                     b.HasIndex("WareHouseCategoryId");
@@ -1847,8 +1705,6 @@ namespace MerkERP.DAL.Migrations
 
                     b.HasKey("BinId");
 
-                    b.HasIndex("InsertedBy");
-
                     b.HasIndex("WarehouseId");
 
                     b.HasIndex("ItemId", "WarehouseId")
@@ -1857,21 +1713,8 @@ namespace MerkERP.DAL.Migrations
                     b.ToTable("WarehouseTransaction");
                 });
 
-            modelBuilder.Entity("MerkERP.Core.Models.Branch_cs", b =>
-                {
-                    b.HasOne("MerkERP.Core.Models.User_cs", null)
-                        .WithMany()
-                        .HasForeignKey("InsertedBy")
-                        .OnDelete(DeleteBehavior.SetNull);
-                });
-
             modelBuilder.Entity("MerkERP.Core.Models.ItemGroup_cs", b =>
                 {
-                    b.HasOne("MerkERP.Core.Models.User_cs", null)
-                        .WithMany()
-                        .HasForeignKey("InsertedBy")
-                        .OnDelete(DeleteBehavior.SetNull);
-
                     b.HasOne("MerkERP.Core.Models.ItemGroup_cs", "ParentItemGroup")
                         .WithMany("Children")
                         .HasForeignKey("ParentItemGroupId")
@@ -1880,21 +1723,8 @@ namespace MerkERP.DAL.Migrations
                     b.Navigation("ParentItemGroup");
                 });
 
-            modelBuilder.Entity("MerkERP.Core.Models.ItemType_s", b =>
-                {
-                    b.HasOne("MerkERP.Core.Models.User_cs", null)
-                        .WithMany()
-                        .HasForeignKey("InsertedBy")
-                        .OnDelete(DeleteBehavior.SetNull);
-                });
-
             modelBuilder.Entity("MerkERP.Core.Models.ItemUOMConversion_cs", b =>
                 {
-                    b.HasOne("MerkERP.Core.Models.User_cs", null)
-                        .WithMany()
-                        .HasForeignKey("InsertedBy")
-                        .OnDelete(DeleteBehavior.SetNull);
-
                     b.HasOne("MerkERP.Core.Models.Item_cs", "Item")
                         .WithMany("UOMConversions")
                         .HasForeignKey("ItemId")
@@ -1962,11 +1792,6 @@ namespace MerkERP.DAL.Migrations
                         .HasForeignKey("DefaultWarehouseId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("MerkERP.Core.Models.User_cs", null)
-                        .WithMany()
-                        .HasForeignKey("InsertedBy")
-                        .OnDelete(DeleteBehavior.SetNull);
-
                     b.HasOne("MerkERP.Core.Models.InventoryValidationMethod_s", "InventoryValidationMethod")
                         .WithMany()
                         .HasForeignKey("InventoryValidationMethodId")
@@ -2001,11 +1826,6 @@ namespace MerkERP.DAL.Migrations
 
             modelBuilder.Entity("MerkERP.Core.Models.StockLedgerTransaction", b =>
                 {
-                    b.HasOne("MerkERP.Core.Models.User_cs", null)
-                        .WithMany()
-                        .HasForeignKey("InsertedBy")
-                        .OnDelete(DeleteBehavior.SetNull);
-
                     b.HasOne("MerkERP.Core.Models.Item_cs", "Item")
                         .WithMany("StockLedgerTransactions")
                         .HasForeignKey("ItemId")
@@ -2036,11 +1856,6 @@ namespace MerkERP.DAL.Migrations
 
             modelBuilder.Entity("MerkERP.Core.Models.UOMConversionFactor_cs", b =>
                 {
-                    b.HasOne("MerkERP.Core.Models.User_cs", null)
-                        .WithMany()
-                        .HasForeignKey("InsertedBy")
-                        .OnDelete(DeleteBehavior.SetNull);
-
                     b.HasOne("MerkERP.Core.Models.UOMConversionGroup_cs", "UOMConversionGroup")
                         .WithMany()
                         .HasForeignKey("UOMConversionGroupId")
@@ -2065,40 +1880,8 @@ namespace MerkERP.DAL.Migrations
                     b.Navigation("UOMTo");
                 });
 
-            modelBuilder.Entity("MerkERP.Core.Models.UOMConversionGroup_cs", b =>
-                {
-                    b.HasOne("MerkERP.Core.Models.User_cs", null)
-                        .WithMany()
-                        .HasForeignKey("InsertedBy")
-                        .OnDelete(DeleteBehavior.SetNull);
-                });
-
-            modelBuilder.Entity("MerkERP.Core.Models.UOM_cs", b =>
-                {
-                    b.HasOne("MerkERP.Core.Models.User_cs", null)
-                        .WithMany()
-                        .HasForeignKey("InsertedBy")
-                        .OnDelete(DeleteBehavior.SetNull);
-                });
-
-            modelBuilder.Entity("MerkERP.Core.Models.User_cs", b =>
-                {
-                    b.HasOne("MerkERP.Core.Models.UserType_s", "UserType")
-                        .WithMany()
-                        .HasForeignKey("UserTypeId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("UserType");
-                });
-
             modelBuilder.Entity("MerkERP.Core.Models.WareHouseCategory_cs", b =>
                 {
-                    b.HasOne("MerkERP.Core.Models.User_cs", null)
-                        .WithMany()
-                        .HasForeignKey("InsertedBy")
-                        .OnDelete(DeleteBehavior.SetNull);
-
                     b.HasOne("MerkERP.Core.Models.WareHouseType_s", "WareHouseType")
                         .WithMany()
                         .HasForeignKey("WareHouseTypeId")
@@ -2109,11 +1892,6 @@ namespace MerkERP.DAL.Migrations
 
             modelBuilder.Entity("MerkERP.Core.Models.WareHouse_cs", b =>
                 {
-                    b.HasOne("MerkERP.Core.Models.User_cs", null)
-                        .WithMany()
-                        .HasForeignKey("InsertedBy")
-                        .OnDelete(DeleteBehavior.SetNull);
-
                     b.HasOne("MerkERP.Core.Models.WareHouse_cs", "ParentWarehouse")
                         .WithMany("Children")
                         .HasForeignKey("ParentWarehouseId")
@@ -2138,11 +1916,6 @@ namespace MerkERP.DAL.Migrations
 
             modelBuilder.Entity("MerkERP.Core.Models.WarehouseTransaction", b =>
                 {
-                    b.HasOne("MerkERP.Core.Models.User_cs", null)
-                        .WithMany()
-                        .HasForeignKey("InsertedBy")
-                        .OnDelete(DeleteBehavior.SetNull);
-
                     b.HasOne("MerkERP.Core.Models.Item_cs", "Item")
                         .WithMany("WarehouseTransactions")
                         .HasForeignKey("ItemId")

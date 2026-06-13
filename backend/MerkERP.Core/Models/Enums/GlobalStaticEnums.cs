@@ -39,6 +39,14 @@ namespace MerkERP.Core.Models.Enums
 		SterileSurgicalWarehouses = 4,
 	}
 
+	public enum UserTypeEnum
+	{
+		Root        = 1,
+		MerkAdmin   = 2,
+		Admin       = 3,
+		RegularUser = 4,
+	}
+
 	/// <summary>
 	/// Maps every physical EF table to a stable integer Id.
 	/// The integer values are mirrored in the TableName_s seed data — keep them in sync.
@@ -66,5 +74,7 @@ namespace MerkERP.Core.Models.Enums
 		WareHouseType_s             = 16,
 		WarehouseTransaction        = 17,
 		TableMetaData               = 18,
+		UserType_s                  = 19,
+		User_cs                     = 20,
 	}
 }

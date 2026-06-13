@@ -66,6 +66,7 @@
           <th>{{ 'common.internal_code' | translate }}</th>
           <th>{{ 'common.name' | translate }} (EN)</th>
           <th>{{ 'common.name' | translate }} (AR)</th>
+          <th>{{ 'warehouse_categories.warehouse_type' | translate }}</th>
         </tr>
       </thead>
       <tbody>
@@ -75,6 +76,7 @@
           <td class="text-muted">{{ row.internalCode || '—' }}</td>
           <td class="fw-semibold">{{ row.name_EN }}</td>
           <td>{{ row.name_AR || '—' }}</td>
+          <td>{{ row.wareHouseTypeName }}</td>
         </tr>
         }
       </tbody>

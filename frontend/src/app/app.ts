@@ -1,7 +1,8 @@
-import { Component, ViewChild, HostListener } from '@angular/core';
+import { Component, ViewChild, HostListener, signal } from '@angular/core';
 import { CommonModule, NgTemplateOutlet } from '@angular/common';
-import { RouterOutlet, RouterLink } from '@angular/router';
+import { RouterOutlet, RouterLink, Router, NavigationEnd } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
+import { filter } from 'rxjs/operators';
 import { ThemeService } from './services/theme.service';
 import { LanguageService } from './services/language.service';
 import { ServerStatusService } from './services/server-status.service';
@@ -19,12 +20,21 @@ export class App {
   @ViewChild(SidebarComponent) private sidebarRef!: SidebarComponent;
 
   userMenuOpen = false;
+  isLoginPage = signal(false);
 
   constructor(
     public themeService: ThemeService,
     public langService: LanguageService,
     public serverStatus: ServerStatusService,
-  ) { }
+    private router: Router,
+  ) {
+    this.router.events
+      .pipe(filter((e): e is NavigationEnd => e instanceof NavigationEnd))
+      .subscribe(e => {
+        const url = e.urlAfterRedirects;
+        this.isLoginPage.set(url.startsWith('/login') || url.startsWith('/register'));
+      });
+  }
 
   retry() { window.location.reload(); }
 

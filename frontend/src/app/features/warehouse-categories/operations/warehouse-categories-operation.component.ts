@@ -10,7 +10,7 @@ import { RegularOperationActionsComponent } from '../../../shared/components/car
 
 interface WareHouseType { id: number; name_EN: string; name_AR: string | null; }
 interface WareHouseCategory { id: number; internalCode: string | null; name_EN: string; name_AR: string | null; description: string | null; isActive: boolean; wareHouseTypeId: number | null; }
-interface SavedRow { internalCode: string; name_EN: string; name_AR: string; }
+interface SavedRow { internalCode: string; name_EN: string; name_AR: string; wareHouseTypeName: string; }
 
 @Component({
   selector: 'app-warehouse-categories-operation',
@@ -79,7 +79,7 @@ export class WarehouseCategoriesOperationComponent implements OnInit {
       next: () => {
         this.toastr.success(this.translate.instant('common.save_success'));
         if (andNew) {
-          this.savedRows.update(rows => [...rows, { internalCode: this.form.internalCode ?? '', name_EN: this.form.name_EN ?? '', name_AR: this.form.name_AR ?? '' }]);
+          this.savedRows.update(rows => [...rows, { internalCode: this.form.internalCode ?? '', name_EN: this.form.name_EN ?? '', name_AR: this.form.name_AR ?? '', wareHouseTypeName: this.typeLabel(this.form.wareHouseTypeId) }]);
           this.form = this.blank();
           this.isEdit.set(false);
           this.savingNew.set(false);
@@ -94,6 +94,13 @@ export class WarehouseCategoriesOperationComponent implements OnInit {
 
   save() { this.submit(false); }
   saveAndNew() { this.submit(true); }
+  typeLabel(id: number | null | undefined): string {
+    if (id == null) return '—';
+    const t = this.wareHouseTypes().find(x => x.id === id);
+    if (!t) return '—';
+    return this.isRtl ? (t.name_AR || t.name_EN) : t.name_EN;
+  }
+
   resetForm() { this.form = this.blank(); this.loadNextCode(); }
   back() { this.router.navigate(['/stock/warehouse-categories']); }
 }

@@ -34,7 +34,7 @@
       <div class="col-3">
         <label class="form-label">{{ 'warehouses.category' | translate }}</label>
         <app-custom-select-input [options]="categoryOptions" [value]="form.wareHouseCategoryId ?? null"
-          (valueChange)="form.wareHouseCategoryId = $event ? +$event : null" [placeholder]="'common.none' | translate"
+          (valueChange)="onCategoryChange($event)" [placeholder]="'common.none' | translate"
           [searchPlaceholder]="'common.search' | translate" />
       </div>
 

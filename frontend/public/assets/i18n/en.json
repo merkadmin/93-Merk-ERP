@@ -175,6 +175,37 @@
     "stock_value": "Stock Value",
     "no_entries": "No stock entries found."
   },
+  "login": {
+    "subtitle": "Sign in to your account",
+    "login_label": "Login",
+    "login_placeholder": "Enter your login",
+    "password_label": "Password",
+    "password_placeholder": "Enter your password",
+    "sign_in": "Sign In",
+    "invalid_credentials": "Invalid login or password.",
+    "fields_required": "Login and password are required.",
+    "no_account": "Don't have an account?",
+    "register_link": "Register"
+  },
+  "register": {
+    "title": "Create Account",
+    "subtitle": "Fill in the details below to register",
+    "name_en": "Full Name (EN)",
+    "name_en_placeholder": "Enter your name in English",
+    "name_ar": "Full Name (AR)",
+    "name_ar_placeholder": "أدخل اسمك بالعربية",
+    "email": "Email",
+    "email_placeholder": "Enter your email (optional)",
+    "confirm_password": "Confirm Password",
+    "confirm_password_placeholder": "Re-enter your password",
+    "sign_up": "Create Account",
+    "fields_required": "Name, login and password are required.",
+    "password_mismatch": "Passwords do not match.",
+    "login_taken": "This login is already taken.",
+    "error": "Registration failed. Please try again.",
+    "have_account": "Already have an account?",
+    "sign_in_link": "Sign in"
+  },
   "stock_movement": {
     "title": "Post Stock Movement",
     "item": "Item",

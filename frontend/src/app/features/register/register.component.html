@@ -1,0 +1,95 @@
+<div class="login-page d-flex flex-column align-items-center justify-content-center min-vh-100">
+
+  <!-- Quick-access bar -->
+  <div class="login-qa-bar position-fixed top-0 end-0 p-4 d-flex gap-3">
+    <button class="btn btn-icon btn-sm btn-light" (click)="themeService.toggle()" [title]="'common.toggle_theme' | translate">
+      <i class="ki-outline fs-5" [ngClass]="themeService.isDark() ? 'ki-night-day' : 'ki-moon'"></i>
+    </button>
+    <button class="btn btn-sm btn-light fw-bold fs-7" (click)="langService.toggle()">
+      {{ langService.lang() === 'ar' ? 'English' : 'عربي' }}
+    </button>
+  </div>
+
+  <div class="card shadow w-100" style="max-width: 480px;">
+    <div class="card-body p-10">
+
+      <!-- Title -->
+      <div class="text-center mb-8">
+        <i class="ki-outline ki-abstract-26 fs-4x text-primary mb-4 d-block"></i>
+        <h2 class="fw-bold text-gray-800 mb-1">{{ 'register.title' | translate }}</h2>
+        <p class="text-muted fs-6">{{ 'register.subtitle' | translate }}</p>
+      </div>
+
+      <form (ngSubmit)="submit()" #f="ngForm">
+
+        <!-- Name EN -->
+        <div class="mb-5">
+          <label class="form-label required fw-semibold">{{ 'register.name_en' | translate }}</label>
+          <input class="form-control" [(ngModel)]="name_EN" name="name_EN" required
+            [placeholder]="'register.name_en_placeholder' | translate">
+        </div>
+
+        <!-- Name AR -->
+        <div class="mb-5">
+          <label class="form-label fw-semibold">{{ 'register.name_ar' | translate }}</label>
+          <input class="form-control" [(ngModel)]="name_AR" name="name_AR"
+            [placeholder]="'register.name_ar_placeholder' | translate" dir="rtl">
+        </div>
+
+        <!-- Login -->
+        <div class="mb-5">
+          <label class="form-label required fw-semibold">{{ 'login.login_label' | translate }}</label>
+          <input class="form-control" [(ngModel)]="login" name="login" required
+            [placeholder]="'login.login_placeholder' | translate" autocomplete="username">
+        </div>
+
+        <!-- Email -->
+        <div class="mb-5">
+          <label class="form-label fw-semibold">{{ 'register.email' | translate }}</label>
+          <input class="form-control" [(ngModel)]="email" name="email" type="email"
+            [placeholder]="'register.email_placeholder' | translate" autocomplete="email">
+        </div>
+
+        <!-- Password -->
+        <div class="mb-5">
+          <label class="form-label required fw-semibold">{{ 'login.password_label' | translate }}</label>
+          <div class="position-relative">
+            <input class="form-control pe-12" [(ngModel)]="password" name="password" required
+              [type]="showPwd() ? 'text' : 'password'"
+              [placeholder]="'login.password_placeholder' | translate" autocomplete="new-password">
+            <button type="button" class="btn btn-icon btn-sm position-absolute top-50 end-0 translate-middle-y me-2"
+              (click)="showPwd.update(v => !v)">
+              <i class="ki-outline fs-4" [ngClass]="showPwd() ? 'ki-eye-slash' : 'ki-eye'"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Confirm Password -->
+        <div class="mb-8">
+          <label class="form-label required fw-semibold">{{ 'register.confirm_password' | translate }}</label>
+          <div class="position-relative">
+            <input class="form-control pe-12" [(ngModel)]="confirm" name="confirm" required
+              [type]="showConf() ? 'text' : 'password'"
+              [placeholder]="'register.confirm_password_placeholder' | translate" autocomplete="new-password">
+            <button type="button" class="btn btn-icon btn-sm position-absolute top-50 end-0 translate-middle-y me-2"
+              (click)="showConf.update(v => !v)">
+              <i class="ki-outline fs-4" [ngClass]="showConf() ? 'ki-eye-slash' : 'ki-eye'"></i>
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100 btn-lg mb-4" [disabled]="loading()">
+          @if (loading()) { <span class="spinner-border spinner-border-sm me-2"></span> }
+          {{ 'register.sign_up' | translate }}
+        </button>
+
+        <div class="text-center fs-6 text-muted">
+          {{ 'register.have_account' | translate }}
+          <a routerLink="/login" class="fw-semibold text-primary ms-1">{{ 'register.sign_in_link' | translate }}</a>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+</div>
