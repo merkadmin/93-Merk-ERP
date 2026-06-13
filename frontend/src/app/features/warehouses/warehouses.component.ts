@@ -104,6 +104,7 @@ export class WarehousesComponent implements OnInit {
   readonly cellRenderers: Record<string, (item: any) => string> = {
     wareHouseType: (item) => this.typeLabel(item.wareHouseTypeId),
     wareHouseCategory: (item) => this.categoryLabel(item.wareHouseCategoryId),
+    parentWarehouse: (item) => this.parentLabel(item.parentWarehouseId),
   };
 
   onFilterChange(filter: Record<string, string | number | null>) {
@@ -120,6 +121,12 @@ export class WarehousesComponent implements OnInit {
     if (!id) return '—';
     const c = this.wareHouseCategories().find(x => x.id === id);
     return c ? (this.isRtl ? (c.name_AR || c.name_EN) : (c.name_EN || c.name_AR || '')) : '—';
+  }
+
+  parentLabel(id: number | null): string {
+    if (!id) return '—';
+    const w = this.warehouses().find(x => x.id === id);
+    return w ? (this.isRtl ? (w.name_AR || w.name_EN) : (w.name_EN || w.name_AR || '')) : '—';
   }
 
   ngOnInit() {

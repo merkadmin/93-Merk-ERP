@@ -24,27 +24,11 @@
 
       <div class="w-100"></div>
 
-      <!-- Row 2: Type + Category -->
-      <div class="col-3">
-        <label class="form-label">{{ 'warehouses.type' | translate }}</label>
-        <app-custom-select-input [options]="typeOptions" [value]="form.wareHouseTypeId ?? null"
-          (valueChange)="form.wareHouseTypeId = $event ? +$event : null" [placeholder]="'common.none' | translate"
-          [searchPlaceholder]="'common.search' | translate" />
-      </div>
-
-      <div class="col-3">
-        <label class="form-label">{{ 'warehouses.category' | translate }}</label>
-        <app-custom-select-input [options]="categoryOptions" [value]="form.wareHouseCategoryId ?? null"
-          (valueChange)="onCategoryChange($event)" [placeholder]="'common.none' | translate"
-          [searchPlaceholder]="'common.search' | translate" />
-      </div>
-
-      <div class="w-100"></div>
-
-      <!-- Row 3: IsParent + Parent Warehouse -->
+      <!-- Row 2: IsParent + Parent Warehouse + Category (Category is last → leftmost in RTL) -->
       <div class="col-auto d-flex align-items-end pb-2">
         <div class="form-check form-check-custom form-check-solid gap-3">
           <input class="form-check-input" type="checkbox" [(ngModel)]="form.isParent" name="isParent" id="isParent"
+            [disabled]="noWarehouses()"
             (ngModelChange)="$event && (form.parentWarehouseId = null)">
           <label class="form-check-label fw-semibold" for="isParent">
             {{ 'common.is_parent' | translate }}
@@ -60,6 +44,13 @@
             [searchPlaceholder]="'common.search' | translate" />
         </div>
       }
+
+      <div class="col-3">
+        <label class="form-label">{{ 'warehouses.category' | translate }}</label>
+        <app-custom-select-input [options]="categoryOptions" [value]="form.wareHouseCategoryId ?? null"
+          (valueChange)="onCategoryChange($event)" [placeholder]="'common.none' | translate"
+          [searchPlaceholder]="'common.search' | translate" />
+      </div>
 
       <div class="w-100"></div>
 
@@ -95,6 +86,8 @@
           <th>{{ 'common.name' | translate }} (EN)</th>
           <th>{{ 'common.name' | translate }} (AR)</th>
           <th>{{ 'warehouses.parent_warehouse' | translate }}</th>
+          <th>{{ 'warehouses.category' | translate }}</th>
+          <th>{{ 'warehouses.type' | translate }}</th>
           <th>{{ 'common.is_parent' | translate }}</th>
         </tr>
       </thead>
@@ -105,6 +98,8 @@
           <td class="fw-semibold">{{ row.name_EN }}</td>
           <td>{{ row.name_AR || '—' }}</td>
           <td>{{ row.parentName }}</td>
+          <td>{{ row.categoryName }}</td>
+          <td>{{ row.typeName }}</td>
           <td>
             <span class="badge" [class.badge-light-info]="row.isParent" [class.badge-light-secondary]="!row.isParent">
               {{ (row.isParent ? 'common.yes' : 'common.no') | translate }}

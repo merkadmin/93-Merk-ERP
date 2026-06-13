@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
-import { ThemeService } from '../../../services/theme.service';
+import { ThemeService } from '../../services/theme.service';
 import { SidebarService } from './sidebar.service';
 
 @Component({

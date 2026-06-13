@@ -1,7 +1,7 @@
 import { inject } from '@angular/core';
 import { HttpInterceptorFn } from '@angular/common/http';
 import { catchError, tap, throwError } from 'rxjs';
-import { ServerStatusService } from '../services/server-status.service';
+import { ServerStatusService } from '../shared/services/server-status.service';
 
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   const status = inject(ServerStatusService);

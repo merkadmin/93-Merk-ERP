@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
-import { LanguageService } from '../../../services/language.service';
+import { LanguageService } from '../../services/language.service';
 
 @Component({
   selector: 'app-custom-table-pagination',

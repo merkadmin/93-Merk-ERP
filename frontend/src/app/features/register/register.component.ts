@@ -6,8 +6,8 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { ApiService } from '../../core/api.service';
 import { AuthService, AuthUser } from '../../core/auth.service';
-import { LanguageService } from '../../services/language.service';
-import { ThemeService } from '../../services/theme.service';
+import { LanguageService } from '../../shared/services/language.service';
+import { ThemeService } from '../../shared/services/theme.service';
 
 @Component({
   selector: 'app-register',
