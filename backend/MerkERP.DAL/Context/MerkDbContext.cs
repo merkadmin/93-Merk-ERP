@@ -23,6 +23,11 @@ public class MerkDbContext : DbContext
 	public DbSet<UOMConversionFactor_cs> UOMConversionFactor_cs { get; set; }
 	public DbSet<UOMConversionGroup_cs> UOMConversionGroup_cs { get; set; }
 	public DbSet<WareHouse_cs> WareHouse_cs { get; set; }
+	public DbSet<StockTransactionType_s> StockTransactionType_s { get; set; }
+	public DbSet<StockTransactionStatus_s> StockTransactionStatus_s { get; set; }
+	public DbSet<StockReconciliationTransaction> StockReconciliationTransaction { get; set; }
+	public DbSet<StockReconciliationTransactionDetail> StockReconciliationTransactionDetail { get; set; }
+	public DbSet<StockLedgerTransaction> StockLedgerTransaction { get; set; }
 	public DbSet<UserType_s> UserType_s { get; set; }
 	public DbSet<User_cs> User_cs { get; set; }
 
@@ -122,6 +127,49 @@ public class MerkDbContext : DbContext
 		m.Entity<UOMConversionFactor_cs>()
 			.HasOne(g => g.UOMConversionGroup).WithMany().HasForeignKey(g => g.UOMConversionGroupId).OnDelete(DeleteBehavior.SetNull);
 
+		// ── Stock tables ──────────────────────────────────────────────────────
+		m.Entity<StockTransactionType_s>().HasKey(e => e.Id);
+		m.Entity<StockTransactionType_s>().Property(e => e.Id).ValueGeneratedNever();
+		m.Entity<StockTransactionType_s>().Property(e => e.Name_EN).HasColumnType("nvarchar(200)").IsRequired();
+		m.Entity<StockTransactionType_s>().Property(e => e.Name_AR).HasColumnType("nvarchar(200)").IsRequired();
+
+		m.Entity<StockTransactionStatus_s>().HasKey(e => e.Id);
+		m.Entity<StockTransactionStatus_s>().Property(e => e.Id).ValueGeneratedNever();
+		m.Entity<StockTransactionStatus_s>().Property(e => e.Name_EN).HasColumnType("nvarchar(200)").IsRequired();
+		m.Entity<StockTransactionStatus_s>().Property(e => e.Name_AR).HasColumnType("nvarchar(200)").IsRequired();
+
+		m.Entity<StockReconciliationTransaction>().HasKey(e => e.Id);
+		m.Entity<StockReconciliationTransaction>().Property(e => e.InternalCode).HasColumnType("nvarchar(50)");
+		m.Entity<StockReconciliationTransaction>()
+			.HasOne(t => t.StockTransactionType).WithMany().HasForeignKey(t => t.StockTransactionTypeId).OnDelete(DeleteBehavior.Restrict);
+		m.Entity<StockReconciliationTransaction>()
+			.HasOne(t => t.StockTransactionStatus).WithMany().HasForeignKey(t => t.StockTransactionStatusId).OnDelete(DeleteBehavior.Restrict);
+		m.Entity<StockReconciliationTransaction>()
+			.HasOne(t => t.SetWarehouse).WithMany().HasForeignKey(t => t.SetWarehouseId).OnDelete(DeleteBehavior.Restrict);
+		m.Entity<StockReconciliationTransaction>()
+			.HasMany(t => t.Details).WithOne(d => d.StockReconciliationTransaction).HasForeignKey(d => d.StockReconciliationTransactionId).OnDelete(DeleteBehavior.Cascade);
+
+		m.Entity<StockReconciliationTransactionDetail>().HasKey(e => e.Id);
+		m.Entity<StockReconciliationTransactionDetail>().Property(e => e.Quantity).HasColumnType("decimal(18,4)");
+		m.Entity<StockReconciliationTransactionDetail>()
+			.HasOne(d => d.Item).WithMany().HasForeignKey(d => d.ItemId).OnDelete(DeleteBehavior.Restrict);
+		m.Entity<StockReconciliationTransactionDetail>()
+			.HasOne(d => d.Warehouse).WithMany().HasForeignKey(d => d.WarehouseId).OnDelete(DeleteBehavior.Restrict);
+		m.Entity<StockReconciliationTransactionDetail>()
+			.HasOne(d => d.UOM).WithMany().HasForeignKey(d => d.UOMId).OnDelete(DeleteBehavior.Restrict);
+
+		m.Entity<StockLedgerTransaction>().HasKey(e => e.Id);
+		m.Entity<StockLedgerTransaction>().Property(e => e.InternalCode).HasColumnType("nvarchar(50)");
+		m.Entity<StockLedgerTransaction>().Property(e => e.ActualQuantity).HasColumnType("decimal(18,4)");
+		m.Entity<StockLedgerTransaction>().Property(e => e.QuantityAfterTransaction).HasColumnType("decimal(18,4)");
+		m.Entity<StockLedgerTransaction>().Property(e => e.ValuationRate).HasColumnType("decimal(18,4)");
+		m.Entity<StockLedgerTransaction>()
+			.HasOne(l => l.StockTransactionType).WithMany().HasForeignKey(l => l.StockTransactionTypeId).OnDelete(DeleteBehavior.Restrict);
+		m.Entity<StockLedgerTransaction>()
+			.HasOne(l => l.Item).WithMany().HasForeignKey(l => l.ItemId).OnDelete(DeleteBehavior.Restrict);
+		m.Entity<StockLedgerTransaction>()
+			.HasOne(l => l.WareHouse).WithMany().HasForeignKey(l => l.WareHouseId).OnDelete(DeleteBehavior.Restrict);
+
 		// InsertedBy → User_cs (nullable FK, set null on user delete)
 		m.Entity<Branch_cs>()            .HasOne<User_cs>().WithMany().HasForeignKey(e => e.InsertedBy).OnDelete(DeleteBehavior.SetNull);
 		m.Entity<WareHouseCategory_cs>() .HasOne<User_cs>().WithMany().HasForeignKey(e => e.InsertedBy).OnDelete(DeleteBehavior.SetNull);
@@ -132,7 +180,10 @@ public class MerkDbContext : DbContext
 		m.Entity<ItemGroup_cs>()         .HasOne<User_cs>().WithMany().HasForeignKey(e => e.InsertedBy).OnDelete(DeleteBehavior.SetNull);
 		m.Entity<Item_cs>()              .HasOne<User_cs>().WithMany().HasForeignKey(e => e.InsertedBy).OnDelete(DeleteBehavior.SetNull);
 		m.Entity<ItemType_s>()           .HasOne<User_cs>().WithMany().HasForeignKey(e => e.InsertedBy).OnDelete(DeleteBehavior.SetNull);
-		m.Entity<ItemUOMConversion_cs>() .HasOne<User_cs>().WithMany().HasForeignKey(e => e.InsertedBy).OnDelete(DeleteBehavior.SetNull);
+		m.Entity<ItemUOMConversion_cs>()             .HasOne<User_cs>().WithMany().HasForeignKey(e => e.InsertedBy).OnDelete(DeleteBehavior.SetNull);
+		m.Entity<StockReconciliationTransaction>()   .HasOne<User_cs>().WithMany().HasForeignKey(e => e.InsertedBy).OnDelete(DeleteBehavior.SetNull);
+		m.Entity<StockReconciliationTransactionDetail>().HasOne<User_cs>().WithMany().HasForeignKey(e => e.InsertedBy).OnDelete(DeleteBehavior.SetNull);
+		m.Entity<StockLedgerTransaction>()           .HasOne<User_cs>().WithMany().HasForeignKey(e => e.InsertedBy).OnDelete(DeleteBehavior.SetNull);
 
 		m.Entity<ItemUOMConversion_cs>()
 			.Property(e => e.ConversionFactor).HasColumnType("decimal(18,2)");
@@ -237,8 +288,13 @@ public class MerkDbContext : DbContext
 			new TableName_s { Id = 15, Name = "WareHouseCategory_cs", EntityKey = "warehousecategories" },
 			new TableName_s { Id = 16, Name = "WareHouseType_s", EntityKey = null },
 			new TableName_s { Id = 18, Name = "TableMetaData",        EntityKey = null },
-			new TableName_s { Id = 19, Name = "UserType_s",           EntityKey = null },
-			new TableName_s { Id = 20, Name = "User_cs",              EntityKey = null }
+			new TableName_s { Id = 19, Name = "UserType_s",                              EntityKey = null },
+			new TableName_s { Id = 20, Name = "User_cs",                               EntityKey = null },
+			new TableName_s { Id = 21, Name = "StockTransactionType_s",               EntityKey = null },
+			new TableName_s { Id = 22, Name = "StockReconciliationTransaction",       EntityKey = null },
+			new TableName_s { Id = 23, Name = "StockReconciliationTransactionDetail", EntityKey = null },
+			new TableName_s { Id = 24, Name = "StockLedgerTransaction",               EntityKey = null },
+			new TableName_s { Id = 25, Name = "StockTransactionStatus_s",            EntityKey = null }
 		);
 
 		// ── TableMetaData seed ── (mirrors MetadataController column definitions)
@@ -338,6 +394,22 @@ public class MerkDbContext : DbContext
 			new ItemType_s { ItemTypeId = 1L, Name = "Stock Item", IsActive = true },
 			new ItemType_s { ItemTypeId = 2L, Name = "Service", IsActive = true },
 			new ItemType_s { ItemTypeId = 3L, Name = "Non-Stock Item", IsActive = true }
+		);
+
+		m.Entity<StockTransactionType_s>().HasData(
+			new StockTransactionType_s { Id = 1L, Name_EN = "Opening Balance",      Name_AR = "رصيد افتتاحي"  },
+			new StockTransactionType_s { Id = 2L, Name_EN = "Stock Reconciliation", Name_AR = "جرد المخزون"   },
+			new StockTransactionType_s { Id = 3L, Name_EN = "Stock Receipt",        Name_AR = "استلام مخزون"  },
+			new StockTransactionType_s { Id = 4L, Name_EN = "Stock Issue",          Name_AR = "صرف مخزون"     },
+			new StockTransactionType_s { Id = 5L, Name_EN = "Stock Transfer",       Name_AR = "تحويل مخزون"   }
+		);
+
+		m.Entity<StockTransactionStatus_s>().HasData(
+			new StockTransactionStatus_s { Id = 1L, Name_EN = "Draft",     Name_AR = "مسودة"       },
+			new StockTransactionStatus_s { Id = 2L, Name_EN = "Pending",   Name_AR = "قيد الانتظار" },
+			new StockTransactionStatus_s { Id = 3L, Name_EN = "Submitted", Name_AR = "مُقدَّم"      },
+			new StockTransactionStatus_s { Id = 4L, Name_EN = "Cancelled", Name_AR = "ملغى"         },
+			new StockTransactionStatus_s { Id = 5L, Name_EN = "Amended",   Name_AR = "معدَّل"       }
 		);
 	}
 }

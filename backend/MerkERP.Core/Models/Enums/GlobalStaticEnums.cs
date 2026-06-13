@@ -71,8 +71,22 @@ namespace MerkERP.Core.Models.Enums
 		WareHouse_cs                = 14,
 		WareHouseCategory_cs        = 15,
 		WareHouseType_s             = 16,
-		TableMetaData               = 18,
-		UserType_s                  = 19,
-		User_cs                     = 20,
+		TableMetaData                        = 18,
+		UserType_s                           = 19,
+		User_cs                              = 20,
+		StockTransactionType_s               = 21,
+		StockReconciliationTransaction       = 22,
+		StockReconciliationTransactionDetail = 23,
+		StockLedgerTransaction               = 24,
+		StockTransactionStatus_s             = 25,
+	}
+
+	public enum StockTransactionStatusEnum
+	{
+		Draft     = 1,
+		Pending   = 2,
+		Submitted = 3,
+		Cancelled = 4,
+		Amended   = 5,
 	}
 }

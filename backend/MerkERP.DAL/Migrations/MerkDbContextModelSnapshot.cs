@@ -1357,7 +1357,219 @@ namespace MerkERP.DAL.Migrations
                         {
                             Id = 20,
                             Name = "User_cs"
+                        },
+                        new
+                        {
+                            Id = 21,
+                            Name = "StockTransactionType_s"
+                        },
+                        new
+                        {
+                            Id = 22,
+                            Name = "StockReconciliationTransaction"
+                        },
+                        new
+                        {
+                            Id = 23,
+                            Name = "StockReconciliationTransactionDetail"
+                        },
+                        new
+                        {
+                            Id = 24,
+                            Name = "StockLedgerTransaction"
+                        },
+                        new
+                        {
+                            Id = 25,
+                            Name = "StockTransactionStatus_s"
                         });
+                });
+
+            modelBuilder.Entity("MerkERP.Core.Models.StockTransactionStatus_s", b =>
+                {
+                    b.Property<long>("Id")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Name_AR")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("Name_EN")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(200)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("StockTransactionStatus_s");
+
+                    b.HasData(
+                        new { Id = 1L, Name_EN = "Draft",     Name_AR = "مسودة"        },
+                        new { Id = 2L, Name_EN = "Pending",   Name_AR = "قيد الانتظار" },
+                        new { Id = 3L, Name_EN = "Submitted", Name_AR = "مُقدَّم"       },
+                        new { Id = 4L, Name_EN = "Cancelled", Name_AR = "ملغى"          },
+                        new { Id = 5L, Name_EN = "Amended",   Name_AR = "معدَّل"        });
+                });
+
+            modelBuilder.Entity("MerkERP.Core.Models.StockLedgerTransaction", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<decimal>("ActualQuantity")
+                        .HasColumnType("decimal(18,4)");
+
+                    b.Property<long?>("InsertedBy")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime?>("InsertedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("InternalCode")
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<long>("ItemId")
+                        .HasColumnType("bigint");
+
+                    b.Property<decimal>("QuantityAfterTransaction")
+                        .HasColumnType("decimal(18,4)");
+
+                    b.Property<long>("StockTransactionTypeId")
+                        .HasColumnType("bigint");
+
+                    b.Property<decimal>("ValuationRate")
+                        .HasColumnType("decimal(18,4)");
+
+                    b.Property<long>("WareHouseId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("InsertedBy");
+
+                    b.HasIndex("ItemId");
+
+                    b.HasIndex("StockTransactionTypeId");
+
+                    b.HasIndex("WareHouseId");
+
+                    b.ToTable("StockLedgerTransaction");
+                });
+
+            modelBuilder.Entity("MerkERP.Core.Models.StockReconciliationTransaction", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<long?>("InsertedBy")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime?>("InsertedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("InternalCode")
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateOnly>("PostingDate")
+                        .HasColumnType("date");
+
+                    b.Property<TimeOnly>("PostingTime")
+                        .HasColumnType("time");
+
+                    b.Property<long?>("SetWarehouseId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("StockTransactionStatusId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("StockTransactionTypeId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("InsertedBy");
+
+                    b.HasIndex("SetWarehouseId");
+
+                    b.HasIndex("StockTransactionStatusId");
+
+                    b.HasIndex("StockTransactionTypeId");
+
+                    b.ToTable("StockReconciliationTransaction");
+                });
+
+            modelBuilder.Entity("MerkERP.Core.Models.StockReconciliationTransactionDetail", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<long?>("InsertedBy")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime?>("InsertedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("ItemId")
+                        .HasColumnType("bigint");
+
+                    b.Property<decimal>("Quantity")
+                        .HasColumnType("decimal(18,4)");
+
+                    b.Property<long>("StockReconciliationTransactionId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("UOMId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("WarehouseId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("InsertedBy");
+
+                    b.HasIndex("ItemId");
+
+                    b.HasIndex("StockReconciliationTransactionId");
+
+                    b.HasIndex("UOMId");
+
+                    b.HasIndex("WarehouseId");
+
+                    b.ToTable("StockReconciliationTransactionDetail");
+                });
+
+            modelBuilder.Entity("MerkERP.Core.Models.StockTransactionType_s", b =>
+                {
+                    b.Property<long>("Id")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Name_AR")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("Name_EN")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(200)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("StockTransactionType_s");
+
+                    b.HasData(
+                        new { Id = 1L, Name_EN = "Opening Balance",      Name_AR = "رصيد افتتاحي"  },
+                        new { Id = 2L, Name_EN = "Stock Reconciliation", Name_AR = "جرد المخزون"   },
+                        new { Id = 3L, Name_EN = "Stock Receipt",        Name_AR = "استلام مخزون"  },
+                        new { Id = 4L, Name_EN = "Stock Issue",          Name_AR = "صرف مخزون"     },
+                        new { Id = 5L, Name_EN = "Stock Transfer",       Name_AR = "تحويل مخزون"   });
                 });
 
             modelBuilder.Entity("MerkERP.Core.Models.UOMConversionFactor_cs", b =>
@@ -1981,6 +2193,114 @@ namespace MerkERP.DAL.Migrations
                     b.Navigation("WareHouseCategory");
 
                     b.Navigation("WareHouseType");
+                });
+
+            modelBuilder.Entity("MerkERP.Core.Models.StockLedgerTransaction", b =>
+                {
+                    b.HasOne("MerkERP.Core.Models.User_cs", null)
+                        .WithMany()
+                        .HasForeignKey("InsertedBy")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("MerkERP.Core.Models.Item_cs", "Item")
+                        .WithMany()
+                        .HasForeignKey("ItemId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("MerkERP.Core.Models.StockTransactionType_s", "StockTransactionType")
+                        .WithMany()
+                        .HasForeignKey("StockTransactionTypeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("MerkERP.Core.Models.WareHouse_cs", "WareHouse")
+                        .WithMany()
+                        .HasForeignKey("WareHouseId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Item");
+
+                    b.Navigation("StockTransactionType");
+
+                    b.Navigation("WareHouse");
+                });
+
+            modelBuilder.Entity("MerkERP.Core.Models.StockReconciliationTransaction", b =>
+                {
+                    b.HasOne("MerkERP.Core.Models.User_cs", null)
+                        .WithMany()
+                        .HasForeignKey("InsertedBy")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("MerkERP.Core.Models.WareHouse_cs", "SetWarehouse")
+                        .WithMany()
+                        .HasForeignKey("SetWarehouseId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("MerkERP.Core.Models.StockTransactionStatus_s", "StockTransactionStatus")
+                        .WithMany()
+                        .HasForeignKey("StockTransactionStatusId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("MerkERP.Core.Models.StockTransactionType_s", "StockTransactionType")
+                        .WithMany()
+                        .HasForeignKey("StockTransactionTypeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("SetWarehouse");
+
+                    b.Navigation("StockTransactionStatus");
+
+                    b.Navigation("StockTransactionType");
+                });
+
+            modelBuilder.Entity("MerkERP.Core.Models.StockReconciliationTransactionDetail", b =>
+                {
+                    b.HasOne("MerkERP.Core.Models.User_cs", null)
+                        .WithMany()
+                        .HasForeignKey("InsertedBy")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("MerkERP.Core.Models.Item_cs", "Item")
+                        .WithMany()
+                        .HasForeignKey("ItemId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("MerkERP.Core.Models.StockReconciliationTransaction", "StockReconciliationTransaction")
+                        .WithMany("Details")
+                        .HasForeignKey("StockReconciliationTransactionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MerkERP.Core.Models.UOM_cs", "UOM")
+                        .WithMany()
+                        .HasForeignKey("UOMId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("MerkERP.Core.Models.WareHouse_cs", "Warehouse")
+                        .WithMany()
+                        .HasForeignKey("WarehouseId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Item");
+
+                    b.Navigation("StockReconciliationTransaction");
+
+                    b.Navigation("UOM");
+
+                    b.Navigation("Warehouse");
+                });
+
+            modelBuilder.Entity("MerkERP.Core.Models.StockReconciliationTransaction", b =>
+                {
+                    b.Navigation("Details");
                 });
 
             modelBuilder.Entity("MerkERP.Core.Models.ItemGroup_cs", b =>
