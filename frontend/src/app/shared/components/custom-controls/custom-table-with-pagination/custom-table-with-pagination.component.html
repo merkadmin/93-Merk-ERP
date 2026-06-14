@@ -4,7 +4,7 @@
       <thead>
         <tr class="fw-bold text-primary bg-light-primary">
           <th class="w-40px fw-bold">
-            <input type="checkbox" class="form-check-input" [checked]="isAllSelected" [indeterminate]="isIndeterminate"
+            <input type="checkbox" class="form-check-input" [checked]="isAllSelected()" [indeterminate]="isIndeterminate()"
               (change)="toggleAll()">
           </th>
           @for (col of visibleColumns; track col.key) {

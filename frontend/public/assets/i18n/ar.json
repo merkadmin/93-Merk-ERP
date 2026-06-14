@@ -3,7 +3,7 @@
     "title": "ميرك ERP"
   },
   "nav": {
-    "inventory": "المخزون",
+    "inventory": "أدوات",
     "items": "الأصناف",
     "item_groups": "مجموعات الأصناف",
     "uom_conversion_groups": "مجموعات وحدات القياس",
@@ -130,7 +130,12 @@
     "delete_confirm": "حذف مجموعة تحويل وحدة القياس؟",
     "delete_selected_confirm": "حذف {{count}} مجموعة محددة؟",
     "saved_rows_title_single": "سجل تم حفظه في هذه الجلسة",
-    "saved_rows_title": "سجلات تم حفظها في هذه الجلسة"
+    "saved_rows_title": "سجلات تم حفظها في هذه الجلسة",
+    "deactivate_cascade_confirm": "إلغاء تفعيل هذه المجموعة سيؤدي إلى إلغاء تفعيل جميع معاملات التحويل المرتبطة بها ({{count}}). هل تريد المتابعة؟",
+    "activate_cascade_confirm": "تفعيل هذه المجموعة سيؤدي إلى تفعيل جميع معاملات التحويل المرتبطة بها ({{count}}). هل تريد المتابعة؟",
+    "deactivate_no_factors_confirm": "إلغاء تفعيل هذه المجموعة؟",
+    "activate_no_factors_confirm": "تفعيل هذه المجموعة؟",
+    "cascade_factors_affected": "تم تحديث {{count}} معامل تحويل أيضاً."
   },
   "uom_conversion_factors": {
     "add_title": "معامل تحويل جديد",

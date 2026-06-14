@@ -40,6 +40,13 @@ export class CustomTableWithPaginationComponent implements OnInit {
   sortKey     = signal<string | null>(null);
   sortDir     = signal<'asc' | 'desc'>('asc');
 
+  isAllSelected = computed(() => {
+    const p = this.displayRows();
+    return p.length > 0 && p.every(r => this.selectedIds().has(r[this.idKey()]));
+  });
+
+  isIndeterminate = computed(() => this.selectedIds().size > 0 && !this.isAllSelected());
+
   sortedRows = computed(() => {
     const key = this.sortKey();
     const dir = this.sortDir();
@@ -59,18 +66,12 @@ export class CustomTableWithPaginationComponent implements OnInit {
 
   constructor() {
     effect(() => {
-      this.rows();
+      const tick = this.reload();
       untracked(() => {
         const empty = new Set<any>();
         this.selectedIds.set(empty);
         this.selectionChange.emit(empty);
-      });
-    });
-
-    effect(() => {
-      const tick = this.reload();
-      if (tick === 0) return;
-      untracked(() => {
+        if (tick === 0) return;
         this.meta.invalidate(this.entity());
         this.meta.get(this.entity()).subscribe(m => {
           this.columnMeta.set(m.columns);
@@ -95,15 +96,6 @@ export class CustomTableWithPaginationComponent implements OnInit {
   }
 
   // ── Selection ─────────────────────────────────────────────────────────────
-  get isAllSelected(): boolean {
-    const p = this.displayRows();
-    return p.length > 0 && p.every(r => this.selectedIds().has(r[this.idKey()]));
-  }
-
-  get isIndeterminate(): boolean {
-    return this.selectedIds().size > 0 && !this.isAllSelected;
-  }
-
   isSelected(row: any): boolean {
     return this.selectedIds().has(row[this.idKey()]);
   }
@@ -118,7 +110,7 @@ export class CustomTableWithPaginationComponent implements OnInit {
 
   toggleAll(): void {
     const s = new Set(this.selectedIds());
-    if (this.isAllSelected) {
+    if (this.isAllSelected()) {
       for (const row of this.displayRows()) s.delete(row[this.idKey()]);
     } else {
       for (const row of this.displayRows()) s.add(row[this.idKey()]);

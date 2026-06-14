@@ -60,7 +60,7 @@ public class UOMConversionGroupsController : ControllerBase
 	}
 
 	[HttpPost("import")]
-	public async Task<IActionResult> Import(IFormFile file)
+	public async Task<IActionResult> Import(IFormFile file, [FromForm] long? insertedBy = null)
 	{
 		if (file is null || file.Length == 0)
 			return BadRequest("No file uploaded.");
@@ -97,6 +97,7 @@ public class UOMConversionGroupsController : ControllerBase
 				Name_AR      = nameAR,
 				IsActive     = true,
 				IsFavorite   = false,
+				InsertedBy   = insertedBy,
 				InsertedDate = DateTime.UtcNow,
 			});
 			created++;
@@ -133,6 +134,12 @@ public class UOMConversionGroupsController : ControllerBase
 	{
 		var e = await _db.UOMConversionGroup_cs.FindAsync(id);
 		if (e is null) return NotFound();
+
+		var usageCount = await _db.UOMConversionFactor_cs
+			.CountAsync(f => f.UOMConversionGroupId == id);
+		if (usageCount > 0)
+			return Conflict(new { message = $"Cannot delete: this group is used in {usageCount} conversion factor(s)." });
+
 		_db.UOMConversionGroup_cs.Remove(e);
 		await _db.SaveChangesAsync();
 		return NoContent();
@@ -148,14 +155,24 @@ public class UOMConversionGroupsController : ControllerBase
 		return Ok(e);
 	}
 
+	[HttpGet("{id:int}/factors-count")]
+	public async Task<IActionResult> FactorsCount(int id) =>
+		Ok(new { count = await _db.UOMConversionFactor_cs.CountAsync(f => f.UOMConversionGroupId == id) });
+
 	[HttpPatch("{id:int}/toggle-active")]
 	public async Task<IActionResult> ToggleActive(int id)
 	{
 		var e = await _db.UOMConversionGroup_cs.FindAsync(id);
 		if (e is null) return NotFound();
 		e.IsActive = !e.IsActive;
+
+		var factors = await _db.UOMConversionFactor_cs
+			.Where(f => f.UOMConversionGroupId == id)
+			.ToListAsync();
+		factors.ForEach(f => f.IsActive = e.IsActive);
+
 		await _db.SaveChangesAsync();
-		return Ok(e);
+		return Ok(new { group = e, affectedFactorsCount = factors.Count });
 	}
 
 	[HttpPatch("bulk-active")]
@@ -172,6 +189,14 @@ public class UOMConversionGroupsController : ControllerBase
 	[HttpDelete("bulk")]
 	public async Task<IActionResult> DeleteBulk([FromBody] List<int> ids)
 	{
+		var usedCount = await _db.UOMConversionFactor_cs
+			.Where(f => f.UOMConversionGroupId.HasValue && ids.Contains(f.UOMConversionGroupId.Value))
+			.Select(f => f.UOMConversionGroupId!.Value)
+			.Distinct()
+			.CountAsync();
+		if (usedCount > 0)
+			return Conflict(new { message = $"Cannot delete: {usedCount} of the selected group(s) are used in conversion factors." });
+
 		var entities = await _db.UOMConversionGroup_cs
 			.Where(g => ids.Contains(g.Id))
 			.ToListAsync();

@@ -5,6 +5,7 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2';
 import { ApiService } from '../../core/api.service';
+import { AuthService } from '../../core/auth.service';
 import { ColumnMeta, MetadataService } from '../../core/metadata.service';
 import { RegularListHeaderWithActionsComponent } from '../../shared/components/cards/regular-list-header-with-actions/regular-list-header-with-actions.component';
 import { RegularListSearchActionsComponent, SearchField } from '../../shared/components/cards/regular-list-search-actions/regular-list-search-actions.component';
@@ -24,6 +25,7 @@ interface WareHouseCategory { id: number; name_EN: string; name_AR: string | nul
 })
 export class WarehousesComponent implements OnInit {
   private api = inject(ApiService);
+  private auth = inject(AuthService);
   private router = inject(Router);
   private translate = inject(TranslateService);
   private toastr = inject(ToastrService);
@@ -157,6 +159,8 @@ export class WarehousesComponent implements OnInit {
   importExcel(file: File) {
     const fd = new FormData();
     fd.append('file', file);
+    const userId = this.auth.user()?.id;
+    if (userId != null) fd.append('insertedBy', String(userId));
     this.api.post<{ created: number; errors: string[] }>('warehouses/import', fd).subscribe({
       next: result => {
         if (result.errors.length === 0) {

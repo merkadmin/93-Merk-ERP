@@ -57,7 +57,7 @@ public class WareHouseCategoriesController : ControllerBase
 	}
 
 	[HttpPost("import")]
-	public async Task<IActionResult> Import(IFormFile file)
+	public async Task<IActionResult> Import(IFormFile file, [FromForm] long? insertedBy = null)
 	{
 		if (file is null || file.Length == 0)
 			return BadRequest("No file uploaded.");
@@ -90,6 +90,7 @@ public class WareHouseCategoriesController : ControllerBase
 				Name_AR      = string.IsNullOrWhiteSpace(nameAr) ? null : nameAr,
 				Description  = string.IsNullOrWhiteSpace(desc)   ? null : desc,
 				IsActive     = true,
+				InsertedBy   = insertedBy,
 			});
 			created++;
 		}

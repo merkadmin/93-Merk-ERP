@@ -59,7 +59,7 @@ public class UOMsController : ControllerBase
 	}
 
 	[HttpPost("import")]
-	public async Task<IActionResult> Import(IFormFile file)
+	public async Task<IActionResult> Import(IFormFile file, [FromForm] long? insertedBy = null)
 	{
 		if (file is null || file.Length == 0)
 			return BadRequest("No file uploaded.");
@@ -95,6 +95,7 @@ public class UOMsController : ControllerBase
 				Name_AR           = string.IsNullOrWhiteSpace(nameAR) ? null : nameAR,
 				MustBeWholeNumber = mustBeWholeNumber,
 				IsActive          = true,
+				InsertedBy        = insertedBy,
 				InsertedDate      = DateTime.UtcNow,
 			});
 			created++;

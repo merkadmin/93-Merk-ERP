@@ -130,7 +130,12 @@
     "delete_confirm": "Delete this UOM Conversion Group?",
     "delete_selected_confirm": "Delete {{count}} selected group(s)?",
     "saved_rows_title_single": "record saved in this session",
-    "saved_rows_title": "records saved in this session"
+    "saved_rows_title": "records saved in this session",
+    "deactivate_cascade_confirm": "Deactivating this group will also deactivate all its conversion factors ({{count}}). Continue?",
+    "activate_cascade_confirm": "Activating this group will also activate all its conversion factors ({{count}}). Continue?",
+    "deactivate_no_factors_confirm": "Deactivate this group?",
+    "activate_no_factors_confirm": "Activate this group?",
+    "cascade_factors_affected": "{{count}} conversion factor(s) were also updated."
   },
   "uom_conversion_factors": {
     "add_title": "New UOM Conversion Factor",
