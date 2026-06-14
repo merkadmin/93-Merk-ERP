@@ -38,8 +38,17 @@ export const routes: Routes = [
       { path: 'warehouses/operation',     loadComponent: () => import('./features/warehouses/operations/warehouses-operation.component').then(m => m.WarehousesOperationComponent) },
       { path: 'warehouses/operation/:id', loadComponent: () => import('./features/warehouses/operations/warehouses-operation.component').then(m => m.WarehousesOperationComponent) },
 
-      { path: 'current-stock',  loadComponent: () => import('./features/stock/stock.component').then(m => m.StockComponent) },
-      { path: 'stock-movement', loadComponent: () => import('./features/stock-movement/stock-movement.component').then(m => m.StockMovementComponent) },
+      { path: 'current-stock',       loadComponent: () => import('./features/stock/stock.component').then(m => m.StockComponent) },
+      { path: 'stock-movement',      loadComponent: () => import('./features/stock-movement/stock-movement.component').then(m => m.StockMovementComponent) },
+
+      { path: 'stock-reconciliation',           loadComponent: () => import('./features/stock-reconciliation/stock-reconciliation.component').then(m => m.StockReconciliationComponent) },
+      { path: 'stock-reconciliation/operation',     loadComponent: () => import('./features/stock-reconciliation/operations/stock-reconciliation-operation.component').then(m => m.StockReconciliationOperationComponent) },
+      { path: 'stock-reconciliation/operation/:id', loadComponent: () => import('./features/stock-reconciliation/operations/stock-reconciliation-operation.component').then(m => m.StockReconciliationOperationComponent) },
+      { path: 'purchase-receipt',     loadComponent: () => import('./features/stock-movement/stock-movement.component').then(m => m.StockMovementComponent) },
+      { path: 'delivery-note',        loadComponent: () => import('./features/stock-movement/stock-movement.component').then(m => m.StockMovementComponent) },
+      { path: 'transfer-entry',       loadComponent: () => import('./features/stock-movement/stock-movement.component').then(m => m.StockMovementComponent) },
+      { path: 'stock-balance',        loadComponent: () => import('./features/stock/stock.component').then(m => m.StockComponent) },
+      { path: 'stock-settings',       loadComponent: () => import('./features/stock-movement/stock-movement.component').then(m => m.StockMovementComponent) },
     ],
   },
 ];

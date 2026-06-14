@@ -1,0 +1,32 @@
+<app-regular-list-header-with-actions
+  [title]="'stock_reconciliation.title' | translate"
+  icon="ki-outline ki-document"
+  color="primary"
+  [selectedCount]="selectedIds().size"
+  [showImportExport]="false"
+  (add)="addNew()"
+  (refresh)="load()"
+  (deleteSelected)="deleteSelected()" />
+
+<app-regular-list-search-actions [fields]="searchFields" (filterChange)="onFilterChange($event)" />
+
+<app-custom-table-with-pagination
+  entity="stockreconciliationtransactions"
+  [rows]="filteredRecords"
+  [cellRenderers]="cellRenderers"
+  (metadataLoaded)="columnMeta.set($event)"
+  (selectionChange)="selectedIds.set($event)"
+  [reload]="metaReloadKey()">
+  <ng-template #rowActions let-item>
+    <div class="d-inline-flex align-items-center gap-2">
+      <button class="btn btn-icon btn-sm btn-light-primary" (click)="edit(item.id)"
+        [title]="'common.edit' | translate">
+        <i class="ki-outline ki-pencil fs-4"></i>
+      </button>
+      <button class="btn btn-icon btn-sm btn-light-danger" (click)="delete(item.id)"
+        [title]="'common.delete' | translate">
+        <i class="ki-outline ki-trash fs-4"></i>
+      </button>
+    </div>
+  </ng-template>
+</app-custom-table-with-pagination>

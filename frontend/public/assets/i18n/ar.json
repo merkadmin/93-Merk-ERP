@@ -13,7 +13,13 @@
     "warehouse_categories": "فئات المخازن",
     "warehouses": "المخازن",
     "current_stock": "المخزون الحالي",
-    "stock_movement": "حركة المخزون"
+    "stock_movement": "حركة المخزون",
+    "stock_reconciliation": "تسوية المخزون",
+    "purchase_receipt": "إيصال الشراء",
+    "delivery_note": "إشعار التسليم",
+    "transfer_entry": "قيد التحويل",
+    "stock_balance": "رصيد المخزون",
+    "stock_settings": "إعدادات المخزون"
   },
   "common": {
     "yes": "نعم",
@@ -214,6 +220,28 @@
     "error": "فشل التسجيل. يرجى المحاولة مجدداً.",
     "have_account": "لديك حساب بالفعل؟",
     "sign_in_link": "تسجيل الدخول"
+  },
+  "stock_reconciliation": {
+    "title": "تسوية المخزون",
+    "add_title": "تسوية مخزون جديدة",
+    "edit_title": "تعديل تسوية المخزون",
+    "status": "الحالة",
+    "txn_type": "نوع المعاملة",
+    "posting_date": "تاريخ الترحيل",
+    "posting_time": "وقت الترحيل",
+    "set_warehouse": "المستودع المحدد",
+    "details": "التفاصيل",
+    "detail_item": "الصنف",
+    "detail_warehouse": "المستودع",
+    "detail_qty": "الكمية",
+    "detail_uom": "وحدة القياس",
+    "add_detail": "إضافة صف",
+    "detail_fill_all": "يرجى تعبئة الصنف والمستودع والكمية ووحدة القياس.",
+    "no_details": "لم يتم إضافة أي أصناف بعد.",
+    "delete_confirm": "هل تريد حذف هذه التسوية؟",
+    "delete_selected_confirm": "حذف {{count}} تسوية محددة؟",
+    "saved_rows_title_single": "سجل تم حفظه في هذه الجلسة",
+    "saved_rows_title": "سجلات تم حفظها في هذه الجلسة"
   },
   "stock_movement": {
     "title": "ترحيل حركة مخزون",

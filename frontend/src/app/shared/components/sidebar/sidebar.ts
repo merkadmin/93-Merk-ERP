@@ -15,6 +15,7 @@ import { SidebarService } from './sidebar.service';
 export class SidebarComponent {
   sidebarOpen = false;
   expandedSections: Set<string>;
+  expandedItems: Set<string> = new Set();
 
   constructor(
     public themeService: ThemeService,
@@ -33,5 +34,14 @@ export class SidebarComponent {
 
   isSectionExpanded(id: string): boolean {
     return this.expandedSections.has(id);
+  }
+
+  toggleItem(key: string) {
+    if (this.expandedItems.has(key)) this.expandedItems.delete(key);
+    else this.expandedItems.add(key);
+  }
+
+  isItemExpanded(key: string): boolean {
+    return this.expandedItems.has(key);
   }
 }

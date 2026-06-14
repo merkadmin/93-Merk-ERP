@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 
 export interface SidebarItem {
-  route: string;
+  route?: string;
   icon: string;
   labelKey: string;
+  children?: SidebarItem[];
 }
 
 export interface SidebarSection {
@@ -42,7 +43,18 @@ export class SidebarService {
       isVisible: () => true,
       getChildren: () => [
         { route: '/stock/current-stock', icon: 'ki-outline ki-chart-simple', labelKey: 'nav.current_stock' },
-        { route: '/stock/stock-movement', icon: 'ki-outline ki-arrows-loop', labelKey: 'nav.stock_movement' },
+        {
+          icon: 'ki-outline ki-arrows-loop',
+          labelKey: 'nav.stock_movement',
+          children: [
+            { route: '/stock/stock-reconciliation', icon: 'ki-outline ki-document',        labelKey: 'nav.stock_reconciliation' },
+            { route: '/stock/purchase-receipt',     icon: 'ki-outline ki-basket-ok',       labelKey: 'nav.purchase_receipt' },
+            { route: '/stock/delivery-note',        icon: 'ki-outline ki-delivery',        labelKey: 'nav.delivery_note' },
+            { route: '/stock/transfer-entry',       icon: 'ki-outline ki-arrows-loop',     labelKey: 'nav.transfer_entry' },
+            { route: '/stock/stock-balance',        icon: 'ki-outline ki-chart-pie-simple',labelKey: 'nav.stock_balance' },
+            { route: '/stock/stock-settings',       icon: 'ki-outline ki-setting-2',       labelKey: 'nav.stock_settings' },
+          ],
+        },
       ],
     },
   ];

@@ -13,7 +13,13 @@
     "warehouse_categories": "Warehouse Categories",
     "warehouses": "Warehouses",
     "current_stock": "Current Stock",
-    "stock_movement": "Stock Movement"
+    "stock_movement": "Stock Movement",
+    "stock_reconciliation": "Stock Reconciliation",
+    "purchase_receipt": "Purchase Receipt",
+    "delivery_note": "Delivery Note",
+    "transfer_entry": "Transfer Entry",
+    "stock_balance": "Stock Balance",
+    "stock_settings": "Stock Settings"
   },
   "common": {
     "yes": "Yes",
@@ -214,6 +220,28 @@
     "error": "Registration failed. Please try again.",
     "have_account": "Already have an account?",
     "sign_in_link": "Sign in"
+  },
+  "stock_reconciliation": {
+    "title": "Stock Reconciliation",
+    "add_title": "New Stock Reconciliation",
+    "edit_title": "Edit Stock Reconciliation",
+    "status": "Status",
+    "txn_type": "Transaction Type",
+    "posting_date": "Posting Date",
+    "posting_time": "Posting Time",
+    "set_warehouse": "Set Warehouse",
+    "details": "Details",
+    "detail_item": "Item",
+    "detail_warehouse": "Warehouse",
+    "detail_qty": "Quantity",
+    "detail_uom": "UOM",
+    "add_detail": "Add Row",
+    "detail_fill_all": "Please fill in Item, Warehouse, Quantity and UOM.",
+    "no_details": "No items added yet.",
+    "delete_confirm": "Delete this reconciliation?",
+    "delete_selected_confirm": "Delete {{count}} selected reconciliation(s)?",
+    "saved_rows_title_single": "record saved in this session",
+    "saved_rows_title": "records saved in this session"
   },
   "stock_movement": {
     "title": "Post Stock Movement",

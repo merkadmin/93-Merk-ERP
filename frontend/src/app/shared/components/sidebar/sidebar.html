@@ -34,13 +34,40 @@
 
           @if (isSectionExpanded(section.id)) {
           <div class="menu-sub menu-sub-accordion">
-            @for (item of section.getChildren(); track item.route) {
-            <div class="menu-item">
-              <a class="menu-link py-2" [routerLink]="item.route" routerLinkActive="active" (click)="closeSidebar()">
-                <span class="menu-icon"><i class="{{ item.icon }} fs-3"></i></span>
-                <span class="menu-title">{{ item.labelKey | translate }}</span>
-              </a>
-            </div>
+            @for (item of section.getChildren(); track item.labelKey) {
+
+              @if (item.children?.length) {
+              <!-- Nested dropdown item -->
+              <div class="menu-item menu-accordion" [class.show]="isItemExpanded(item.labelKey)">
+                <span class="menu-link py-2" (click)="toggleItem(item.labelKey)">
+                  <span class="menu-icon"><i class="{{ item.icon }} fs-3"></i></span>
+                  <span class="menu-title">{{ item.labelKey | translate }}</span>
+                  <span class="menu-arrow"></span>
+                </span>
+                @if (isItemExpanded(item.labelKey)) {
+                <div class="menu-sub menu-sub-accordion">
+                  @for (child of item.children; track child.route) {
+                  <div class="menu-item">
+                    <a class="menu-link py-2" [routerLink]="child.route" routerLinkActive="active"
+                      (click)="closeSidebar()">
+                      <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
+                      <span class="menu-title">{{ child.labelKey | translate }}</span>
+                    </a>
+                  </div>
+                  }
+                </div>
+                }
+              </div>
+              } @else {
+              <!-- Leaf item -->
+              <div class="menu-item">
+                <a class="menu-link py-2" [routerLink]="item.route" routerLinkActive="active" (click)="closeSidebar()">
+                  <span class="menu-icon"><i class="{{ item.icon }} fs-3"></i></span>
+                  <span class="menu-title">{{ item.labelKey | translate }}</span>
+                </a>
+              </div>
+              }
+
             }
           </div>
           }

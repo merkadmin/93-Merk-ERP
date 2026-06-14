@@ -1,0 +1,108 @@
+<app-regular-operation-header
+  [title]="(isEdit() ? 'stock_reconciliation.edit_title' : 'stock_reconciliation.add_title') | translate"
+  icon="ki-outline ki-document"
+  color="success"
+  (cancel)="back()" />
+
+<!-- Header card -->
+<div class="card">
+  <div class="card-body">
+
+    <!-- Row 0: Status (at the top per spec) -->
+    <div class="row g-4 mb-4">
+      <div class="col-3">
+        <label class="form-label required">{{ 'stock_reconciliation.status' | translate }}</label>
+        <select class="form-select" [(ngModel)]="form.stockTransactionStatusId" name="stockTransactionStatusId">
+          @for (s of txnStatuses(); track s.id) {
+          <option [ngValue]="s.id">{{ isRtl ? s.name_AR : s.name_EN }}</option>
+          }
+        </select>
+      </div>
+      <div class="col-9"></div>
+    </div>
+
+    <!-- Row 1: Internal Code · Transaction Type · Posting Date · Posting Time -->
+    <div class="row g-4 mb-4">
+      <div class="col-3">
+        <label class="form-label required">{{ 'common.internal_code' | translate }}</label>
+        <input class="form-control" [(ngModel)]="form.internalCode" name="internalCode"
+          [placeholder]="'common.internal_code' | translate">
+      </div>
+      <div class="col-3">
+        <label class="form-label required">{{ 'stock_reconciliation.txn_type' | translate }}</label>
+        <select class="form-select" [(ngModel)]="form.stockTransactionTypeId" name="stockTransactionTypeId">
+          @for (t of txnTypes(); track t.id) {
+          <option [ngValue]="t.id">{{ isRtl ? t.name_AR : t.name_EN }}</option>
+          }
+        </select>
+      </div>
+      <div class="col-3">
+        <label class="form-label required">{{ 'stock_reconciliation.posting_date' | translate }}</label>
+        <input class="form-control" type="date" [(ngModel)]="form.postingDate" name="postingDate">
+      </div>
+      <div class="col-3">
+        <label class="form-label">{{ 'stock_reconciliation.posting_time' | translate }}</label>
+        <input class="form-control" type="time" [(ngModel)]="form.postingTime" name="postingTime">
+      </div>
+    </div>
+
+    <!-- Row 2: Set Warehouse -->
+    <div class="row g-4">
+      <div class="col-3">
+        <label class="form-label">{{ 'stock_reconciliation.set_warehouse' | translate }}</label>
+        <app-custom-select-input
+          [options]="allWarehouseOptions"
+          [value]="form.setWarehouseId"
+          (valueChange)="form.setWarehouseId = $event ? +$event : null"
+          [placeholder]="'common.none' | translate"
+          [searchPlaceholder]="'common.search' | translate" />
+      </div>
+    </div>
+
+  </div>
+
+  <app-regular-operation-actions
+    [saving]="saving()"
+    [savingNew]="savingNew()"
+    (save)="save()"
+    (saveAndNew)="saveAndNew()"
+    (reset)="resetForm()" />
+</div>
+
+
+<!-- Saved rows (after Save & New) -->
+@if (savedRows().length > 0) {
+<div class="card mt-6">
+  <div class="card-header min-h-50px">
+    <h3 class="card-title fs-6 fw-bold text-success">
+      <i class="ki-outline ki-check-circle fs-4 text-success me-2"></i>
+      {{ savedRows().length }}
+      {{ (savedRows().length === 1 ? 'stock_reconciliation.saved_rows_title_single' : 'stock_reconciliation.saved_rows_title') | translate }}
+    </h3>
+  </div>
+  <div class="card-body p-0">
+    <table class="table table-row-dashed table-row-gray-300 align-middle gs-4 gy-2 mb-0">
+      <thead>
+        <tr class="fw-bold text-success bg-light-success fs-7">
+          <th class="w-40px">#</th>
+          <th>{{ 'common.internal_code' | translate }}</th>
+          <th>{{ 'stock_reconciliation.txn_type' | translate }}</th>
+          <th>{{ 'stock_reconciliation.status' | translate }}</th>
+          <th>{{ 'stock_reconciliation.posting_date' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of savedRows(); track $index) {
+        <tr>
+          <td class="text-muted">{{ $index + 1 }}</td>
+          <td class="fw-semibold">{{ row.internalCode }}</td>
+          <td>{{ row.txnType }}</td>
+          <td>{{ row.status }}</td>
+          <td>{{ row.postingDate }}</td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
+}
