@@ -219,6 +219,11 @@ public class ItemsController : ControllerBase
 	{
 		var e = await _db.Item_cs.FindAsync(id);
 		if (e is null) return NotFound();
+
+		var usedIn = await GetUsedInTablesAsync([id]);
+		if (usedIn.TryGetValue(id, out var tables))
+			return Conflict(new { message = $"Item is used in: {string.Join(", ", tables)}" });
+
 		_db.Item_cs.Remove(e);
 		await _db.SaveChangesAsync();
 		return NoContent();
@@ -258,12 +263,46 @@ public class ItemsController : ControllerBase
 	[HttpDelete("bulk")]
 	public async Task<IActionResult> DeleteBulk([FromBody] List<long> ids)
 	{
-		var entities = await _db.Item_cs
-			.Where(i => ids.Contains(i.Id))
+		var usedIn  = await GetUsedInTablesAsync(ids);
+		var safeIds = ids.Where(id => !usedIn.ContainsKey(id)).ToList();
+		var blocked = usedIn.Select(kv => new { itemId = kv.Key, tables = kv.Value }).ToList();
+
+		if (safeIds.Count > 0)
+		{
+			var entities = await _db.Item_cs.Where(i => safeIds.Contains(i.Id)).ToListAsync();
+			_db.Item_cs.RemoveRange(entities);
+			await _db.SaveChangesAsync();
+		}
+
+		return Ok(new { deleted = safeIds.Count, blocked });
+	}
+
+	private async Task<Dictionary<long, List<string>>> GetUsedInTablesAsync(IEnumerable<long> ids)
+	{
+		var idList = ids.ToList();
+		var result = new Dictionary<long, List<string>>();
+
+		var srdIds = await _db.StockReconciliationTransactionDetail
+			.Where(d => idList.Contains(d.ItemId))
+			.Select(d => d.ItemId)
+			.Distinct()
 			.ToListAsync();
-		_db.Item_cs.RemoveRange(entities);
-		await _db.SaveChangesAsync();
-		return NoContent();
+
+		var sltIds = await _db.StockLedgerTransaction
+			.Where(d => idList.Contains(d.ItemId))
+			.Select(d => d.ItemId)
+			.Distinct()
+			.ToListAsync();
+
+		foreach (var id in idList)
+		{
+			var tables = new List<string>();
+			if (srdIds.Contains(id)) tables.Add("Stock Reconciliation");
+			if (sltIds.Contains(id)) tables.Add("Stock Ledger");
+			if (tables.Count > 0) result[id] = tables;
+		}
+
+		return result;
 	}
 
 	// ── Barcode lookup (global) ─────────────────────────────────────────────

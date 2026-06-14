@@ -179,8 +179,14 @@ export class ItemsComponent implements OnInit {
       confirmButtonColor: '#f1416c',
       reverseButtons: this.isRtl,
     }).then(result => {
-      if (result.isConfirmed)
-        this.api.delete(`items/${id}`).subscribe(() => this.load());
+      if (!result.isConfirmed) return;
+      this.api.delete(`items/${id}`).subscribe({
+        next: () => this.load(),
+        error: err => {
+          const msg = err?.error?.message ?? this.translate.instant('items.delete_in_use');
+          this.toastr.error(msg, this.translate.instant('common.cannot_delete'));
+        },
+      });
     });
   }
 
@@ -211,8 +217,23 @@ export class ItemsComponent implements OnInit {
       confirmButtonColor: '#f1416c',
       reverseButtons: this.isRtl,
     }).then(result => {
-      if (result.isConfirmed)
-        this.api.deleteBulk('items/bulk', ids).subscribe(() => this.load());
+      if (!result.isConfirmed) return;
+      this.api.deleteBulk('items/bulk', ids).subscribe({
+        next: (res: any) => {
+          this.load();
+          this.selectedIds.set(new Set());
+          const blocked: { itemId: number; tables: string[] }[] = res?.blocked ?? [];
+          if (blocked.length > 0) {
+            const lines = blocked.map(b => `• Item #${b.itemId} (${b.tables.join(', ')})`).join('<br>');
+            this.toastr.warning(
+              `${this.translate.instant('items.delete_bulk_blocked')}<br>${lines}`,
+              this.translate.instant('common.cannot_delete'),
+              { enableHtml: true, timeOut: 8000 }
+            );
+          }
+        },
+        error: () => this.toastr.error(this.translate.instant('items.delete_in_use')),
+      });
     });
   }
 }

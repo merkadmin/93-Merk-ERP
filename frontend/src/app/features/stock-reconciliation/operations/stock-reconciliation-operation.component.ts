@@ -40,6 +40,14 @@ interface ApiDetail {
   uomId: number;
 }
 
+interface SkippedDetail {
+  itemId: number;
+  itemName: string;
+  uomId: number;
+  uomName: string;
+  reason: string;
+}
+
 interface SavedRow {
   internalCode: string;
   txnType: string;
@@ -190,10 +198,21 @@ export class StockReconciliationOperationComponent implements OnInit {
     }
 
     this.addingDetail.set(true);
-    this.api.post<ApiDetail>(`stockreconciliationtransactions/${this.form.id}/details`, this.newDetail)
+    this.api.post<any>(`stockreconciliationtransactions/${this.form.id}/details`, this.newDetail)
       .subscribe({
-        next: detail => {
-          this.apiDetails.update(list => [...list, detail]);
+        next: res => {
+          const skipped: SkippedDetail[] = res?.skipped ?? [];
+          if (skipped.length > 0) {
+            const names = skipped.map((s: SkippedDetail) => `• ${s.itemName} (${s.uomName})`).join('<br>');
+            this.toastr.warning(
+              `${this.translate.instant('stock_reconciliation.skipped_no_conversion')}<br>${names}`,
+              this.translate.instant('stock_reconciliation.skipped_title'),
+              { enableHtml: true, timeOut: 8000 }
+            );
+          }
+          if (res?.saved) {
+            this.apiDetails.update(list => [...list, res.saved]);
+          }
           this.newDetail = this.blankDetail();
           this.addingDetail.set(false);
         },
@@ -220,7 +239,7 @@ export class StockReconciliationOperationComponent implements OnInit {
     const now   = new Date().toTimeString().substring(0, 5);
     return {
       id: 0,
-      stockTransactionTypeId: 2,
+      stockTransactionTypeId: 0,
       internalCode:   '',
       postingDate:    today,
       postingTime:    now,
@@ -275,8 +294,17 @@ export class StockReconciliationOperationComponent implements OnInit {
         });
 
     req.subscribe({
-      next: () => {
-        this.toastr.success(this.translate.instant('common.save_success'));
+      next: (res: any) => {
+        const skipped: SkippedDetail[] = res?.skipped ?? [];
+        if (skipped.length > 0) {
+          const names = skipped.map(s => `• ${s.itemName} (${s.uomName})`).join('<br>');
+          this.toastr.warning(
+            `${this.translate.instant('stock_reconciliation.skipped_no_conversion')}<br>${names}`,
+            this.translate.instant('stock_reconciliation.skipped_title'),
+            { enableHtml: true, timeOut: 8000 }
+          );
+        }
+        if (!this.isEdit()) this.toastr.success(this.translate.instant('common.save_success'));
         if (andNew) {
           const typeName = this.txnTypes().find(t => t.id === this.form.stockTransactionTypeId);
           this.savedRows.update(rows => [...rows, {

@@ -65,7 +65,8 @@
     "is_parent": "Is Parent",
     "logout": "Logout",
     "description": "Description",
-    "total": "Total"
+    "total": "Total",
+    "cannot_delete": "Cannot Delete"
   },
   "pagination": {
     "rows_per_page": "Rows per page",
@@ -95,6 +96,8 @@
     "description": "Description",
     "delete_confirm": "Delete this item?",
     "delete_selected_confirm": "Delete {{count}} selected item(s)?",
+    "delete_in_use": "This item cannot be deleted because it is used in one or more transactions.",
+    "delete_bulk_blocked": "The following items were not deleted because they are used in transactions:",
     "saved_rows_title_single": "record saved in this session",
     "saved_rows_title": "records saved in this session",
     "inventory_tab": "Inventory",
@@ -247,6 +250,8 @@
     "add_detail": "Add Row",
     "detail_fill_all": "Please fill in Item, Warehouse, Quantity and UOM.",
     "no_details": "No items added yet.",
+    "skipped_title": "Some items were skipped",
+    "skipped_no_conversion": "The following items were skipped because no UOM conversion was found to their default UOM:",
     "delete_confirm": "Delete this reconciliation?",
     "delete_selected_confirm": "Delete {{count}} selected reconciliation(s)?",
     "saved_rows_title_single": "record saved in this session",

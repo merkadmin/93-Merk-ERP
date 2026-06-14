@@ -65,7 +65,8 @@
     "is_parent": "أصل",
     "logout": "تسجيل الخروج",
     "description": "الوصف",
-    "total": "الإجمالي"
+    "total": "الإجمالي",
+    "cannot_delete": "لا يمكن الحذف"
   },
   "pagination": {
     "rows_per_page": "صفوف في الصفحة",
@@ -95,6 +96,8 @@
     "description": "الوصف",
     "delete_confirm": "حذف هذا الصنف؟",
     "delete_selected_confirm": "حذف {{count}} صنف محدد؟",
+    "delete_in_use": "لا يمكن حذف هذا الصنف لأنه مستخدم في معاملة أو أكثر.",
+    "delete_bulk_blocked": "لم يتم حذف الأصناف التالية لأنها مستخدمة في معاملات:",
     "saved_rows_title_single": "سجل تم حفظه في هذه الجلسة",
     "saved_rows_title": "سجلات تم حفظها في هذه الجلسة",
     "inventory_tab": "المخزون",
@@ -247,6 +250,8 @@
     "add_detail": "إضافة صف",
     "detail_fill_all": "يرجى تعبئة الصنف والمستودع والكمية ووحدة القياس.",
     "no_details": "لم يتم إضافة أي أصناف بعد.",
+    "skipped_title": "تم تخطي بعض الأصناف",
+    "skipped_no_conversion": "تم تخطي الأصناف التالية لأنه لا يوجد تحويل لوحدة القياس الافتراضية للصنف:",
     "delete_confirm": "هل تريد حذف هذه التسوية؟",
     "delete_selected_confirm": "حذف {{count}} تسوية محددة؟",
     "saved_rows_title_single": "سجل تم حفظه في هذه الجلسة",
