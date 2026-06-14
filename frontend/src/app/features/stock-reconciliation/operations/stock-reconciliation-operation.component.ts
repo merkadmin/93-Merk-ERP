@@ -126,7 +126,13 @@ export class StockReconciliationOperationComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.api.get<TxnType[]>('stocktransactiontypes').subscribe(d => this.txnTypes.set(d));
+    this.api.get<TxnType[]>('stocktransactiontypes').subscribe(d => {
+      this.txnTypes.set(d);
+      if (!this.isEdit() && !this.form.stockTransactionTypeId) {
+        const ob = d.find(t => t.name_EN?.toLowerCase().includes('opening balance'));
+        if (ob) this.form.stockTransactionTypeId = ob.id;
+      }
+    });
     this.api.get<Warehouse[]>('warehouses').subscribe(d => this.warehouses.set(d));
     this.api.get<Item[]>('items').subscribe(d => this.items.set(d));
     this.api.get<UOM[]>('uoms').subscribe(d => this.uoms.set(d));
@@ -157,8 +163,6 @@ export class StockReconciliationOperationComponent implements OnInit {
       next: result => {
         this.newDetail.itemId = result.itemId;
         this.newDetail.uomId  = result.uomId;
-        if (this.form.setWarehouseId && !this.newDetail.warehouseId)
-          this.newDetail.warehouseId = this.form.setWarehouseId;
         this.barcodeInput = '';
         setTimeout(() => this.qtyInputRef?.nativeElement.focus(), 50);
       },
@@ -173,7 +177,8 @@ export class StockReconciliationOperationComponent implements OnInit {
   }
 
   addDetail() {
-    if (!this.newDetail.itemId || !this.newDetail.warehouseId || !this.newDetail.quantity || !this.newDetail.uomId) {
+    this.newDetail.warehouseId = this.form.setWarehouseId ?? 0;
+    if (!this.newDetail.itemId || !this.newDetail.quantity || !this.newDetail.uomId) {
       this.toastr.warning(this.translate.instant('stock_reconciliation.detail_fill_all'));
       return;
     }

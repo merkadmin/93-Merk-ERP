@@ -4,7 +4,6 @@
   color="success"
   (cancel)="back()" />
 
-<!-- Header card -->
 <div class="card">
   <div class="card-body">
 
@@ -34,7 +33,7 @@
     </div>
 
     <!-- Row 2: Set Warehouse -->
-    <div class="row g-4">
+    <div class="row g-4 mb-8">
       <div class="col-3">
         <label class="form-label">{{ 'stock_reconciliation.set_warehouse' | translate }}</label>
         <app-custom-select-input
@@ -46,26 +45,13 @@
       </div>
     </div>
 
-  </div>
+    <!-- Details sub-section -->
+    <div class="separator separator-dashed mb-6"></div>
 
-  <app-regular-operation-actions
-    [saving]="saving()"
-    [savingNew]="savingNew()"
-    (save)="save()"
-    (saveAndNew)="saveAndNew()"
-    (reset)="resetForm()" />
-</div>
-
-
-<!-- Details card -->
-<div class="card mt-6">
-  <div class="card-header min-h-50px">
-    <h3 class="card-title fs-6 fw-bold">
-      <i class="ki-outline ki-basket fs-4 me-2"></i>
-      {{ 'stock_reconciliation.details' | translate }}
-    </h3>
-  </div>
-  <div class="card-body">
+    <div class="d-flex align-items-center mb-5">
+      <i class="ki-outline ki-basket fs-4 me-2 text-success"></i>
+      <span class="fs-6 fw-bold">{{ 'stock_reconciliation.details' | translate }}</span>
+    </div>
 
     <!-- Barcode scan row -->
     <div class="row g-4 mb-5 align-items-end">
@@ -89,7 +75,7 @@
 
     <!-- Add-row form -->
     <div class="row g-4 mb-4 align-items-end">
-      <div class="col-3">
+      <div class="col-4">
         <label class="form-label required">{{ 'stock_reconciliation.item' | translate }}</label>
         <app-custom-select-input
           [options]="itemOptions"
@@ -99,21 +85,6 @@
           [searchPlaceholder]="'common.search' | translate" />
       </div>
       <div class="col-3">
-        <label class="form-label required">{{ 'stock_reconciliation.warehouse' | translate }}</label>
-        <app-custom-select-input
-          [options]="warehouseOptions"
-          [value]="newDetail.warehouseId || null"
-          (valueChange)="newDetail.warehouseId = $event ? +$event : 0"
-          [placeholder]="'common.select' | translate"
-          [searchPlaceholder]="'common.search' | translate" />
-      </div>
-      <div class="col-2">
-        <label class="form-label required">{{ 'stock_reconciliation.quantity' | translate }}</label>
-        <input #qtyInput class="form-control" type="number" min="0" step="0.001"
-          [(ngModel)]="newDetail.quantity" name="newQty"
-          [placeholder]="'stock_reconciliation.quantity' | translate">
-      </div>
-      <div class="col-2">
         <label class="form-label required">{{ 'stock_reconciliation.uom' | translate }}</label>
         <app-custom-select-input
           [options]="uomOptions"
@@ -121,6 +92,12 @@
           (valueChange)="newDetail.uomId = $event ? +$event : 0"
           [placeholder]="'common.select' | translate"
           [searchPlaceholder]="'common.search' | translate" />
+      </div>
+      <div class="col-3">
+        <label class="form-label required">{{ 'stock_reconciliation.quantity' | translate }}</label>
+        <input #qtyInput class="form-control" type="number" min="0" step="0.001"
+          [(ngModel)]="newDetail.quantity" name="newQty"
+          [placeholder]="'stock_reconciliation.quantity' | translate">
       </div>
       <div class="col-2 d-flex align-items-end">
         <button class="btn btn-success w-100" type="button" (click)="addDetail()"
@@ -143,9 +120,8 @@
           <tr class="fw-bold text-muted fs-7 bg-light-success">
             <th class="w-40px">#</th>
             <th>{{ 'stock_reconciliation.item' | translate }}</th>
-            <th>{{ 'stock_reconciliation.warehouse' | translate }}</th>
-            <th class="w-120px">{{ 'stock_reconciliation.quantity' | translate }}</th>
             <th>{{ 'stock_reconciliation.uom' | translate }}</th>
+            <th class="w-120px">{{ 'stock_reconciliation.quantity' | translate }}</th>
             <th class="w-60px"></th>
           </tr>
         </thead>
@@ -155,9 +131,8 @@
             <tr>
               <td class="text-muted">{{ $index + 1 }}</td>
               <td class="fw-semibold">{{ itemName(d.itemId) }}</td>
-              <td>{{ warehouseName(d.warehouseId) }}</td>
-              <td>{{ d.quantity }}</td>
               <td>{{ uomName(d.uomId) }}</td>
+              <td>{{ d.quantity }}</td>
               <td>
                 <button class="btn btn-icon btn-sm btn-light-danger" type="button"
                   (click)="removeApiDetail(d.id)"
@@ -172,9 +147,8 @@
             <tr>
               <td class="text-muted">{{ $index + 1 }}</td>
               <td class="fw-semibold">{{ itemName(d.itemId) }}</td>
-              <td>{{ warehouseName(d.warehouseId) }}</td>
-              <td>{{ d.quantity }}</td>
               <td>{{ uomName(d.uomId) }}</td>
+              <td>{{ d.quantity }}</td>
               <td>
                 <button class="btn btn-icon btn-sm btn-light-danger" type="button"
                   (click)="removePendingDetail($index)"
@@ -188,14 +162,15 @@
         </tbody>
         <tfoot>
           <tr class="fw-bold bg-light-success">
-            <td colspan="3" class="text-end pe-4">
+            <td colspan="2" class="text-end pe-4">
               {{ 'common.total' | translate }}
             </td>
+            <td></td>
             <td>
               {{ displayDetails.length }}
               {{ 'stock_reconciliation.items_count' | translate }}
             </td>
-            <td colspan="2"></td>
+            <td></td>
           </tr>
         </tfoot>
       </table>
@@ -208,6 +183,13 @@
     }
 
   </div>
+
+  <app-regular-operation-actions
+    [saving]="saving()"
+    [savingNew]="savingNew()"
+    (save)="save()"
+    (saveAndNew)="saveAndNew()"
+    (reset)="resetForm()" />
 </div>
 
 
