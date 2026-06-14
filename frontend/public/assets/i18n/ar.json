@@ -64,7 +64,8 @@
     "general": "رئيسي",
     "is_parent": "أصل",
     "logout": "تسجيل الخروج",
-    "description": "الوصف"
+    "description": "الوصف",
+    "total": "الإجمالي"
   },
   "pagination": {
     "rows_per_page": "صفوف في الصفحة",
@@ -227,10 +228,18 @@
     "edit_title": "تعديل تسوية المخزون",
     "status": "الحالة",
     "txn_type": "نوع المعاملة",
-    "posting_date": "تاريخ الترحيل",
-    "posting_time": "وقت الترحيل",
+    "posting_date": "تاريخ التسجيل",
+    "posting_time": "وقت التسجيل",
     "set_warehouse": "المستودع المحدد",
     "details": "التفاصيل",
+    "item": "الصنف",
+    "warehouse": "المستودع",
+    "quantity": "الكمية",
+    "uom": "وحدة القياس",
+    "barcode": "الباركود",
+    "barcode_placeholder": "امسح أو اكتب الباركود...",
+    "barcode_not_found": "الباركود '{{code}}' غير موجود.",
+    "items_count": "أصناف",
     "detail_item": "الصنف",
     "detail_warehouse": "المستودع",
     "detail_qty": "الكمية",
@@ -252,10 +261,10 @@
     "voucher_type": "نوع السند",
     "voucher_no": "رقم السند",
     "batch_no": "رقم الدفعة",
-    "posting_date": "تاريخ الترحيل",
+    "posting_date": "تاريخ التسجيل",
     "qty_hint": "موجب = استلام | سالب = إصدار",
     "post": "ترحيل الحركة",
-    "posted_success": "تم الترحيل بنجاح!",
+    "posted_success": "تم التسجيل بنجاح!",
     "select_item": "— اختر الصنف —",
     "select_warehouse": "— اختر المستودع —"
   }

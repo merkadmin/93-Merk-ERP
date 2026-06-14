@@ -266,7 +266,27 @@ public class ItemsController : ControllerBase
 		return NoContent();
 	}
 
-	// ── Barcodes ────────────────────────────────────────────────────────────
+	// ── Barcode lookup (global) ─────────────────────────────────────────────
+
+	[HttpGet("barcode/{code}")]
+	public async Task<IActionResult> GetByBarcode(string code)
+	{
+		var b = await _db.Item_UOM_Barcode_cs
+			.Include(b => b.Item)
+			.Include(b => b.UOM)
+			.FirstOrDefaultAsync(b => b.Barcode == code);
+		if (b is null) return NotFound();
+		return Ok(new {
+			itemId    = b.ItemId,
+			uomId     = b.UOMId,
+			itemNameEN = b.Item!.Name_EN,
+			itemNameAR = b.Item!.Name_AR,
+			uomNameEN  = b.UOM!.Name_EN,
+			uomNameAR  = b.UOM!.Name_AR,
+		});
+	}
+
+	// ── Per-item barcodes ────────────────────────────────────────────────────
 
 	[HttpGet("{itemId:long}/barcodes")]
 	public async Task<IActionResult> GetBarcodes(long itemId) =>

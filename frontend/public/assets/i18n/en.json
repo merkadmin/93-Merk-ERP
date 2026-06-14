@@ -64,7 +64,8 @@
     "general": "Details",
     "is_parent": "Is Parent",
     "logout": "Logout",
-    "description": "Description"
+    "description": "Description",
+    "total": "Total"
   },
   "pagination": {
     "rows_per_page": "Rows per page",
@@ -231,6 +232,14 @@
     "posting_time": "Posting Time",
     "set_warehouse": "Set Warehouse",
     "details": "Details",
+    "item": "Item",
+    "warehouse": "Warehouse",
+    "quantity": "Quantity",
+    "uom": "UOM",
+    "barcode": "Barcode",
+    "barcode_placeholder": "Scan or type barcode...",
+    "barcode_not_found": "Barcode '{{code}}' not found.",
+    "items_count": "items",
     "detail_item": "Item",
     "detail_warehouse": "Warehouse",
     "detail_qty": "Quantity",

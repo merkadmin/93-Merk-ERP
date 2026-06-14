@@ -8,19 +8,6 @@
 <div class="card">
   <div class="card-body">
 
-    <!-- Row 0: Status (at the top per spec) -->
-    <div class="row g-4 mb-4">
-      <div class="col-3">
-        <label class="form-label required">{{ 'stock_reconciliation.status' | translate }}</label>
-        <select class="form-select" [(ngModel)]="form.stockTransactionStatusId" name="stockTransactionStatusId">
-          @for (s of txnStatuses(); track s.id) {
-          <option [ngValue]="s.id">{{ isRtl ? s.name_AR : s.name_EN }}</option>
-          }
-        </select>
-      </div>
-      <div class="col-9"></div>
-    </div>
-
     <!-- Row 1: Internal Code · Transaction Type · Posting Date · Posting Time -->
     <div class="row g-4 mb-4">
       <div class="col-3">
@@ -70,6 +57,160 @@
 </div>
 
 
+<!-- Details card -->
+<div class="card mt-6">
+  <div class="card-header min-h-50px">
+    <h3 class="card-title fs-6 fw-bold">
+      <i class="ki-outline ki-basket fs-4 me-2"></i>
+      {{ 'stock_reconciliation.details' | translate }}
+    </h3>
+  </div>
+  <div class="card-body">
+
+    <!-- Barcode scan row -->
+    <div class="row g-4 mb-5 align-items-end">
+      <div class="col-4">
+        <label class="form-label fw-semibold">
+          <i class="ki-outline ki-scan-barcode fs-5 me-1"></i>
+          {{ 'stock_reconciliation.barcode' | translate }}
+        </label>
+        <div class="input-group">
+          <input class="form-control" [(ngModel)]="barcodeInput" name="barcodeInput"
+            [placeholder]="'stock_reconciliation.barcode_placeholder' | translate"
+            (keydown.enter)="scanBarcode()"
+            [style.border-radius]="isRtl ? '0 0.475rem 0.475rem 0' : '0.475rem 0 0 0.475rem'">
+          <button class="btn btn-primary px-4" type="button" (click)="scanBarcode()"
+            [style.border-radius]="isRtl ? '0.475rem 0 0 0.475rem' : '0 0.475rem 0.475rem 0'">
+            <i [class]="isRtl ? 'ki-outline ki-arrow-left fs-4' : 'ki-outline ki-arrow-right fs-4'"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add-row form -->
+    <div class="row g-4 mb-4 align-items-end">
+      <div class="col-3">
+        <label class="form-label required">{{ 'stock_reconciliation.item' | translate }}</label>
+        <app-custom-select-input
+          [options]="itemOptions"
+          [value]="newDetail.itemId || null"
+          (valueChange)="newDetail.itemId = $event ? +$event : 0"
+          [placeholder]="'common.select' | translate"
+          [searchPlaceholder]="'common.search' | translate" />
+      </div>
+      <div class="col-3">
+        <label class="form-label required">{{ 'stock_reconciliation.warehouse' | translate }}</label>
+        <app-custom-select-input
+          [options]="warehouseOptions"
+          [value]="newDetail.warehouseId || null"
+          (valueChange)="newDetail.warehouseId = $event ? +$event : 0"
+          [placeholder]="'common.select' | translate"
+          [searchPlaceholder]="'common.search' | translate" />
+      </div>
+      <div class="col-2">
+        <label class="form-label required">{{ 'stock_reconciliation.quantity' | translate }}</label>
+        <input #qtyInput class="form-control" type="number" min="0" step="0.001"
+          [(ngModel)]="newDetail.quantity" name="newQty"
+          [placeholder]="'stock_reconciliation.quantity' | translate">
+      </div>
+      <div class="col-2">
+        <label class="form-label required">{{ 'stock_reconciliation.uom' | translate }}</label>
+        <app-custom-select-input
+          [options]="uomOptions"
+          [value]="newDetail.uomId || null"
+          (valueChange)="newDetail.uomId = $event ? +$event : 0"
+          [placeholder]="'common.select' | translate"
+          [searchPlaceholder]="'common.search' | translate" />
+      </div>
+      <div class="col-2 d-flex align-items-end">
+        <button class="btn btn-success w-100" type="button" (click)="addDetail()"
+          [disabled]="addingDetail()">
+          @if (addingDetail()) {
+            <span class="spinner-border spinner-border-sm me-1"></span>
+          } @else {
+            <i class="ki-outline ki-plus fs-4 me-1"></i>
+          }
+          {{ 'common.add' | translate }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Details table -->
+    @if (displayDetails.length > 0) {
+    <div class="table-responsive">
+      <table class="table table-row-dashed table-row-gray-300 align-middle gs-4 gy-2 mb-0">
+        <thead>
+          <tr class="fw-bold text-muted fs-7 bg-light-success">
+            <th class="w-40px">#</th>
+            <th>{{ 'stock_reconciliation.item' | translate }}</th>
+            <th>{{ 'stock_reconciliation.warehouse' | translate }}</th>
+            <th class="w-120px">{{ 'stock_reconciliation.quantity' | translate }}</th>
+            <th>{{ 'stock_reconciliation.uom' | translate }}</th>
+            <th class="w-60px"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @if (isEdit()) {
+            @for (d of apiDetails(); track d.id) {
+            <tr>
+              <td class="text-muted">{{ $index + 1 }}</td>
+              <td class="fw-semibold">{{ itemName(d.itemId) }}</td>
+              <td>{{ warehouseName(d.warehouseId) }}</td>
+              <td>{{ d.quantity }}</td>
+              <td>{{ uomName(d.uomId) }}</td>
+              <td>
+                <button class="btn btn-icon btn-sm btn-light-danger" type="button"
+                  (click)="removeApiDetail(d.id)"
+                  [title]="'common.delete' | translate">
+                  <i class="ki-outline ki-trash fs-5"></i>
+                </button>
+              </td>
+            </tr>
+            }
+          } @else {
+            @for (d of pendingDetails(); track $index) {
+            <tr>
+              <td class="text-muted">{{ $index + 1 }}</td>
+              <td class="fw-semibold">{{ itemName(d.itemId) }}</td>
+              <td>{{ warehouseName(d.warehouseId) }}</td>
+              <td>{{ d.quantity }}</td>
+              <td>{{ uomName(d.uomId) }}</td>
+              <td>
+                <button class="btn btn-icon btn-sm btn-light-danger" type="button"
+                  (click)="removePendingDetail($index)"
+                  [title]="'common.delete' | translate">
+                  <i class="ki-outline ki-trash fs-5"></i>
+                </button>
+              </td>
+            </tr>
+            }
+          }
+        </tbody>
+        <tfoot>
+          <tr class="fw-bold bg-light-success">
+            <td colspan="3" class="text-end pe-4">
+              {{ 'common.total' | translate }}
+            </td>
+            <td>
+              {{ displayDetails.length }}
+              {{ 'stock_reconciliation.items_count' | translate }}
+            </td>
+            <td colspan="2"></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+    } @else {
+    <div class="text-center text-muted py-8">
+      <i class="ki-outline ki-basket fs-2x d-block mb-2"></i>
+      {{ 'stock_reconciliation.no_details' | translate }}
+    </div>
+    }
+
+  </div>
+</div>
+
+
 <!-- Saved rows (after Save & New) -->
 @if (savedRows().length > 0) {
 <div class="card mt-6">
@@ -87,8 +228,8 @@
           <th class="w-40px">#</th>
           <th>{{ 'common.internal_code' | translate }}</th>
           <th>{{ 'stock_reconciliation.txn_type' | translate }}</th>
-          <th>{{ 'stock_reconciliation.status' | translate }}</th>
           <th>{{ 'stock_reconciliation.posting_date' | translate }}</th>
+          <th>{{ 'stock_reconciliation.details' | translate }}</th>
         </tr>
       </thead>
       <tbody>
@@ -97,8 +238,10 @@
           <td class="text-muted">{{ $index + 1 }}</td>
           <td class="fw-semibold">{{ row.internalCode }}</td>
           <td>{{ row.txnType }}</td>
-          <td>{{ row.status }}</td>
           <td>{{ row.postingDate }}</td>
+          <td>
+            <span class="badge badge-light-success">{{ row.detailCount }}</span>
+          </td>
         </tr>
         }
       </tbody>

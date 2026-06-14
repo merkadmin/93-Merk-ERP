@@ -14,15 +14,15 @@ namespace MerkERP.DAL.Migrations
                 WHERE Id = 22;
 
                 INSERT INTO TableMetaData
-                    (Id, TableNameId, [Key], LabelEN, LabelAR, [Order],
+                    (Id, TableNameId, [Key], LabelEN, LabelAR, ColumnOrder,
                      EntityProperty, ForeignKeyProperty,
                      FilterType, DataType, RenderAs,
                      IsSortable, IsFilterable, IsVisible, MinWidth)
                 VALUES
-                (47, 22, 'internalCode',          'Internal Code',    N'الكود الداخلي',       1, 'InternalCode',          NULL,                    'text',   'string', 'text', 1, 1, 1, NULL),
+                (47, 22, 'internalCode',          'Internal Code',    N'الكود الداخلي',       1, 'InternalCode',          NULL,                     'text',   'string', 'text', 1, 1, 1, NULL),
                 (48, 22, 'stockTransactionType',   'Transaction Type', N'نوع المعاملة',        2, 'StockTransactionType',   'StockTransactionTypeId', 'select', 'string', 'text', 1, 1, 1, NULL),
                 (49, 22, 'stockTransactionStatus', 'Status',           N'الحالة',              3, 'StockTransactionStatus', 'StockTransactionStatusId','select','string', 'text', 1, 1, 1, NULL),
-                (50, 22, 'postingDate',            'Posting Date',     N'تاريخ الترحيل',       4, 'PostingDate',           NULL,                    'text',   'string', 'text', 1, 0, 1, NULL),
+                (50, 22, 'postingDate',            'Posting Date',     N'تاريخ الترحيل',       4, 'PostingDate',           NULL,                     'text',   'string', 'text', 1, 0, 1, NULL),
                 (51, 22, 'setWarehouse',           'Set Warehouse',    N'المستودع المحدد',     5, 'SetWarehouse',          'SetWarehouseId',         'select', 'string', 'text', 1, 1, 1, NULL);
             ");
         }
