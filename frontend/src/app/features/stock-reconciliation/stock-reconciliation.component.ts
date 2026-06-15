@@ -5,6 +5,7 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2';
 import { ApiService } from '../../core/api.service';
+import { AuthService } from '../../core/auth.service';
 import { ColumnMeta, MetadataService } from '../../core/metadata.service';
 import { RegularListSearchActionsComponent, SearchField } from '../../shared/components/cards/regular-list-search-actions/regular-list-search-actions.component';
 import { RegularListHeaderWithActionsComponent } from '../../shared/components/cards/regular-list-header-with-actions/regular-list-header-with-actions.component';
@@ -22,6 +23,7 @@ interface SRT {
   postingDate: string;
   postingTime: string;
   setWarehouseId: number | null;
+  isActive: boolean;
   stockTransactionType?: TxnType;
   stockTransactionStatus?: TxnStatus;
   setWarehouse?: Warehouse;
@@ -36,6 +38,7 @@ interface SRT {
 })
 export class StockReconciliationComponent implements OnInit {
   private api       = inject(ApiService);
+  private auth      = inject(AuthService);
   private router    = inject(Router);
   private translate = inject(TranslateService);
   private toastr    = inject(ToastrService);
@@ -86,6 +89,16 @@ export class StockReconciliationComponent implements OnInit {
     setWarehouse:           (r) => this.wLabel(r.setWarehouse),
   };
 
+  get selectedRecord(): SRT | undefined {
+    if (this.selectedIds().size !== 1) return undefined;
+    const id = [...this.selectedIds()][0];
+    return this.records().find(r => r.id === id);
+  }
+
+  get isSubmitted(): boolean {
+    return this.selectedRecord?.stockTransactionStatusId === 3;
+  }
+
   onFilterChange(filter: Record<string, string | number | null>) { this.activeFilter.set(filter); }
 
   ngOnInit() { this.load(); }
@@ -114,6 +127,120 @@ export class StockReconciliationComponent implements OnInit {
     }).then(result => {
       if (result.isConfirmed)
         this.api.delete(`stockreconciliationtransactions/${id}`).subscribe(() => this.load());
+    });
+  }
+
+  exportTemplate() {
+    this.api.getBlob('stockreconciliationtransactions/export-template').subscribe(blob => {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'stock-reconciliation-template.xlsx'; a.click();
+      URL.revokeObjectURL(url);
+    });
+  }
+
+  importExcel(file: File) {
+    const fd = new FormData();
+    fd.append('file', file);
+    const userId = this.auth.user()?.id;
+    if (userId != null) fd.append('insertedBy', String(userId));
+    this.api.post<{ created: number; errors: string[] }>('stockreconciliationtransactions/import', fd).subscribe({
+      next: res => {
+        if (res.created > 0)
+          this.toastr.success(this.translate.instant('common.import_success_count', { count: res.created }));
+        if (res.errors.length)
+          this.toastr.warning(res.errors.join('<br>'), '', { enableHtml: true, timeOut: 8000 });
+        this.load();
+      },
+      error: () => this.toastr.error(this.translate.instant('common.import_error')),
+    });
+  }
+
+  private updateRecordStatus(updated: SRT) {
+    this.records.update(list => list.map(r => r.id !== updated.id ? r : {
+      ...updated,
+      stockTransactionType:   r.stockTransactionType,
+      stockTransactionStatus: this.txnStatuses().find(s => s.id === updated.stockTransactionStatusId),
+      setWarehouse:           r.setWarehouse,
+    }));
+  }
+
+  submitTxn() {
+    const r = this.selectedRecord;
+    if (!r) return;
+    Swal.fire({
+      title: this.translate.instant('common.swal_delete_title'),
+      text:  this.translate.instant('stock_reconciliation.submit_confirm'),
+      icon:  'question',
+      showCancelButton: true,
+      confirmButtonText: this.translate.instant('common.submit'),
+      cancelButtonText:  this.translate.instant('common.cancel'),
+      reverseButtons: this.isRtl,
+    }).then(result => {
+      if (result.isConfirmed)
+        this.api.patch<SRT>(`stockreconciliationtransactions/${r.id}/submit`).subscribe(updated => {
+          this.updateRecordStatus(updated);
+          this.toastr.success(this.translate.instant('stock_reconciliation.submit_success'));
+        });
+    });
+  }
+
+  reissueTxn() {
+    const r = this.selectedRecord;
+    if (!r) return;
+    Swal.fire({
+      title: this.translate.instant('common.swal_delete_title'),
+      text:  this.translate.instant('stock_reconciliation.reissue_confirm'),
+      icon:  'question',
+      showCancelButton: true,
+      confirmButtonText: this.translate.instant('common.reissue'),
+      cancelButtonText:  this.translate.instant('common.cancel'),
+      reverseButtons: this.isRtl,
+    }).then(result => {
+      if (result.isConfirmed)
+        this.api.patch<SRT>(`stockreconciliationtransactions/${r.id}/reissue`).subscribe(updated => {
+          this.updateRecordStatus(updated);
+          this.toastr.success(this.translate.instant('stock_reconciliation.reissue_success'));
+        });
+    });
+  }
+
+  cancelTxn() {
+    const r = this.selectedRecord;
+    if (!r) return;
+    Swal.fire({
+      title: this.translate.instant('common.swal_delete_title'),
+      text:  this.translate.instant('stock_reconciliation.cancel_txn_confirm'),
+      icon:  'warning',
+      showCancelButton: true,
+      confirmButtonText: this.translate.instant('common.confirm'),
+      cancelButtonText:  this.translate.instant('common.cancel'),
+      confirmButtonColor: '#f1416c',
+      reverseButtons: this.isRtl,
+    }).then(result => {
+      if (result.isConfirmed)
+        this.api.patch<SRT>(`stockreconciliationtransactions/${r.id}/cancel`).subscribe(updated => {
+          this.updateRecordStatus(updated);
+          this.toastr.success(this.translate.instant('stock_reconciliation.cancel_txn_success'));
+        });
+    });
+  }
+
+  deleteSelectedOne() {
+    const r = this.selectedRecord;
+    if (r) this.delete(r.id);
+  }
+
+  toggleActiveSelected() {
+    const r = this.selectedRecord;
+    if (r) this.toggleActive(r);
+  }
+
+  toggleActive(item: SRT) {
+    this.api.patch<SRT>(`stockreconciliationtransactions/${item.id}/toggle-active`).subscribe(updated => {
+      this.records.update(list => list.map(r => r.id === updated.id
+        ? { ...updated, stockTransactionType: r.stockTransactionType, stockTransactionStatus: r.stockTransactionStatus, setWarehouse: r.setWarehouse }
+        : r));
     });
   }
 

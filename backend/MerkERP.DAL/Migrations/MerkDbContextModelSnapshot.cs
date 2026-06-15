@@ -1466,6 +1466,9 @@ namespace MerkERP.DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
                     b.Property<long?>("InsertedBy")
                         .HasColumnType("bigint");
 

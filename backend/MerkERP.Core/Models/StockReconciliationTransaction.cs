@@ -9,6 +9,7 @@ public class StockReconciliationTransaction
 	public DateOnly PostingDate { get; set; }
 	public TimeOnly PostingTime { get; set; }
 	public long? SetWarehouseId { get; set; }
+	public bool IsActive { get; set; } = true;
 	public long? InsertedBy { get; set; }
 	public DateTime? InsertedDate { get; set; }
 

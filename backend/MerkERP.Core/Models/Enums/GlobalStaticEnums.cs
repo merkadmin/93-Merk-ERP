@@ -41,9 +41,9 @@ namespace MerkERP.Core.Models.Enums
 
 	public enum UserTypeEnum
 	{
-		Root        = 1,
-		MerkAdmin   = 2,
-		Admin       = 3,
+		Root = 1,
+		MerkAdmin = 2,
+		Admin = 3,
 		RegularUser = 4,
 	}
 
@@ -56,37 +56,65 @@ namespace MerkERP.Core.Models.Enums
 	public enum TableNameEnum
 	{
 		None = 0,
-		BarcodeType_s               = 1,
-		Branch_cs                   = 2,
+		BarcodeType_s = 1,
+		Branch_cs = 2,
 		InventoryValidationMethod_s = 3,
-		Item_cs                     = 4,
-		Item_UOM_Barcode_cs         = 5,
-		ItemGroup_cs                = 6,
-		ItemType_s                  = 7,
-		ItemUOMConversion_cs        = 8,
-		TableName_s                 = 10,
-		UOM_cs                      = 11,
-		UOMConversionFactor_cs      = 12,
-		UOMConversionGroup_cs       = 13,
-		WareHouse_cs                = 14,
-		WareHouseCategory_cs        = 15,
-		WareHouseType_s             = 16,
-		TableMetaData                        = 18,
-		UserType_s                           = 19,
-		User_cs                              = 20,
-		StockTransactionType_s               = 21,
-		StockReconciliationTransaction       = 22,
+		Item_cs = 4,
+		Item_UOM_Barcode_cs = 5,
+		ItemGroup_cs = 6,
+		ItemType_s = 7,
+		ItemUOMConversion_cs = 8,
+		TableName_s = 10,
+		UOM_cs = 11,
+		UOMConversionFactor_cs = 12,
+		UOMConversionGroup_cs = 13,
+		WareHouse_cs = 14,
+		WareHouseCategory_cs = 15,
+		WareHouseType_s = 16,
+		TableMetaData = 18,
+		UserType_s = 19,
+		User_cs = 20,
+		StockTransactionType_s = 21,
+		StockReconciliationTransaction = 22,
 		StockReconciliationTransactionDetail = 23,
-		StockLedgerTransaction               = 24,
-		StockTransactionStatus_s             = 25,
+		StockLedgerTransaction = 24,
+		StockTransactionStatus_s = 25,
+		TableMetaData_FilterType_s = 26,
+		TableMetaData_DataType_s = 27,
+		TableMetaData_RenderAs_s = 28,
 	}
 
 	public enum StockTransactionStatusEnum
 	{
-		Draft     = 1,
-		Pending   = 2,
+		Draft = 1,
+		Pending = 2,
 		Submitted = 3,
 		Cancelled = 4,
-		Amended   = 5,
+		Amended = 5,
+		Reissued = 6
+	}
+
+	public enum TableMetaDataFilterTypeEnum
+	{
+		Text = 1,
+		Number = 2,
+		Boolean = 3,
+		Select = 4,
+	}
+
+	public enum TableMetaDataDataTypeEnum
+	{
+		String = 1,
+		Number = 2,
+		Boolean = 3,
+		Date = 4,
+	}
+
+	public enum TableMetaDataRenderAsEnum
+	{
+		Text = 1,
+		Badge = 2,
+		YesNo = 3,
+		Tree = 4,
 	}
 }

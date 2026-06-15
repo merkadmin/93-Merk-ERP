@@ -19,6 +19,8 @@
       <i class="ki-outline ki-arrows-circle fs-4"></i>
     </button>
 
+    <ng-content select="[extraActions]"></ng-content>
+
     @if (showImportExport()) {
     <div class="btn-group btn-group-sm">
       <button class="btn btn-light-info btn-sm" (click)="triggerImport()">

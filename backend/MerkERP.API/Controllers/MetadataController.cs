@@ -58,6 +58,9 @@ public class MetadataController : ControllerBase
 	{
 		var rows = await _db.TableMetaData
 			.Include(t => t.TableName)
+			.Include(t => t.FilterType)
+			.Include(t => t.DataType)
+			.Include(t => t.RenderAs)
 			.Where(t => t.TableName != null && t.TableName.EntityKey != null)
 			.OrderBy(t => t.TableName!.EntityKey)
 			.ThenBy(t => t.ColumnOrder)
@@ -76,6 +79,9 @@ public class MetadataController : ControllerBase
 
 	private static ColumnMeta ToColumnMeta(MerkERP.Core.Models.TableMetaData r) =>
 		new(r.Key, r.LabelEN, r.LabelAR, r.ColumnOrder, r.EntityProperty,
-			r.ForeignKeyProperty, r.FilterType, r.DataType, r.RenderAs,
+			r.ForeignKeyProperty,
+			r.FilterType?.Name ?? "text",
+			r.DataType?.Name  ?? "string",
+			r.RenderAs?.Name  ?? "text",
 			r.IsSortable, r.IsFilterable, r.IsVisible, r.MinWidth);
 }
