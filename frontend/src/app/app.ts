@@ -9,11 +9,12 @@ import { ServerStatusService } from './shared/services/server-status.service';
 import { AuthService } from './core/auth.service';
 import { SidebarComponent } from './shared/components/sidebar/sidebar';
 import { LoadingSpinnerComponent } from './shared/components/loading-spinner/loading-spinner';
+import { GettingStartedGuideComponent } from './shared/components/getting-started-guide/getting-started-guide.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, NgTemplateOutlet, RouterOutlet, RouterLink, TranslatePipe, SidebarComponent, LoadingSpinnerComponent],
+  imports: [CommonModule, NgTemplateOutlet, RouterOutlet, RouterLink, TranslatePipe, SidebarComponent, LoadingSpinnerComponent, GettingStartedGuideComponent],
   templateUrl: './app.html',
   styleUrl: './app.less'
 })

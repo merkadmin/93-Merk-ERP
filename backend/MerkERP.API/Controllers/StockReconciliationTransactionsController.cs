@@ -65,6 +65,18 @@ public class StockReconciliationTransactionsController : ControllerBase
 		return new(quantity, fromUOMId, false);
 	}
 
+	// ── Audit helper ──────────────────────────────────────────────────────────
+
+	private StockReconciliationTransactionDate AuditEntry(long txnId, long statusId, long typeId, long? insertedBy) =>
+		new()
+		{
+			StockReconciliationTransactionId = txnId,
+			ChangeDateTime                   = DateTime.UtcNow,
+			StockTransactionStatusId         = statusId,
+			StockTransactionTypeId           = typeId,
+			InsertedBy                       = insertedBy,
+		};
+
 	// ── Endpoints ─────────────────────────────────────────────────────────────
 
 	[HttpGet("export-template")]
@@ -364,6 +376,9 @@ public class StockReconciliationTransactionsController : ControllerBase
 		_db.StockReconciliationTransaction.Add(entity);
 		await _db.SaveChangesAsync();
 
+		_db.StockReconciliationTransactionDate.Add(AuditEntry(entity.Id, entity.StockTransactionStatusId, entity.StockTransactionTypeId, dto.InsertedBy));
+		await _db.SaveChangesAsync();
+
 		return Ok(new { entity, skipped });
 	}
 
@@ -372,13 +387,24 @@ public class StockReconciliationTransactionsController : ControllerBase
 	{
 		var entity = await _db.StockReconciliationTransaction.FindAsync(id);
 		if (entity is null) return NotFound();
-		entity.StockTransactionTypeId = dto.StockTransactionTypeId;
+
+		bool changed = entity.StockTransactionTypeId   != dto.StockTransactionTypeId
+		            || entity.StockTransactionStatusId != dto.StockTransactionStatusId;
+
+		entity.StockTransactionTypeId   = dto.StockTransactionTypeId;
 		entity.StockTransactionStatusId = dto.StockTransactionStatusId;
-		entity.InternalCode = dto.InternalCode;
-		entity.PostingDate = dto.PostingDate;
-		entity.PostingTime = dto.PostingTime;
-		entity.SetWarehouseId = dto.SetWarehouseId;
+		entity.InternalCode    = dto.InternalCode;
+		entity.PostingDate     = dto.PostingDate;
+		entity.PostingTime     = dto.PostingTime;
+		entity.SetWarehouseId  = dto.SetWarehouseId;
 		await _db.SaveChangesAsync();
+
+		if (changed)
+		{
+			_db.StockReconciliationTransactionDate.Add(AuditEntry(entity.Id, entity.StockTransactionStatusId, entity.StockTransactionTypeId, null));
+			await _db.SaveChangesAsync();
+		}
+
 		return Ok(entity);
 	}
 
@@ -393,31 +419,37 @@ public class StockReconciliationTransactionsController : ControllerBase
 	}
 
 	[HttpPatch("{id:long}/submit")]
-	public async Task<IActionResult> Submit(long id)
+	public async Task<IActionResult> Submit(long id, [FromQuery] long? insertedBy = null)
 	{
 		var entity = await _db.StockReconciliationTransaction.FindAsync(id);
 		if (entity is null) return NotFound();
 		entity.StockTransactionStatusId = 3; // Submitted
 		await _db.SaveChangesAsync();
+		_db.StockReconciliationTransactionDate.Add(AuditEntry(entity.Id, 3, entity.StockTransactionTypeId, insertedBy));
+		await _db.SaveChangesAsync();
 		return Ok(entity);
 	}
 
 	[HttpPatch("{id:long}/reissue")]
-	public async Task<IActionResult> Reissue(long id)
+	public async Task<IActionResult> Reissue(long id, [FromQuery] long? insertedBy = null)
 	{
 		var entity = await _db.StockReconciliationTransaction.FindAsync(id);
 		if (entity is null) return NotFound();
 		entity.StockTransactionStatusId = 1; // Draft
 		await _db.SaveChangesAsync();
+		_db.StockReconciliationTransactionDate.Add(AuditEntry(entity.Id, 1, entity.StockTransactionTypeId, insertedBy));
+		await _db.SaveChangesAsync();
 		return Ok(entity);
 	}
 
 	[HttpPatch("{id:long}/cancel")]
-	public async Task<IActionResult> CancelTransaction(long id)
+	public async Task<IActionResult> CancelTransaction(long id, [FromQuery] long? insertedBy = null)
 	{
 		var entity = await _db.StockReconciliationTransaction.FindAsync(id);
 		if (entity is null) return NotFound();
 		entity.StockTransactionStatusId = 4; // Cancelled
+		await _db.SaveChangesAsync();
+		_db.StockReconciliationTransactionDate.Add(AuditEntry(entity.Id, 4, entity.StockTransactionTypeId, insertedBy));
 		await _db.SaveChangesAsync();
 		return Ok(entity);
 	}

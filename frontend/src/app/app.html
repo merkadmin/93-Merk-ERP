@@ -110,4 +110,9 @@
     </div>
   </div>
 </div>
+
+<!-- Getting Started Guide (floating, outside main layout so it's always on top) -->
+@if (!isLoginPage()) {
+  <app-getting-started-guide />
+}
 }

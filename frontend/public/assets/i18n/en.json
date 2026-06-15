@@ -255,6 +255,7 @@
     "no_details": "No items added yet.",
     "skipped_title": "Some items were skipped",
     "skipped_no_conversion": "The following items were skipped because no UOM conversion was found to their default UOM:",
+    "readonly_notice": "This reconciliation has been submitted and cannot be edited.",
     "submit_confirm": "Submit this reconciliation?",
     "reissue_confirm": "Reissue this reconciliation?",
     "cancel_txn_confirm": "Cancel this reconciliation?",
@@ -281,5 +282,25 @@
     "posted_success": "Posted successfully!",
     "select_item": "— Select Item —",
     "select_warehouse": "— Select Warehouse —"
+  },
+  "guide": {
+    "getting_started": "Getting Started",
+    "minimize": "Minimize",
+    "dismiss": "Close",
+    "dismiss_guide": "Don't show this again",
+    "go": "Go",
+    "toggle_step": "Mark as done",
+    "progress_label": "{{done}} of {{total}} completed",
+    "all_done": "You're all set! Great job setting up your workspace.",
+    "step_warehouse_category_title": "Create a Warehouse Category",
+    "step_warehouse_category_desc": "Set up categories to organize your warehouses (e.g., Main Store, Cold Storage).",
+    "step_warehouse_title": "Create a Warehouse",
+    "step_warehouse_desc": "Add your first warehouse where inventory will be stored and managed.",
+    "step_item_group_title": "Add Item Groups",
+    "step_item_group_desc": "Group your items (e.g., Raw Materials, Finished Goods) for easier management.",
+    "step_item_title": "Add Your First Item",
+    "step_item_desc": "Create inventory items with UOM, barcodes, and stock settings.",
+    "step_stock_recon_title": "Run a Stock Reconciliation",
+    "step_stock_recon_desc": "Record your opening stock quantities to bring the system up to date."
   }
 }

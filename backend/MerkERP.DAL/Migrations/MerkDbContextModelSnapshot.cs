@@ -1506,6 +1506,42 @@ namespace MerkERP.DAL.Migrations
                     b.ToTable("StockReconciliationTransaction");
                 });
 
+            modelBuilder.Entity("MerkERP.Core.Models.StockReconciliationTransactionDate", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("ChangeDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("InsertedBy")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("StockReconciliationTransactionId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("StockTransactionStatusId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("StockTransactionTypeId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("InsertedBy");
+
+                    b.HasIndex("StockReconciliationTransactionId");
+
+                    b.HasIndex("StockTransactionStatusId");
+
+                    b.HasIndex("StockTransactionTypeId");
+
+                    b.ToTable("StockReconciliationTransactionDate");
+                });
+
             modelBuilder.Entity("MerkERP.Core.Models.StockReconciliationTransactionDetail", b =>
                 {
                     b.Property<long>("Id")
@@ -2255,6 +2291,38 @@ namespace MerkERP.DAL.Migrations
                         .IsRequired();
 
                     b.Navigation("SetWarehouse");
+
+                    b.Navigation("StockTransactionStatus");
+
+                    b.Navigation("StockTransactionType");
+                });
+
+            modelBuilder.Entity("MerkERP.Core.Models.StockReconciliationTransactionDate", b =>
+                {
+                    b.HasOne("MerkERP.Core.Models.User_cs", null)
+                        .WithMany()
+                        .HasForeignKey("InsertedBy")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("MerkERP.Core.Models.StockReconciliationTransaction", "StockReconciliationTransaction")
+                        .WithMany()
+                        .HasForeignKey("StockReconciliationTransactionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MerkERP.Core.Models.StockTransactionStatus_s", "StockTransactionStatus")
+                        .WithMany()
+                        .HasForeignKey("StockTransactionStatusId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("MerkERP.Core.Models.StockTransactionType_s", "StockTransactionType")
+                        .WithMany()
+                        .HasForeignKey("StockTransactionTypeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("StockReconciliationTransaction");
 
                     b.Navigation("StockTransactionStatus");
 

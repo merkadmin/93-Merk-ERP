@@ -8,54 +8,7 @@
   (refresh)="load()"
   (deleteSelected)="deleteSelected()"
   (exportTemplate)="exportTemplate()"
-  (importFile)="importExcel($event)">
-
-  @if (selectedIds().size === 1) {
-  <div extraActions class="btn-group btn-group-sm">
-    <button class="btn btn-success btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-      <i class="ki-outline ki-setting-2 fs-4 me-1"></i>
-      {{ 'common.actions' | translate }}
-    </button>
-    <ul class="dropdown-menu dropdown-menu-end"
-        [dir]="isRtl ? 'rtl' : 'ltr'"
-        [style.text-align]="isRtl ? 'right' : 'left'">
-      @if (isSubmitted) {
-      <li>
-        <a class="dropdown-item" href="#" (click)="$event.preventDefault(); reissueTxn()">
-          <i class="ki-outline ki-arrows-circle fs-4 me-2"></i>
-          {{ 'common.reissue' | translate }}
-        </a>
-      </li>
-      <li>
-        <a class="dropdown-item text-danger" href="#" (click)="$event.preventDefault(); cancelTxn()">
-          <i class="ki-outline ki-cross-circle fs-4 me-2"></i>
-          {{ 'common.cancel' | translate }}
-        </a>
-      </li>
-      } @else {
-      <li>
-        <a class="dropdown-item" href="#" (click)="$event.preventDefault(); submitTxn()">
-          <i class="ki-outline ki-check-circle fs-4 me-2"></i>
-          {{ 'common.submit' | translate }}
-        </a>
-      </li>
-      <li>
-        <a class="dropdown-item" href="#" (click)="$event.preventDefault(); toggleActiveSelected()">
-          @if (selectedRecord?.isActive) {
-          <i class="ki-outline ki-minus-circle fs-4 me-2 text-warning"></i>
-          {{ 'common.deactivate' | translate }}
-          } @else {
-          <i class="ki-outline ki-check-circle fs-4 me-2 text-success"></i>
-          {{ 'common.activate' | translate }}
-          }
-        </a>
-      </li>
-      }
-    </ul>
-  </div>
-  }
-
-</app-regular-list-header-with-actions>
+  (importFile)="importExcel($event)" />
 
 <app-regular-list-search-actions [fields]="searchFields" (filterChange)="onFilterChange($event)" />
 
@@ -68,10 +21,39 @@
   [reload]="metaReloadKey()">
   <ng-template #rowActions let-item>
     <div class="d-inline-flex align-items-center gap-2">
-      <button class="btn btn-icon btn-sm btn-light-primary" (click)="edit(item.id)"
+      <button class="btn btn-icon btn-sm btn-light-primary" (click)="edit(item)"
         [title]="'common.edit' | translate">
         <i class="ki-outline ki-pencil fs-4"></i>
       </button>
+      @if (item.stockTransactionStatusId === 3) {
+      <div class="btn-group btn-group-sm">
+        <button class="btn btn-success btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="ki-outline ki-setting-2 fs-4 me-1"></i>
+          {{ 'common.actions' | translate }}
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end"
+            [dir]="isRtl ? 'rtl' : 'ltr'"
+            [style.text-align]="isRtl ? 'right' : 'left'">
+          <li>
+            <a class="dropdown-item" href="#" (click)="$event.preventDefault(); reissueTxn(item)">
+              <i class="ki-outline ki-arrows-circle fs-4 me-2"></i>
+              {{ 'common.reissue' | translate }}
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item text-danger" href="#" (click)="$event.preventDefault(); cancelTxn(item)">
+              <i class="ki-outline ki-cross-circle fs-4 me-2"></i>
+              {{ 'common.cancel' | translate }}
+            </a>
+          </li>
+        </ul>
+      </div>
+      } @else {
+      <button class="btn btn-sm btn-success" (click)="submitTxn(item)">
+        <i class="ki-outline ki-check-circle fs-4 me-1"></i>
+        {{ 'common.submit' | translate }}
+      </button>
+      }
       @if (item.isActive) {
       <button class="btn btn-sm btn-light-warning" (click)="toggleActive(item)">
         <i class="ki-outline ki-minus-circle fs-4 me-1"></i>

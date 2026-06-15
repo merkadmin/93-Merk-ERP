@@ -89,16 +89,6 @@ export class StockReconciliationComponent implements OnInit {
     setWarehouse:           (r) => this.wLabel(r.setWarehouse),
   };
 
-  get selectedRecord(): SRT | undefined {
-    if (this.selectedIds().size !== 1) return undefined;
-    const id = [...this.selectedIds()][0];
-    return this.records().find(r => r.id === id);
-  }
-
-  get isSubmitted(): boolean {
-    return this.selectedRecord?.stockTransactionStatusId === 3;
-  }
-
   onFilterChange(filter: Record<string, string | number | null>) { this.activeFilter.set(filter); }
 
   ngOnInit() { this.load(); }
@@ -112,7 +102,10 @@ export class StockReconciliationComponent implements OnInit {
   }
 
   addNew() { this.router.navigate(['/stock/stock-reconciliation/operation']); }
-  edit(id: number) { this.router.navigate(['/stock/stock-reconciliation/operation', id]); }
+  edit(item: SRT) {
+    const extras = item.stockTransactionStatusId === 3 ? { queryParams: { readonly: 'true' } } : {};
+    this.router.navigate(['/stock/stock-reconciliation/operation', item.id], extras);
+  }
 
   delete(id: number) {
     Swal.fire({
@@ -165,9 +158,9 @@ export class StockReconciliationComponent implements OnInit {
     }));
   }
 
-  submitTxn() {
-    const r = this.selectedRecord;
-    if (!r) return;
+  private userId() { return this.auth.user()?.id ?? ''; }
+
+  submitTxn(item: SRT) {
     Swal.fire({
       title: this.translate.instant('common.swal_delete_title'),
       text:  this.translate.instant('stock_reconciliation.submit_confirm'),
@@ -178,16 +171,14 @@ export class StockReconciliationComponent implements OnInit {
       reverseButtons: this.isRtl,
     }).then(result => {
       if (result.isConfirmed)
-        this.api.patch<SRT>(`stockreconciliationtransactions/${r.id}/submit`).subscribe(updated => {
+        this.api.patch<SRT>(`stockreconciliationtransactions/${item.id}/submit?insertedBy=${this.userId()}`).subscribe(updated => {
           this.updateRecordStatus(updated);
           this.toastr.success(this.translate.instant('stock_reconciliation.submit_success'));
         });
     });
   }
 
-  reissueTxn() {
-    const r = this.selectedRecord;
-    if (!r) return;
+  reissueTxn(item: SRT) {
     Swal.fire({
       title: this.translate.instant('common.swal_delete_title'),
       text:  this.translate.instant('stock_reconciliation.reissue_confirm'),
@@ -198,16 +189,14 @@ export class StockReconciliationComponent implements OnInit {
       reverseButtons: this.isRtl,
     }).then(result => {
       if (result.isConfirmed)
-        this.api.patch<SRT>(`stockreconciliationtransactions/${r.id}/reissue`).subscribe(updated => {
+        this.api.patch<SRT>(`stockreconciliationtransactions/${item.id}/reissue?insertedBy=${this.userId()}`).subscribe(updated => {
           this.updateRecordStatus(updated);
           this.toastr.success(this.translate.instant('stock_reconciliation.reissue_success'));
         });
     });
   }
 
-  cancelTxn() {
-    const r = this.selectedRecord;
-    if (!r) return;
+  cancelTxn(item: SRT) {
     Swal.fire({
       title: this.translate.instant('common.swal_delete_title'),
       text:  this.translate.instant('stock_reconciliation.cancel_txn_confirm'),
@@ -219,21 +208,11 @@ export class StockReconciliationComponent implements OnInit {
       reverseButtons: this.isRtl,
     }).then(result => {
       if (result.isConfirmed)
-        this.api.patch<SRT>(`stockreconciliationtransactions/${r.id}/cancel`).subscribe(updated => {
+        this.api.patch<SRT>(`stockreconciliationtransactions/${item.id}/cancel?insertedBy=${this.userId()}`).subscribe(updated => {
           this.updateRecordStatus(updated);
           this.toastr.success(this.translate.instant('stock_reconciliation.cancel_txn_success'));
         });
     });
-  }
-
-  deleteSelectedOne() {
-    const r = this.selectedRecord;
-    if (r) this.delete(r.id);
-  }
-
-  toggleActiveSelected() {
-    const r = this.selectedRecord;
-    if (r) this.toggleActive(r);
   }
 
   toggleActive(item: SRT) {

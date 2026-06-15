@@ -30,6 +30,7 @@ public class MerkDbContext : DbContext
 	public DbSet<StockTransactionStatus_s> StockTransactionStatus_s { get; set; }
 	public DbSet<StockReconciliationTransaction> StockReconciliationTransaction { get; set; }
 	public DbSet<StockReconciliationTransactionDetail> StockReconciliationTransactionDetail { get; set; }
+	public DbSet<StockReconciliationTransactionDate> StockReconciliationTransactionDate { get; set; }
 	public DbSet<StockLedgerTransaction> StockLedgerTransaction { get; set; }
 	public DbSet<UserType_s> UserType_s { get; set; }
 	public DbSet<User_cs> User_cs { get; set; }
@@ -173,6 +174,14 @@ public class MerkDbContext : DbContext
 		m.Entity<StockReconciliationTransactionDetail>()
 			.HasOne(d => d.UOM).WithMany().HasForeignKey(d => d.UOMId).OnDelete(DeleteBehavior.Restrict);
 
+		m.Entity<StockReconciliationTransactionDate>().HasKey(e => e.Id);
+		m.Entity<StockReconciliationTransactionDate>()
+			.HasOne(d => d.StockReconciliationTransaction).WithMany().HasForeignKey(d => d.StockReconciliationTransactionId).OnDelete(DeleteBehavior.Cascade);
+		m.Entity<StockReconciliationTransactionDate>()
+			.HasOne(d => d.StockTransactionStatus).WithMany().HasForeignKey(d => d.StockTransactionStatusId).OnDelete(DeleteBehavior.Restrict);
+		m.Entity<StockReconciliationTransactionDate>()
+			.HasOne(d => d.StockTransactionType).WithMany().HasForeignKey(d => d.StockTransactionTypeId).OnDelete(DeleteBehavior.Restrict);
+
 		m.Entity<StockLedgerTransaction>().HasKey(e => e.Id);
 		m.Entity<StockLedgerTransaction>().Property(e => e.InternalCode).HasColumnType("nvarchar(50)");
 		m.Entity<StockLedgerTransaction>().Property(e => e.ActualQuantity).HasColumnType("decimal(18,4)");
@@ -198,6 +207,7 @@ public class MerkDbContext : DbContext
 		m.Entity<ItemUOMConversion_cs>().HasOne<User_cs>().WithMany().HasForeignKey(e => e.InsertedBy).OnDelete(DeleteBehavior.SetNull);
 		m.Entity<StockReconciliationTransaction>().HasOne<User_cs>().WithMany().HasForeignKey(e => e.InsertedBy).OnDelete(DeleteBehavior.SetNull);
 		m.Entity<StockReconciliationTransactionDetail>().HasOne<User_cs>().WithMany().HasForeignKey(e => e.InsertedBy).OnDelete(DeleteBehavior.SetNull);
+		m.Entity<StockReconciliationTransactionDate>().HasOne<User_cs>().WithMany().HasForeignKey(e => e.InsertedBy).OnDelete(DeleteBehavior.SetNull);
 		m.Entity<StockLedgerTransaction>().HasOne<User_cs>().WithMany().HasForeignKey(e => e.InsertedBy).OnDelete(DeleteBehavior.SetNull);
 
 		m.Entity<ItemUOMConversion_cs>()

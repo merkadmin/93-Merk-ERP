@@ -4,8 +4,16 @@
   color="success"
   (cancel)="back()" />
 
+@if (readonly()) {
+<div class="alert alert-warning d-flex align-items-center mb-6 py-3">
+  <i class="ki-outline ki-information-5 fs-3 me-3 text-warning"></i>
+  <span>{{ 'stock_reconciliation.readonly_notice' | translate }}</span>
+</div>
+}
+
 <div class="card">
   <div class="card-body">
+  <fieldset [disabled]="readonly()">
 
     <!-- Row 1: Internal Code · Transaction Type · Posting Date · Posting Time -->
     <div class="row g-4 mb-4">
@@ -54,6 +62,7 @@
     </div>
 
     <!-- Barcode scan row -->
+    @if (!readonly()) {
     <div class="row g-4 mb-5 align-items-end">
       <div class="col-4">
         <label class="form-label fw-semibold">
@@ -72,8 +81,10 @@
         </div>
       </div>
     </div>
+    }
 
     <!-- Add-row form -->
+    @if (!readonly()) {
     <div class="row g-4 mb-4 align-items-end">
       <div class="col-4">
         <label class="form-label required">{{ 'stock_reconciliation.item' | translate }}</label>
@@ -111,6 +122,7 @@
         </button>
       </div>
     </div>
+    }
 
     <!-- Details table -->
     @if (displayDetails.length > 0) {
@@ -122,7 +134,7 @@
             <th>{{ 'stock_reconciliation.item' | translate }}</th>
             <th>{{ 'stock_reconciliation.uom' | translate }}</th>
             <th class="w-120px">{{ 'stock_reconciliation.quantity' | translate }}</th>
-            <th class="w-60px"></th>
+            @if (!readonly()) { <th class="w-60px"></th> }
           </tr>
         </thead>
         <tbody>
@@ -133,6 +145,7 @@
               <td class="fw-semibold">{{ itemName(d.itemId) }}</td>
               <td>{{ uomName(d.uomId) }}</td>
               <td>{{ d.quantity }}</td>
+              @if (!readonly()) {
               <td>
                 <button class="btn btn-icon btn-sm btn-light-danger" type="button"
                   (click)="removeApiDetail(d.id)"
@@ -140,6 +153,7 @@
                   <i class="ki-outline ki-trash fs-5"></i>
                 </button>
               </td>
+              }
             </tr>
             }
           } @else {
@@ -149,6 +163,7 @@
               <td class="fw-semibold">{{ itemName(d.itemId) }}</td>
               <td>{{ uomName(d.uomId) }}</td>
               <td>{{ d.quantity }}</td>
+              @if (!readonly()) {
               <td>
                 <button class="btn btn-icon btn-sm btn-light-danger" type="button"
                   (click)="removePendingDetail($index)"
@@ -156,6 +171,7 @@
                   <i class="ki-outline ki-trash fs-5"></i>
                 </button>
               </td>
+              }
             </tr>
             }
           }
@@ -182,14 +198,17 @@
     </div>
     }
 
+  </fieldset>
   </div>
 
+  @if (!readonly()) {
   <app-regular-operation-actions
     [saving]="saving()"
     [savingNew]="savingNew()"
     (save)="save()"
     (saveAndNew)="saveAndNew()"
     (reset)="resetForm()" />
+  }
 </div>
 
 

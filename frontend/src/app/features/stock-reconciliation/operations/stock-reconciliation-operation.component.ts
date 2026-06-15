@@ -76,6 +76,7 @@ export class StockReconciliationOperationComponent implements OnInit {
   get isRtl() { return this.doc.documentElement.dir === 'rtl'; }
 
   isEdit       = signal(false);
+  readonly     = signal(false);
   saving       = signal(false);
   savingNew    = signal(false);
   addingDetail = signal(false);
@@ -144,6 +145,9 @@ export class StockReconciliationOperationComponent implements OnInit {
     this.api.get<Warehouse[]>('warehouses').subscribe(d => this.warehouses.set(d));
     this.api.get<Item[]>('items').subscribe(d => this.items.set(d));
     this.api.get<UOM[]>('uoms').subscribe(d => this.uoms.set(d));
+
+    if (this.route.snapshot.queryParamMap.get('readonly') === 'true')
+      this.readonly.set(true);
 
     const id = Number(this.route.snapshot.paramMap.get('id'));
     if (id) {
