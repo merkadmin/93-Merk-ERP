@@ -34,6 +34,11 @@ public class MerkDbContext : DbContext
 	public DbSet<StockLedgerTransaction> StockLedgerTransaction { get; set; }
 	public DbSet<UserType_s> UserType_s { get; set; }
 	public DbSet<User_cs> User_cs { get; set; }
+	public DbSet<Currency_s> Currency_s { get; set; }
+	public DbSet<SupplierType_s> SupplierType_s { get; set; }
+	public DbSet<Supplier_cs> Supplier_cs { get; set; }
+	public DbSet<Company_cs> Company_cs { get; set; }
+	public DbSet<CurrencyExchangeRate_cs> CurrencyExchangeRate_cs { get; set; }
 
 	protected override void OnModelCreating(ModelBuilder m)
 	{
@@ -194,6 +199,78 @@ public class MerkDbContext : DbContext
 		m.Entity<StockLedgerTransaction>()
 			.HasOne(l => l.WareHouse).WithMany().HasForeignKey(l => l.WareHouseId).OnDelete(DeleteBehavior.Restrict);
 
+		// ── Purchase prerequisites: Currency, Supplier, Company ─────────────────
+		m.Entity<Currency_s>().HasKey(e => e.Id);
+		m.Entity<Currency_s>().Property(e => e.Code).HasColumnType("nvarchar(3)").IsRequired();
+		m.Entity<Currency_s>().Property(e => e.Name_EN).HasColumnType("nvarchar(100)").IsRequired();
+		m.Entity<Currency_s>().Property(e => e.Name_AR).HasColumnType("nvarchar(100)");
+		m.Entity<Currency_s>().Property(e => e.Symbol).HasColumnType("nvarchar(10)");
+		m.Entity<Currency_s>().HasIndex(e => e.Code).IsUnique();
+
+		m.Entity<SupplierType_s>().HasKey(e => e.Id);
+		m.Entity<SupplierType_s>().Property(e => e.Name_EN).HasColumnType("nvarchar(100)").IsRequired();
+		m.Entity<SupplierType_s>().Property(e => e.Name_AR).HasColumnType("nvarchar(100)");
+
+		m.Entity<Supplier_cs>().HasKey(e => e.Id);
+		m.Entity<Supplier_cs>().Property(e => e.InternalCode).HasColumnType("nvarchar(50)");
+		m.Entity<Supplier_cs>().Property(e => e.Name_EN).HasColumnType("nvarchar(200)").IsRequired();
+		m.Entity<Supplier_cs>().Property(e => e.Name_AR).HasColumnType("nvarchar(200)");
+		m.Entity<Supplier_cs>().Property(e => e.Country).HasColumnType("nvarchar(100)");
+		m.Entity<Supplier_cs>().Property(e => e.TaxId).HasColumnType("nvarchar(50)");
+		m.Entity<Supplier_cs>().Property(e => e.Phone).HasColumnType("nvarchar(50)");
+		m.Entity<Supplier_cs>().Property(e => e.Email).HasColumnType("nvarchar(200)");
+		m.Entity<Supplier_cs>().Property(e => e.Website).HasColumnType("nvarchar(200)");
+		m.Entity<Supplier_cs>().Property(e => e.Address).HasColumnType("nvarchar(max)");
+		m.Entity<Supplier_cs>().Property(e => e.ContactPersonName).HasColumnType("nvarchar(200)");
+		m.Entity<Supplier_cs>().Property(e => e.ContactMobile).HasColumnType("nvarchar(50)");
+		m.Entity<Supplier_cs>().Property(e => e.ContactEmail).HasColumnType("nvarchar(200)");
+		m.Entity<Supplier_cs>().Property(e => e.Notes).HasColumnType("nvarchar(max)");
+		m.Entity<Supplier_cs>().HasIndex(e => e.InternalCode).IsUnique();
+		m.Entity<Supplier_cs>()
+			.HasOne(s => s.SupplierType).WithMany().HasForeignKey(s => s.SupplierTypeId).OnDelete(DeleteBehavior.Restrict);
+		m.Entity<Supplier_cs>()
+			.HasOne(s => s.DefaultCurrency).WithMany().HasForeignKey(s => s.DefaultCurrencyId).OnDelete(DeleteBehavior.Restrict);
+
+		m.Entity<Company_cs>().HasKey(e => e.Id);
+		m.Entity<Company_cs>().Property(e => e.InternalCode).HasColumnType("nvarchar(50)");
+		m.Entity<Company_cs>().Property(e => e.Name_EN).HasColumnType("nvarchar(200)").IsRequired();
+		m.Entity<Company_cs>().Property(e => e.Name_AR).HasColumnType("nvarchar(200)");
+		m.Entity<Company_cs>().Property(e => e.Abbr).HasColumnType("nvarchar(20)").IsRequired();
+		m.Entity<Company_cs>().Property(e => e.Country).HasColumnType("nvarchar(100)");
+		m.Entity<Company_cs>().Property(e => e.TaxId).HasColumnType("nvarchar(50)");
+		m.Entity<Company_cs>().Property(e => e.Phone).HasColumnType("nvarchar(50)");
+		m.Entity<Company_cs>().Property(e => e.Email).HasColumnType("nvarchar(200)");
+		m.Entity<Company_cs>().Property(e => e.Website).HasColumnType("nvarchar(200)");
+		m.Entity<Company_cs>().Property(e => e.Address).HasColumnType("nvarchar(max)");
+		m.Entity<Company_cs>().HasIndex(e => e.InternalCode).IsUnique();
+		m.Entity<Company_cs>().HasIndex(e => e.Name_EN).IsUnique();
+		m.Entity<Company_cs>()
+			.HasOne(c => c.DefaultCurrency).WithMany().HasForeignKey(c => c.DefaultCurrencyId).OnDelete(DeleteBehavior.Restrict);
+
+		m.Entity<CurrencyExchangeRate_cs>().HasKey(e => e.Id);
+		m.Entity<CurrencyExchangeRate_cs>().Property(e => e.Rate).HasColumnType("decimal(18,6)");
+		m.Entity<CurrencyExchangeRate_cs>().HasIndex(e => new { e.FromCurrencyId, e.ToCurrencyId, e.EffectiveDate }).IsUnique();
+		m.Entity<CurrencyExchangeRate_cs>()
+			.HasOne(x => x.FromCurrency).WithMany().HasForeignKey(x => x.FromCurrencyId).OnDelete(DeleteBehavior.Restrict);
+		m.Entity<CurrencyExchangeRate_cs>()
+			.HasOne(x => x.ToCurrency).WithMany().HasForeignKey(x => x.ToCurrencyId).OnDelete(DeleteBehavior.Restrict);
+
+		m.Entity<Supplier_cs>().HasOne<User_cs>().WithMany().HasForeignKey(e => e.InsertedBy).OnDelete(DeleteBehavior.SetNull);
+		m.Entity<Company_cs>().HasOne<User_cs>().WithMany().HasForeignKey(e => e.InsertedBy).OnDelete(DeleteBehavior.SetNull);
+		m.Entity<CurrencyExchangeRate_cs>().HasOne<User_cs>().WithMany().HasForeignKey(e => e.InsertedBy).OnDelete(DeleteBehavior.SetNull);
+
+		m.Entity<Currency_s>().HasData(
+			new Currency_s { Id = 1L, Code = "EGP", Name_EN = "Egyptian Pound", Name_AR = "جنيه مصري", Symbol = "ج.م" },
+			new Currency_s { Id = 2L, Code = "USD", Name_EN = "US Dollar", Name_AR = "دولار أمريكي", Symbol = "$" },
+			new Currency_s { Id = 3L, Code = "EUR", Name_EN = "Euro", Name_AR = "يورو", Symbol = "€" }
+		);
+
+		m.Entity<SupplierType_s>().HasData(
+			new SupplierType_s { Id = 1L, Name_EN = "Company", Name_AR = "شركة" },
+			new SupplierType_s { Id = 2L, Name_EN = "Individual", Name_AR = "فرد" },
+			new SupplierType_s { Id = 3L, Name_EN = "Partnership", Name_AR = "شراكة" }
+		);
+
 		// InsertedBy → User_cs (nullable FK, set null on user delete)
 		m.Entity<Branch_cs>().HasOne<User_cs>().WithMany().HasForeignKey(e => e.InsertedBy).OnDelete(DeleteBehavior.SetNull);
 		m.Entity<WareHouseCategory_cs>().HasOne<User_cs>().WithMany().HasForeignKey(e => e.InsertedBy).OnDelete(DeleteBehavior.SetNull);
@@ -319,7 +396,15 @@ public class MerkDbContext : DbContext
 			new TableName_s { Id = 22, Name = "StockReconciliationTransaction", EntityKey = null },
 			new TableName_s { Id = 23, Name = "StockReconciliationTransactionDetail", EntityKey = null },
 			new TableName_s { Id = 24, Name = "StockLedgerTransaction", EntityKey = null },
-			new TableName_s { Id = 25, Name = "StockTransactionStatus_s", EntityKey = null }
+			new TableName_s { Id = 25, Name = "StockTransactionStatus_s", EntityKey = null },
+			// NOTE: Ids 26-29 are already used in the live DB by rows inserted outside EF
+			// (TableMetaData_FilterType_s/DataType_s/RenderAs_s, StockReconciliationTransactionDate)
+			// that were never added to this seed block. Continuing from 30 to avoid a PK collision.
+			new TableName_s { Id = 30, Name = "Currency_s", EntityKey = "currencies" },
+			new TableName_s { Id = 31, Name = "SupplierType_s", EntityKey = null },
+			new TableName_s { Id = 32, Name = "Supplier_cs", EntityKey = "suppliers" },
+			new TableName_s { Id = 33, Name = "Company_cs", EntityKey = "companies" },
+			new TableName_s { Id = 34, Name = "CurrencyExchangeRate_cs", EntityKey = "currency-exchange-rates" }
 		);
 
 		m.Entity<BarcodeType_s>().HasData(

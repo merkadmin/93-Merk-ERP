@@ -61,6 +61,36 @@ WHEN NOT MATCHED THEN
     VALUES (src.ItemTypeId, src.Name, 1, 0);
 SET IDENTITY_INSERT ItemType_s OFF;
 
+-- ── Currency_s ────────────────────────────────────────────────────────────────
+--    PK: Id (IDENTITY)
+SET IDENTITY_INSERT Currency_s ON;
+MERGE Currency_s AS target
+USING (VALUES
+    (1, 'EGP', N'Egyptian Pound', N'جنيه مصري',     N'ج.م'),
+    (2, 'USD', N'US Dollar',      N'دولار أمريكي', N'$'  ),
+    (3, 'EUR', N'Euro',           N'يورو',          N'€'  )
+) AS src (Id, Code, Name_EN, Name_AR, Symbol)
+ON  target.Id = src.Id
+WHEN NOT MATCHED THEN
+    INSERT (Id, Code, Name_EN, Name_AR, Symbol, IsActive)
+    VALUES (src.Id, src.Code, src.Name_EN, src.Name_AR, src.Symbol, 1);
+SET IDENTITY_INSERT Currency_s OFF;
+
+-- ── SupplierType_s ────────────────────────────────────────────────────────────
+--    PK: Id (IDENTITY)
+SET IDENTITY_INSERT SupplierType_s ON;
+MERGE SupplierType_s AS target
+USING (VALUES
+    (1, N'Company',     N'شركة' ),
+    (2, N'Individual',  N'فرد'  ),
+    (3, N'Partnership', N'شراكة')
+) AS src (Id, Name_EN, Name_AR)
+ON  target.Id = src.Id
+WHEN NOT MATCHED THEN
+    INSERT (Id, Name_EN, Name_AR)
+    VALUES (src.Id, src.Name_EN, src.Name_AR);
+SET IDENTITY_INSERT SupplierType_s OFF;
+
 -- ── WareHouseType_s ───────────────────────────────────────────────────────────
 --    PK: Id (IDENTITY) | Enum: WareHouseTypeEnum
 SET IDENTITY_INSERT WareHouseType_s ON;
