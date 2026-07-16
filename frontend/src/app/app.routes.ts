@@ -51,4 +51,18 @@ export const routes: Routes = [
       { path: 'stock-settings',       loadComponent: () => import('./features/stock-movement/stock-movement.component').then(m => m.StockMovementComponent) },
     ],
   },
+
+  {
+    path: 'buying',
+    canActivate: [authGuard],
+    children: [
+      { path: 'suppliers',               loadComponent: () => import('./features/suppliers/suppliers.component').then(m => m.SuppliersComponent) },
+      { path: 'suppliers/operation',     loadComponent: () => import('./features/suppliers/operations/suppliers-operation.component').then(m => m.SuppliersOperationComponent) },
+      { path: 'suppliers/operation/:id', loadComponent: () => import('./features/suppliers/operations/suppliers-operation.component').then(m => m.SuppliersOperationComponent) },
+
+      { path: 'companies',               loadComponent: () => import('./features/companies/companies.component').then(m => m.CompaniesComponent) },
+      { path: 'companies/operation',     loadComponent: () => import('./features/companies/operations/companies-operation.component').then(m => m.CompaniesOperationComponent) },
+      { path: 'companies/operation/:id', loadComponent: () => import('./features/companies/operations/companies-operation.component').then(m => m.CompaniesOperationComponent) },
+    ],
+  },
 ];

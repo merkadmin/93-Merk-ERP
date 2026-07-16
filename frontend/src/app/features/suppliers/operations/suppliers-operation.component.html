@@ -1,0 +1,166 @@
+<app-regular-operation-header
+  [title]="(isEdit() ? 'suppliers.edit_title' : 'suppliers.add_title') | translate"
+  icon="ki-outline ki-people" color="success" (cancel)="back()" />
+
+<div class="card">
+  <div class="card-body">
+    <h3 class="fs-6 fw-bold text-gray-800 mb-4">{{ 'common.general' | translate }}</h3>
+    <div class="row g-4">
+
+      <div class="col-3">
+        <label class="form-label required">{{ 'common.internal_code' | translate }}</label>
+        <input class="form-control" [(ngModel)]="form.internalCode" name="internalCode"
+          [placeholder]="'common.internal_code' | translate">
+      </div>
+
+      <div class="col-3">
+        <label class="form-label required">{{ 'common.name' | translate }} (EN)</label>
+        <input class="form-control" [(ngModel)]="form.name_EN" name="name_EN" [placeholder]="'common.name' | translate">
+      </div>
+
+      <div class="col-3">
+        <label class="form-label">{{ 'common.name' | translate }} (AR)</label>
+        <input class="form-control" [(ngModel)]="form.name_AR" name="name_AR" dir="rtl"
+          [placeholder]="'common.name' | translate">
+      </div>
+
+      <div class="col-3">
+        <label class="form-label">{{ 'suppliers.supplier_type' | translate }}</label>
+        <select class="form-select" [(ngModel)]="form.supplierTypeId" name="supplierTypeId">
+          <option [ngValue]="null">— {{ 'common.none' | translate }} —</option>
+          @for (t of supplierTypes(); track t.id) {
+          <option [ngValue]="t.id">{{ isRtl ? (t.name_AR || t.name_EN) : t.name_EN }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="col-3">
+        <label class="form-label">{{ 'suppliers.default_currency' | translate }}</label>
+        <select class="form-select" [(ngModel)]="form.defaultCurrencyId" name="defaultCurrencyId">
+          <option [ngValue]="null">— {{ 'common.none' | translate }} —</option>
+          @for (c of currencies(); track c.id) {
+          <option [ngValue]="c.id">{{ currencyLabel(c) }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="col-3">
+        <label class="form-label">{{ 'suppliers.country' | translate }}</label>
+        <input class="form-control" [(ngModel)]="form.country" name="country"
+          [placeholder]="'suppliers.country' | translate">
+      </div>
+
+      <div class="col-3">
+        <label class="form-label">{{ 'suppliers.tax_id' | translate }}</label>
+        <input class="form-control" [(ngModel)]="form.taxId" name="taxId"
+          [placeholder]="'suppliers.tax_id' | translate">
+      </div>
+
+      <div class="col-3 d-flex align-items-end pb-2">
+        <div class="form-check form-check-custom form-check-solid gap-3">
+          <input class="form-check-input" type="checkbox" [(ngModel)]="form.isOnHold" name="isOnHold" id="isOnHold">
+          <label class="form-check-label fw-semibold" for="isOnHold">
+            {{ 'suppliers.on_hold' | translate }}
+          </label>
+        </div>
+      </div>
+
+    </div>
+
+    <h3 class="fs-6 fw-bold text-gray-800 mb-4 mt-8">{{ 'suppliers.contact_info' | translate }}</h3>
+    <div class="row g-4">
+
+      <div class="col-3">
+        <label class="form-label">{{ 'suppliers.phone' | translate }}</label>
+        <input class="form-control" [(ngModel)]="form.phone" name="phone" [placeholder]="'suppliers.phone' | translate">
+      </div>
+
+      <div class="col-3">
+        <label class="form-label">{{ 'suppliers.email' | translate }}</label>
+        <input class="form-control" type="email" [(ngModel)]="form.email" name="email"
+          [placeholder]="'suppliers.email' | translate">
+      </div>
+
+      <div class="col-3">
+        <label class="form-label">{{ 'suppliers.website' | translate }}</label>
+        <input class="form-control" [(ngModel)]="form.website" name="website"
+          [placeholder]="'suppliers.website' | translate">
+      </div>
+
+      <div class="w-100"></div>
+
+      <div class="col-3">
+        <label class="form-label">{{ 'suppliers.contact_person' | translate }}</label>
+        <input class="form-control" [(ngModel)]="form.contactPersonName" name="contactPersonName"
+          [placeholder]="'suppliers.contact_person' | translate">
+      </div>
+
+      <div class="col-3">
+        <label class="form-label">{{ 'suppliers.contact_mobile' | translate }}</label>
+        <input class="form-control" [(ngModel)]="form.contactMobile" name="contactMobile"
+          [placeholder]="'suppliers.contact_mobile' | translate">
+      </div>
+
+      <div class="col-3">
+        <label class="form-label">{{ 'suppliers.contact_email' | translate }}</label>
+        <input class="form-control" type="email" [(ngModel)]="form.contactEmail" name="contactEmail"
+          [placeholder]="'suppliers.contact_email' | translate">
+      </div>
+
+      <div class="w-100"></div>
+
+      <div class="col-6">
+        <label class="form-label">{{ 'suppliers.address' | translate }}</label>
+        <textarea class="form-control" [(ngModel)]="form.address" name="address" rows="3"
+          [placeholder]="'suppliers.address' | translate"></textarea>
+      </div>
+
+      <div class="col-6">
+        <label class="form-label">{{ 'common.description' | translate }} / {{ 'suppliers.notes' | translate }}</label>
+        <textarea class="form-control" [(ngModel)]="form.notes" name="notes" rows="3"
+          [placeholder]="'suppliers.notes' | translate"></textarea>
+      </div>
+
+    </div>
+  </div>
+
+  <app-regular-operation-actions [saving]="saving()" [savingNew]="savingNew()" (save)="save()"
+    (saveAndNew)="saveAndNew()" (reset)="resetForm()" />
+</div>
+
+@if (savedRows().length > 0) {
+<div class="card mt-6">
+  <div class="card-header min-h-50px">
+    <h3 class="card-title fs-6 fw-bold text-success">
+      <i class="ki-outline ki-check-circle fs-4 text-success me-2"></i>
+      {{ savedRows().length }}
+      {{ (savedRows().length === 1 ? 'suppliers.saved_rows_title_single' :
+      'suppliers.saved_rows_title') | translate }}
+    </h3>
+  </div>
+  <div class="card-body p-0">
+    <table class="table table-row-dashed table-row-gray-300 align-middle gs-4 gy-2 mb-0">
+      <thead>
+        <tr class="fw-bold text-success bg-light-success fs-7">
+          <th class="w-40px">#</th>
+          <th>{{ 'common.internal_code' | translate }}</th>
+          <th>{{ 'common.name' | translate }} (EN)</th>
+          <th>{{ 'common.name' | translate }} (AR)</th>
+          <th>{{ 'suppliers.supplier_type' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of savedRows(); track $index) {
+        <tr>
+          <td class="text-muted">{{ $index + 1 }}</td>
+          <td class="text-muted">{{ row.internalCode || '—' }}</td>
+          <td class="fw-semibold">{{ row.name_EN }}</td>
+          <td>{{ row.name_AR || '—' }}</td>
+          <td>{{ row.supplierTypeName }}</td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
+}

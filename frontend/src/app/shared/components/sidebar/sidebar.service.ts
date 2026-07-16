@@ -36,6 +36,17 @@ export class SidebarService {
       ],
     },
     {
+      id: 'buying',
+      labelKey: 'nav.buying',
+      icon: 'ki-basket',
+      iconColor: 'text-warning',
+      isVisible: () => true,
+      getChildren: () => [
+        { route: '/buying/suppliers', icon: 'ki-outline ki-people', labelKey: 'nav.suppliers' },
+        { route: '/buying/companies', icon: 'ki-outline ki-office-bag', labelKey: 'nav.companies' },
+      ],
+    },
+    {
       id: 'warehousing',
       labelKey: 'nav.warehousing',
       icon: 'ki-home-2',

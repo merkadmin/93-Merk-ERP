@@ -35,11 +35,11 @@ public record SkippedDetailDto(long ItemId, string ItemName, long UOMId, string 
 public class StockReconciliationTransactionsController : ControllerBase
 {
 	private readonly MerkDbContext _db;
-	private readonly ExcelService  _excel;
+	private readonly ExcelService _excel;
 
 	public StockReconciliationTransactionsController(MerkDbContext db, ExcelService excel)
 	{
-		_db    = db;
+		_db = db;
 		_excel = excel;
 	}
 
@@ -71,10 +71,10 @@ public class StockReconciliationTransactionsController : ControllerBase
 		new()
 		{
 			StockReconciliationTransactionId = txnId,
-			ChangeDateTime                   = DateTime.UtcNow,
-			StockTransactionStatusId         = statusId,
-			StockTransactionTypeId           = typeId,
-			InsertedBy                       = insertedBy,
+			ChangeDateTime = DateTime.UtcNow,
+			StockTransactionStatusId = statusId,
+			StockTransactionTypeId = typeId,
+			InsertedBy = insertedBy,
 		};
 
 	// ── Endpoints ─────────────────────────────────────────────────────────────
@@ -82,11 +82,11 @@ public class StockReconciliationTransactionsController : ControllerBase
 	[HttpGet("export-template")]
 	public async Task<IActionResult> ExportTemplate()
 	{
-		var txnTypes   = await _db.StockTransactionType_s.OrderBy(t => t.Name_EN).ToListAsync();
-		var statuses   = await _db.StockTransactionStatus_s.OrderBy(s => s.Name_EN).ToListAsync();
+		var txnTypes = await _db.StockTransactionType_s.OrderBy(t => t.Name_EN).ToListAsync();
+		var statuses = await _db.StockTransactionStatus_s.OrderBy(s => s.Name_EN).ToListAsync();
 		var warehouses = await _db.WareHouse_cs.OrderBy(w => w.Name_EN).ToListAsync();
-		var items      = await _db.Item_cs.OrderBy(i => i.InternalCode).ToListAsync();
-		var uoms       = await _db.UOM_cs.OrderBy(u => u.Name_EN).ToListAsync();
+		var items = await _db.Item_cs.OrderBy(i => i.InternalCode).ToListAsync();
+		var uoms = await _db.UOM_cs.OrderBy(u => u.Name_EN).ToListAsync();
 
 		var columns = new (string Label, int Width)[]
 		{
@@ -130,15 +130,15 @@ public class StockReconciliationTransactionsController : ControllerBase
 		if (file is null || file.Length == 0)
 			return BadRequest("No file uploaded.");
 
-		var txnTypes   = await _db.StockTransactionType_s.ToListAsync();
-		var statuses   = await _db.StockTransactionStatus_s.ToListAsync();
+		var txnTypes = await _db.StockTransactionType_s.ToListAsync();
+		var statuses = await _db.StockTransactionStatus_s.ToListAsync();
 		var warehouses = await _db.WareHouse_cs.ToListAsync();
-		var items      = await _db.Item_cs.ToListAsync();
-		var uoms       = await _db.UOM_cs.ToListAsync();
+		var items = await _db.Item_cs.ToListAsync();
+		var uoms = await _db.UOM_cs.ToListAsync();
 
-		var rows    = _excel.ReadRows(file.OpenReadStream());
+		var rows = _excel.ReadRows(file.OpenReadStream());
 		var created = 0;
-		var errors  = new List<string>();
+		var errors = new List<string>();
 
 		// group rows by internal code so multiple detail rows share one transaction header
 		var groups = rows
@@ -149,14 +149,14 @@ public class StockReconciliationTransactionsController : ControllerBase
 
 		foreach (var grp in groups)
 		{
-			var firstRow    = grp.First();
-			var rowNum      = firstRow.rowNum;
+			var firstRow = grp.First();
+			var rowNum = firstRow.rowNum;
 			var internalCode = grp.Key;
 
-			var typeName     = firstRow.row.Length > 1 ? firstRow.row[1] : "";
-			var statusName   = firstRow.row.Length > 2 ? firstRow.row[2] : "";
-			var whName       = firstRow.row.Length > 3 ? firstRow.row[3] : "";
-			var dateStr      = firstRow.row.Length > 4 ? firstRow.row[4] : "";
+			var typeName = firstRow.row.Length > 1 ? firstRow.row[1] : "";
+			var statusName = firstRow.row.Length > 2 ? firstRow.row[2] : "";
+			var whName = firstRow.row.Length > 3 ? firstRow.row[3] : "";
+			var dateStr = firstRow.row.Length > 4 ? firstRow.row[4] : "";
 
 			var txnType = txnTypes.FirstOrDefault(t =>
 				string.Equals(t.Name_EN, typeName, StringComparison.OrdinalIgnoreCase) ||
@@ -174,8 +174,8 @@ public class StockReconciliationTransactionsController : ControllerBase
 			if (status is null) { errors.Add($"Row {rowNum}: No statuses in the system."); continue; }
 
 			var warehouse = warehouses.FirstOrDefault(w =>
-				string.Equals(w.Name_EN,      whName, StringComparison.OrdinalIgnoreCase) ||
-				string.Equals(w.Name_AR,      whName, StringComparison.OrdinalIgnoreCase) ||
+				string.Equals(w.Name_EN, whName, StringComparison.OrdinalIgnoreCase) ||
+				string.Equals(w.Name_AR, whName, StringComparison.OrdinalIgnoreCase) ||
 				string.Equals(w.InternalCode, whName, StringComparison.OrdinalIgnoreCase));
 			if (warehouse is null && !string.IsNullOrWhiteSpace(whName))
 			{ errors.Add($"Row {rowNum}: Warehouse \"{whName}\" not found."); continue; }
@@ -185,14 +185,14 @@ public class StockReconciliationTransactionsController : ControllerBase
 
 			var txn = new StockReconciliationTransaction
 			{
-				InternalCode             = string.IsNullOrWhiteSpace(internalCode) ? null : internalCode,
-				StockTransactionTypeId   = txnType.Id,
+				InternalCode = string.IsNullOrWhiteSpace(internalCode) ? null : internalCode,
+				StockTransactionTypeId = txnType.Id,
 				StockTransactionStatusId = status.Id,
-				SetWarehouseId           = warehouse?.Id,
-				PostingDate              = postingDate,
-				PostingTime              = TimeOnly.FromDateTime(DateTime.UtcNow),
-				InsertedBy               = insertedBy,
-				InsertedDate             = DateTime.UtcNow,
+				SetWarehouseId = warehouse?.Id,
+				PostingDate = postingDate,
+				PostingTime = TimeOnly.FromDateTime(DateTime.UtcNow),
+				InsertedBy = insertedBy,
+				InsertedDate = DateTime.UtcNow,
 			};
 
 			// build details — all rows in the group
@@ -202,22 +202,22 @@ public class StockReconciliationTransactionsController : ControllerBase
 			foreach (var (row, rn) in grp)
 			{
 				var itemCode = row.Length > 5 ? row[5] : "";
-				var qtyStr   = row.Length > 6 ? row[6] : "";
-				var uomName  = row.Length > 7 ? row[7] : "";
+				var qtyStr = row.Length > 6 ? row[6] : "";
+				var uomName = row.Length > 7 ? row[7] : "";
 
 				if (string.IsNullOrWhiteSpace(itemCode)) continue;
 
 				var item = items.FirstOrDefault(i =>
 					string.Equals(i.InternalCode, itemCode, StringComparison.OrdinalIgnoreCase) ||
-					string.Equals(i.Name_EN,      itemCode, StringComparison.OrdinalIgnoreCase));
+					string.Equals(i.Name_EN, itemCode, StringComparison.OrdinalIgnoreCase));
 				if (item is null) { errors.Add($"Row {rn}: Item \"{itemCode}\" not found."); continue; }
 
 				if (!decimal.TryParse(qtyStr, out var qty) || qty <= 0)
 				{ errors.Add($"Row {rn}: Invalid quantity \"{qtyStr}\"."); continue; }
 
 				var uom = uoms.FirstOrDefault(u =>
-					string.Equals(u.Name_EN,      uomName, StringComparison.OrdinalIgnoreCase) ||
-					string.Equals(u.Name_AR,      uomName, StringComparison.OrdinalIgnoreCase) ||
+					string.Equals(u.Name_EN, uomName, StringComparison.OrdinalIgnoreCase) ||
+					string.Equals(u.Name_AR, uomName, StringComparison.OrdinalIgnoreCase) ||
 					string.Equals(u.InternalCode, uomName, StringComparison.OrdinalIgnoreCase))
 					?? uoms.FirstOrDefault(u => u.Id == item.DefaultUOMId);
 				if (uom is null) { errors.Add($"Row {rn}: UOM \"{uomName}\" not found."); continue; }
@@ -244,11 +244,11 @@ public class StockReconciliationTransactionsController : ControllerBase
 				}
 				txn.Details.Add(new StockReconciliationTransactionDetail
 				{
-					ItemId      = item.Id,
+					ItemId = item.Id,
 					WarehouseId = warehouse?.Id ?? 0,
-					Quantity    = conv.ConvertedQty,
-					UOMId       = conv.DefaultUOMId,
-					InsertedBy  = insertedBy,
+					Quantity = conv.ConvertedQty,
+					UOMId = conv.DefaultUOMId,
+					InsertedBy = insertedBy,
 					InsertedDate = DateTime.UtcNow,
 				});
 			}
@@ -388,15 +388,15 @@ public class StockReconciliationTransactionsController : ControllerBase
 		var entity = await _db.StockReconciliationTransaction.FindAsync(id);
 		if (entity is null) return NotFound();
 
-		bool changed = entity.StockTransactionTypeId   != dto.StockTransactionTypeId
-		            || entity.StockTransactionStatusId != dto.StockTransactionStatusId;
+		bool changed = entity.StockTransactionTypeId != dto.StockTransactionTypeId
+					|| entity.StockTransactionStatusId != dto.StockTransactionStatusId;
 
-		entity.StockTransactionTypeId   = dto.StockTransactionTypeId;
+		entity.StockTransactionTypeId = dto.StockTransactionTypeId;
 		entity.StockTransactionStatusId = dto.StockTransactionStatusId;
-		entity.InternalCode    = dto.InternalCode;
-		entity.PostingDate     = dto.PostingDate;
-		entity.PostingTime     = dto.PostingTime;
-		entity.SetWarehouseId  = dto.SetWarehouseId;
+		entity.InternalCode = dto.InternalCode;
+		entity.PostingDate = dto.PostingDate;
+		entity.PostingTime = dto.PostingTime;
+		entity.SetWarehouseId = dto.SetWarehouseId;
 		await _db.SaveChangesAsync();
 
 		if (changed)

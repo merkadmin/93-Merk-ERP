@@ -13,11 +13,11 @@ public record BulkItemActiveDto(List<long> Ids, bool IsActive);
 public class ItemsController : ControllerBase
 {
 	private readonly MerkDbContext _db;
-	private readonly ExcelService  _excel;
+	private readonly ExcelService _excel;
 
 	public ItemsController(MerkDbContext db, ExcelService excel)
 	{
-		_db    = db;
+		_db = db;
 		_excel = excel;
 	}
 
@@ -53,8 +53,8 @@ public class ItemsController : ControllerBase
 	public async Task<IActionResult> ExportTemplate()
 	{
 		var groups = await _db.ItemGroup_cs.OrderBy(g => g.Name_EN).ToListAsync();
-		var types  = await _db.ItemType_s.OrderBy(t => t.Name).ToListAsync();
-		var uoms   = await _db.UOM_cs.OrderBy(u => u.Name_EN).ToListAsync();
+		var types = await _db.ItemType_s.OrderBy(t => t.Name).ToListAsync();
+		var uoms = await _db.UOM_cs.OrderBy(u => u.Name_EN).ToListAsync();
 
 		var columns = new (string Label, int Width)[]
 		{
@@ -100,25 +100,25 @@ public class ItemsController : ControllerBase
 		if (file is null || file.Length == 0)
 			return BadRequest("No file uploaded.");
 
-		var groups  = await _db.ItemGroup_cs.ToListAsync();
-		var types   = await _db.ItemType_s.ToListAsync();
-		var uoms    = await _db.UOM_cs.ToListAsync();
+		var groups = await _db.ItemGroup_cs.ToListAsync();
+		var types = await _db.ItemType_s.ToListAsync();
+		var uoms = await _db.UOM_cs.ToListAsync();
 
 		var created = 0;
-		var errors  = new List<string>();
-		var rows    = _excel.ReadRows(file.OpenReadStream());
+		var errors = new List<string>();
+		var rows = _excel.ReadRows(file.OpenReadStream());
 
 		for (int i = 0; i < rows.Count; i++)
 		{
-			var row           = rows[i];
-			var rowNum        = i + 2;
-			var internalCode  = row.Length > 0 ? row[0] : "";
-			var nameEn        = row.Length > 1 ? row[1] : "";
-			var nameAr        = row.Length > 2 ? row[2] : "";
-			var groupName     = row.Length > 3 ? row[3] : "";
-			var typeName      = row.Length > 4 ? row[4] : "";
-			var uomName       = row.Length > 5 ? row[5] : "";
-			var desc          = row.Length > 6 ? row[6] : "";
+			var row = rows[i];
+			var rowNum = i + 2;
+			var internalCode = row.Length > 0 ? row[0] : "";
+			var nameEn = row.Length > 1 ? row[1] : "";
+			var nameAr = row.Length > 2 ? row[2] : "";
+			var groupName = row.Length > 3 ? row[3] : "";
+			var typeName = row.Length > 4 ? row[4] : "";
+			var uomName = row.Length > 5 ? row[5] : "";
+			var desc = row.Length > 6 ? row[6] : "";
 
 			if (string.IsNullOrWhiteSpace(internalCode) && string.IsNullOrWhiteSpace(nameEn)) continue;
 
@@ -141,8 +141,8 @@ public class ItemsController : ControllerBase
 			{ errors.Add($"Row {rowNum}: No item types exist in the system."); continue; }
 
 			var uom = uoms.FirstOrDefault(u =>
-				string.Equals(u.Name_EN,      uomName, StringComparison.OrdinalIgnoreCase) ||
-				string.Equals(u.Name_AR,      uomName, StringComparison.OrdinalIgnoreCase) ||
+				string.Equals(u.Name_EN, uomName, StringComparison.OrdinalIgnoreCase) ||
+				string.Equals(u.Name_AR, uomName, StringComparison.OrdinalIgnoreCase) ||
 				string.Equals(u.InternalCode, uomName, StringComparison.OrdinalIgnoreCase));
 			if (uom is null && !string.IsNullOrWhiteSpace(uomName))
 			{ errors.Add($"Row {rowNum}: UOM \"{uomName}\" not found."); continue; }
@@ -152,14 +152,14 @@ public class ItemsController : ControllerBase
 			_db.Item_cs.Add(new Item_cs
 			{
 				InternalCode = internalCode,
-				Name_EN      = nameEn,
-				Name_AR      = string.IsNullOrWhiteSpace(nameAr) ? null : nameAr,
-				ItemGroupId  = group?.ItemGroupId ?? 0,
-				ItemTypeId   = type.ItemTypeId,
+				Name_EN = nameEn,
+				Name_AR = string.IsNullOrWhiteSpace(nameAr) ? null : nameAr,
+				ItemGroupId = group?.ItemGroupId ?? 0,
+				ItemTypeId = type.ItemTypeId,
 				DefaultUOMId = uom.Id,
-				Description  = string.IsNullOrWhiteSpace(desc) ? null : desc,
-				IsActive     = true,
-				InsertedBy   = insertedBy,
+				Description = string.IsNullOrWhiteSpace(desc) ? null : desc,
+				IsActive = true,
+				InsertedBy = insertedBy,
 				InsertedDate = DateTime.UtcNow,
 			});
 			created++;
@@ -194,22 +194,22 @@ public class ItemsController : ControllerBase
 		if (id != e.Id) return BadRequest();
 		var existing = await _db.Item_cs.FindAsync(id);
 		if (existing is null) return NotFound();
-		existing.InternalCode          = e.InternalCode;
-		existing.Name_EN               = e.Name_EN;
-		existing.Name_AR               = e.Name_AR;
-		existing.ItemGroupId           = e.ItemGroupId;
-		existing.ItemTypeId            = e.ItemTypeId;
-		existing.DefaultUOMId          = e.DefaultUOMId;
-		existing.DefaultPurchaseUOMId  = e.DefaultPurchaseUOMId;
-		existing.AcceptSelling         = e.AcceptSelling;
-		existing.DefaultSellingUOMId   = e.DefaultSellingUOMId;
-		existing.Description           = e.Description;
-		existing.OpeningStock          = e.OpeningStock;
-		existing.ExpirationDate        = e.ExpirationDate;
-		existing.MinOrderQuantity      = e.MinOrderQuantity;
-		existing.SafetyStock           = e.SafetyStock;
-		existing.IsActive              = e.IsActive;
-		existing.IsFavorite            = e.IsFavorite;
+		existing.InternalCode = e.InternalCode;
+		existing.Name_EN = e.Name_EN;
+		existing.Name_AR = e.Name_AR;
+		existing.ItemGroupId = e.ItemGroupId;
+		existing.ItemTypeId = e.ItemTypeId;
+		existing.DefaultUOMId = e.DefaultUOMId;
+		existing.DefaultPurchaseUOMId = e.DefaultPurchaseUOMId;
+		existing.AcceptSelling = e.AcceptSelling;
+		existing.DefaultSellingUOMId = e.DefaultSellingUOMId;
+		existing.Description = e.Description;
+		existing.OpeningStock = e.OpeningStock;
+		existing.ExpirationDate = e.ExpirationDate;
+		existing.MinOrderQuantity = e.MinOrderQuantity;
+		existing.SafetyStock = e.SafetyStock;
+		existing.IsActive = e.IsActive;
+		existing.IsFavorite = e.IsFavorite;
 		await _db.SaveChangesAsync();
 		return Ok(existing);
 	}
@@ -263,7 +263,7 @@ public class ItemsController : ControllerBase
 	[HttpDelete("bulk")]
 	public async Task<IActionResult> DeleteBulk([FromBody] List<long> ids)
 	{
-		var usedIn  = await GetUsedInTablesAsync(ids);
+		var usedIn = await GetUsedInTablesAsync(ids);
 		var safeIds = ids.Where(id => !usedIn.ContainsKey(id)).ToList();
 		var blocked = usedIn.Select(kv => new { itemId = kv.Key, tables = kv.Value }).ToList();
 
@@ -315,13 +315,14 @@ public class ItemsController : ControllerBase
 			.Include(b => b.UOM)
 			.FirstOrDefaultAsync(b => b.Barcode == code);
 		if (b is null) return NotFound();
-		return Ok(new {
-			itemId    = b.ItemId,
-			uomId     = b.UOMId,
+		return Ok(new
+		{
+			itemId = b.ItemId,
+			uomId = b.UOMId,
 			itemNameEN = b.Item!.Name_EN,
 			itemNameAR = b.Item!.Name_AR,
-			uomNameEN  = b.UOM!.Name_EN,
-			uomNameAR  = b.UOM!.Name_AR,
+			uomNameEN = b.UOM!.Name_EN,
+			uomNameAR = b.UOM!.Name_AR,
 		});
 	}
 
