@@ -1,0 +1,371 @@
+<app-regular-operation-header
+  [title]="(isEdit() ? 'purchase_receipts.edit_title' : 'purchase_receipts.add_title') | translate"
+  icon="ki-outline ki-basket-ok"
+  color="success"
+  (cancel)="back()" />
+
+@if (readonly()) {
+<div class="alert alert-warning d-flex align-items-center mb-6 py-3">
+  <i class="ki-outline ki-information-5 fs-3 me-3 text-warning"></i>
+  <span>{{ 'purchase_receipts.readonly_notice' | translate }}</span>
+</div>
+}
+
+<div class="card">
+  <div class="card-body">
+  <fieldset [disabled]="readonly()">
+
+    <!-- Row 1: Internal Code · Supplier · Company · Currency -->
+    <div class="row g-4 mb-4">
+      <div class="col-3">
+        <label class="form-label required">{{ 'common.internal_code' | translate }}</label>
+        <input class="form-control" [(ngModel)]="form.internalCode" name="internalCode"
+          [placeholder]="'common.internal_code' | translate">
+      </div>
+      <div class="col-3">
+        <label class="form-label required">{{ 'purchase_receipts.supplier' | translate }}</label>
+        <app-custom-select-input
+          [options]="supplierOptions"
+          [value]="form.supplierId"
+          (valueChange)="onSupplierChange($event)"
+          [placeholder]="'common.select' | translate"
+          [searchPlaceholder]="'common.search' | translate" />
+      </div>
+      <div class="col-3">
+        <label class="form-label required">{{ 'purchase_receipts.company' | translate }}</label>
+        <select class="form-select" [(ngModel)]="form.companyId" name="companyId">
+          <option [ngValue]="null">— {{ 'common.select' | translate }} —</option>
+          @for (c of companies(); track c.id) {
+          <option [ngValue]="c.id">{{ isRtl ? (c.name_AR || c.name_EN) : c.name_EN }}</option>
+          }
+        </select>
+      </div>
+      <div class="col-3">
+        <label class="form-label required">{{ 'purchase_receipts.currency' | translate }}</label>
+        <select class="form-select" [(ngModel)]="form.currencyId" name="currencyId">
+          <option [ngValue]="null">— {{ 'common.select' | translate }} —</option>
+          @for (c of currencies(); track c.id) {
+          <option [ngValue]="c.id">{{ currencyLabel(c) }}</option>
+          }
+        </select>
+      </div>
+    </div>
+
+    <!-- Row 2: Supplier Delivery Note · Posting Date · Posting Time · Warehouse -->
+    <div class="row g-4 mb-8">
+      <div class="col-3">
+        <label class="form-label">{{ 'purchase_receipts.supplier_delivery_note' | translate }}</label>
+        <input class="form-control" [(ngModel)]="form.supplierDeliveryNote" name="supplierDeliveryNote"
+          [placeholder]="'purchase_receipts.supplier_delivery_note' | translate">
+      </div>
+      <div class="col-3">
+        <label class="form-label required">{{ 'purchase_receipts.posting_date' | translate }}</label>
+        <input class="form-control" type="date" [(ngModel)]="form.postingDate" name="postingDate">
+      </div>
+      <div class="col-3">
+        <label class="form-label">{{ 'purchase_receipts.posting_time' | translate }}</label>
+        <input class="form-control" type="time" [(ngModel)]="form.postingTime" name="postingTime">
+      </div>
+      <div class="col-3">
+        <label class="form-label">{{ 'purchase_receipts.accepted_warehouse' | translate }}</label>
+        <app-custom-select-input
+          [options]="warehouseOptions"
+          [value]="form.setWarehouseId"
+          (valueChange)="form.setWarehouseId = $event ? +$event : null"
+          [placeholder]="'common.none' | translate"
+          [searchPlaceholder]="'common.search' | translate" />
+      </div>
+    </div>
+
+    <div class="row g-4 mb-8">
+      <div class="col-6">
+        <label class="form-label">{{ 'purchase_receipts.remarks' | translate }}</label>
+        <textarea class="form-control" [(ngModel)]="form.remarks" name="remarks" rows="2"
+          [placeholder]="'purchase_receipts.remarks' | translate"></textarea>
+      </div>
+    </div>
+
+    <!-- Items sub-section -->
+    <div class="separator separator-dashed mb-6"></div>
+    <div class="d-flex align-items-center mb-5">
+      <i class="ki-outline ki-basket fs-4 me-2 text-success"></i>
+      <span class="fs-6 fw-bold">{{ 'purchase_receipts.items' | translate }}</span>
+    </div>
+
+    @if (!readonly()) {
+    <div class="row g-4 mb-4 align-items-end">
+      <div class="col-3">
+        <label class="form-label required">{{ 'purchase_receipts.item' | translate }}</label>
+        <app-custom-select-input
+          [options]="itemOptions"
+          [value]="newItem.itemId || null"
+          (valueChange)="onItemPicked($event)"
+          [placeholder]="'common.select' | translate"
+          [searchPlaceholder]="'common.search' | translate" />
+      </div>
+      <div class="col-2">
+        <label class="form-label required">{{ 'purchase_receipts.uom' | translate }}</label>
+        <app-custom-select-input
+          [options]="uomOptions"
+          [value]="newItem.uomId || null"
+          (valueChange)="newItem.uomId = $event ? +$event : 0"
+          [placeholder]="'common.select' | translate"
+          [searchPlaceholder]="'common.search' | translate" />
+      </div>
+      <div class="col-2">
+        <label class="form-label required">{{ 'purchase_receipts.quantity' | translate }}</label>
+        <input class="form-control" type="number" min="0" step="0.001"
+          [(ngModel)]="newItem.quantity" name="newItemQty">
+      </div>
+      <div class="col-2">
+        <label class="form-label required">{{ 'purchase_receipts.rate' | translate }}</label>
+        <input class="form-control" type="number" min="0" step="0.01"
+          [(ngModel)]="newItem.rate" name="newItemRate">
+      </div>
+      <div class="col-3 d-flex align-items-end">
+        <button class="btn btn-success w-100" type="button" (click)="addItemRow()" [disabled]="addingItem()">
+          @if (addingItem()) {
+            <span class="spinner-border spinner-border-sm me-1"></span>
+          } @else {
+            <i class="ki-outline ki-plus fs-4 me-1"></i>
+          }
+          {{ 'common.add' | translate }}
+        </button>
+      </div>
+    </div>
+    }
+
+    @if (displayItems.length > 0) {
+    <div class="table-responsive mb-8">
+      <table class="table table-row-dashed table-row-gray-300 align-middle gs-4 gy-2 mb-0">
+        <thead>
+          <tr class="fw-bold text-muted fs-7 bg-light-success">
+            <th class="w-40px">#</th>
+            <th>{{ 'purchase_receipts.item' | translate }}</th>
+            <th>{{ 'purchase_receipts.uom' | translate }}</th>
+            <th class="w-100px">{{ 'purchase_receipts.quantity' | translate }}</th>
+            <th class="w-120px">{{ 'purchase_receipts.rate' | translate }}</th>
+            <th class="w-120px">{{ 'purchase_receipts.amount' | translate }}</th>
+            @if (!readonly()) { <th class="w-60px"></th> }
+          </tr>
+        </thead>
+        <tbody>
+          @if (isEdit()) {
+            @for (r of apiItems(); track r.id) {
+            <tr>
+              <td class="text-muted">{{ $index + 1 }}</td>
+              <td class="fw-semibold">{{ itemName(r.itemId) }}</td>
+              <td>{{ uomName(r.uomId) }}</td>
+              <td>{{ r.quantity }}</td>
+              <td>{{ r.rate | number:'1.2-2' }}</td>
+              <td>{{ r.amount | number:'1.2-2' }}</td>
+              @if (!readonly()) {
+              <td>
+                <button class="btn btn-icon btn-sm btn-light-danger" type="button" (click)="removeApiItem(r.id)"
+                  [title]="'common.delete' | translate">
+                  <i class="ki-outline ki-trash fs-5"></i>
+                </button>
+              </td>
+              }
+            </tr>
+            }
+          } @else {
+            @for (r of pendingItems(); track $index) {
+            <tr>
+              <td class="text-muted">{{ $index + 1 }}</td>
+              <td class="fw-semibold">{{ itemName(r.itemId) }}</td>
+              <td>{{ uomName(r.uomId) }}</td>
+              <td>{{ r.quantity }}</td>
+              <td>{{ r.rate | number:'1.2-2' }}</td>
+              <td>{{ (r.quantity * r.rate) | number:'1.2-2' }}</td>
+              @if (!readonly()) {
+              <td>
+                <button class="btn btn-icon btn-sm btn-light-danger" type="button" (click)="removePendingItem($index)"
+                  [title]="'common.delete' | translate">
+                  <i class="ki-outline ki-trash fs-5"></i>
+                </button>
+              </td>
+              }
+            </tr>
+            }
+          }
+        </tbody>
+        <tfoot>
+          <tr class="fw-bold bg-light-success">
+            <td colspan="5" class="text-end pe-4">{{ 'purchase_receipts.items_total' | translate }}</td>
+            <td>{{ itemsTotal | number:'1.2-2' }}</td>
+            <td></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+    } @else {
+    <div class="text-center text-muted py-6">
+      <i class="ki-outline ki-basket fs-2x d-block mb-2"></i>
+      {{ 'purchase_receipts.no_items' | translate }}
+    </div>
+    }
+
+    <!-- Taxes sub-section -->
+    <div class="separator separator-dashed mb-6"></div>
+    <div class="d-flex align-items-center mb-5">
+      <i class="ki-outline ki-percentage fs-4 me-2 text-success"></i>
+      <span class="fs-6 fw-bold">{{ 'purchase_receipts.taxes' | translate }}</span>
+    </div>
+
+    @if (!readonly()) {
+    <div class="row g-4 mb-4 align-items-end">
+      <div class="col-4">
+        <label class="form-label required">{{ 'purchase_receipts.tax_description' | translate }}</label>
+        <input class="form-control" [(ngModel)]="newTax.description" name="newTaxDescription"
+          [placeholder]="'purchase_receipts.tax_description_placeholder' | translate">
+      </div>
+      <div class="col-3">
+        <label class="form-label">{{ 'purchase_receipts.tax_rate' | translate }}</label>
+        <input class="form-control" type="number" min="0" step="0.01"
+          [(ngModel)]="newTax.rate" name="newTaxRate"
+          [placeholder]="'purchase_receipts.tax_rate_placeholder' | translate">
+      </div>
+      <div class="col-3">
+        <label class="form-label">{{ 'purchase_receipts.tax_amount' | translate }}</label>
+        <input class="form-control" type="number" min="0" step="0.01"
+          [(ngModel)]="newTax.amount" name="newTaxAmount"
+          [placeholder]="'purchase_receipts.tax_amount_hint' | translate">
+      </div>
+      <div class="col-2 d-flex align-items-end">
+        <button class="btn btn-success w-100" type="button" (click)="addTaxRow()" [disabled]="addingTax()">
+          @if (addingTax()) {
+            <span class="spinner-border spinner-border-sm me-1"></span>
+          } @else {
+            <i class="ki-outline ki-plus fs-4 me-1"></i>
+          }
+          {{ 'common.add' | translate }}
+        </button>
+      </div>
+    </div>
+    }
+
+    @if (displayTaxes.length > 0) {
+    <div class="table-responsive mb-8">
+      <table class="table table-row-dashed table-row-gray-300 align-middle gs-4 gy-2 mb-0">
+        <thead>
+          <tr class="fw-bold text-muted fs-7 bg-light-success">
+            <th class="w-40px">#</th>
+            <th>{{ 'purchase_receipts.tax_description' | translate }}</th>
+            <th class="w-100px">{{ 'purchase_receipts.tax_rate' | translate }}</th>
+            <th class="w-120px">{{ 'purchase_receipts.tax_amount' | translate }}</th>
+            @if (!readonly()) { <th class="w-60px"></th> }
+          </tr>
+        </thead>
+        <tbody>
+          @if (isEdit()) {
+            @for (r of apiTaxes(); track r.id) {
+            <tr>
+              <td class="text-muted">{{ $index + 1 }}</td>
+              <td class="fw-semibold">{{ r.description }}</td>
+              <td>{{ r.rate != null ? (r.rate + '%') : '—' }}</td>
+              <td>{{ r.amount | number:'1.2-2' }}</td>
+              @if (!readonly()) {
+              <td>
+                <button class="btn btn-icon btn-sm btn-light-danger" type="button" (click)="removeApiTax(r.id)"
+                  [title]="'common.delete' | translate">
+                  <i class="ki-outline ki-trash fs-5"></i>
+                </button>
+              </td>
+              }
+            </tr>
+            }
+          } @else {
+            @for (r of pendingTaxes(); track $index) {
+            <tr>
+              <td class="text-muted">{{ $index + 1 }}</td>
+              <td class="fw-semibold">{{ r.description }}</td>
+              <td>{{ r.rate != null ? (r.rate + '%') : '—' }}</td>
+              <td>{{ r.amount | number:'1.2-2' }}</td>
+              @if (!readonly()) {
+              <td>
+                <button class="btn btn-icon btn-sm btn-light-danger" type="button" (click)="removePendingTax($index)"
+                  [title]="'common.delete' | translate">
+                  <i class="ki-outline ki-trash fs-5"></i>
+                </button>
+              </td>
+              }
+            </tr>
+            }
+          }
+        </tbody>
+        <tfoot>
+          <tr class="fw-bold bg-light-success">
+            <td colspan="3" class="text-end pe-4">{{ 'purchase_receipts.taxes_total' | translate }}</td>
+            <td>{{ taxesTotal | number:'1.2-2' }}</td>
+            <td></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+    } @else {
+    <div class="text-center text-muted py-6">
+      <i class="ki-outline ki-percentage fs-2x d-block mb-2"></i>
+      {{ 'purchase_receipts.no_taxes' | translate }}
+    </div>
+    }
+
+    <!-- Grand total -->
+    <div class="separator separator-dashed mb-4"></div>
+    <div class="d-flex justify-content-end">
+      <div class="w-250px">
+        <div class="d-flex justify-content-between fs-6 fw-bold py-2">
+          <span>{{ 'purchase_receipts.grand_total' | translate }}</span>
+          <span class="text-success">{{ grandTotal | number:'1.2-2' }}</span>
+        </div>
+      </div>
+    </div>
+
+  </fieldset>
+  </div>
+
+  @if (!readonly()) {
+  <app-regular-operation-actions
+    [saving]="saving()"
+    [savingNew]="savingNew()"
+    (save)="save()"
+    (saveAndNew)="saveAndNew()"
+    (reset)="resetForm()" />
+  }
+</div>
+
+@if (savedRows().length > 0) {
+<div class="card mt-6">
+  <div class="card-header min-h-50px">
+    <h3 class="card-title fs-6 fw-bold text-success">
+      <i class="ki-outline ki-check-circle fs-4 text-success me-2"></i>
+      {{ savedRows().length }}
+      {{ (savedRows().length === 1 ? 'purchase_receipts.saved_rows_title_single' : 'purchase_receipts.saved_rows_title') | translate }}
+    </h3>
+  </div>
+  <div class="card-body p-0">
+    <table class="table table-row-dashed table-row-gray-300 align-middle gs-4 gy-2 mb-0">
+      <thead>
+        <tr class="fw-bold text-success bg-light-success fs-7">
+          <th class="w-40px">#</th>
+          <th>{{ 'common.internal_code' | translate }}</th>
+          <th>{{ 'purchase_receipts.supplier' | translate }}</th>
+          <th>{{ 'purchase_receipts.posting_date' | translate }}</th>
+          <th>{{ 'purchase_receipts.items' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of savedRows(); track $index) {
+        <tr>
+          <td class="text-muted">{{ $index + 1 }}</td>
+          <td class="fw-semibold">{{ row.internalCode }}</td>
+          <td>{{ row.supplierName }}</td>
+          <td>{{ row.postingDate }}</td>
+          <td><span class="badge badge-light-success">{{ row.itemCount }}</span></td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
+}

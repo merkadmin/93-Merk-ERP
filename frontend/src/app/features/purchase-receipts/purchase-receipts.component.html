@@ -1,0 +1,32 @@
+<app-regular-list-header-with-actions [title]="'purchase_receipts.title' | translate" icon="ki-outline ki-basket-ok"
+  color="primary" [selectedCount]="selectedIds().size" (add)="addNew()" (refresh)="load()"
+  (deleteSelected)="deleteSelected()" />
+
+<app-regular-list-search-actions [fields]="searchFields" (filterChange)="onFilterChange($event)" />
+
+<app-custom-table-with-pagination entity="purchase-receipts" [rows]="filtered" [cellRenderers]="cellRenderers"
+  (metadataLoaded)="columnMeta.set($event)" (selectionChange)="selectedIds.set($event)" [reload]="metaReloadKey()">
+  <ng-template #rowActions let-r>
+    <div class="d-inline-flex align-items-center gap-2">
+      <button class="btn btn-icon btn-sm btn-light-primary" (click)="edit(r)" [title]="'common.edit' | translate">
+        <i class="ki-outline ki-pencil fs-4"></i>
+      </button>
+      @if (r.stockTransactionStatusId === STATUS_DRAFT) {
+      <button class="btn btn-sm btn-light-success" (click)="submitReceipt(r)">
+        {{ 'common.submit' | translate }}
+      </button>
+      }
+      @if (r.stockTransactionStatusId === STATUS_SUBMITTED) {
+      <button class="btn btn-sm btn-light-warning" (click)="reissueReceipt(r)">
+        {{ 'common.reissue' | translate }}
+      </button>
+      <button class="btn btn-sm btn-light-danger" (click)="cancelReceipt(r)">
+        {{ 'common.cancel' | translate }}
+      </button>
+      }
+      <button class="btn btn-icon btn-sm btn-light-danger" (click)="delete(r.id)" [title]="'common.delete' | translate">
+        <i class="ki-outline ki-trash fs-4"></i>
+      </button>
+    </div>
+  </ng-template>
+</app-custom-table-with-pagination>

@@ -39,6 +39,9 @@ public class MerkDbContext : DbContext
 	public DbSet<Supplier_cs> Supplier_cs { get; set; }
 	public DbSet<Company_cs> Company_cs { get; set; }
 	public DbSet<CurrencyExchangeRate_cs> CurrencyExchangeRate_cs { get; set; }
+	public DbSet<PurchaseReceipt> PurchaseReceipt { get; set; }
+	public DbSet<PurchaseReceiptItem> PurchaseReceiptItem { get; set; }
+	public DbSet<PurchaseReceiptTax> PurchaseReceiptTax { get; set; }
 
 	protected override void OnModelCreating(ModelBuilder m)
 	{
@@ -255,9 +258,51 @@ public class MerkDbContext : DbContext
 		m.Entity<CurrencyExchangeRate_cs>()
 			.HasOne(x => x.ToCurrency).WithMany().HasForeignKey(x => x.ToCurrencyId).OnDelete(DeleteBehavior.Restrict);
 
+		// ── Purchase Receipt (header + Items + Taxes) ────────────────────────────
+		m.Entity<PurchaseReceipt>().HasKey(e => e.Id);
+		m.Entity<PurchaseReceipt>().Property(e => e.InternalCode).HasColumnType("nvarchar(50)");
+		m.Entity<PurchaseReceipt>().Property(e => e.SupplierDeliveryNote).HasColumnType("nvarchar(100)");
+		m.Entity<PurchaseReceipt>().Property(e => e.Remarks).HasColumnType("nvarchar(max)");
+		m.Entity<PurchaseReceipt>().Property(e => e.TotalQty).HasColumnType("decimal(18,4)");
+		m.Entity<PurchaseReceipt>().Property(e => e.Total).HasColumnType("decimal(18,4)");
+		m.Entity<PurchaseReceipt>().Property(e => e.TaxTotal).HasColumnType("decimal(18,4)");
+		m.Entity<PurchaseReceipt>().Property(e => e.GrandTotal).HasColumnType("decimal(18,4)");
+		m.Entity<PurchaseReceipt>().HasIndex(e => e.InternalCode).IsUnique();
+		m.Entity<PurchaseReceipt>()
+			.HasOne(p => p.Supplier).WithMany().HasForeignKey(p => p.SupplierId).OnDelete(DeleteBehavior.Restrict);
+		m.Entity<PurchaseReceipt>()
+			.HasOne(p => p.Company).WithMany().HasForeignKey(p => p.CompanyId).OnDelete(DeleteBehavior.Restrict);
+		m.Entity<PurchaseReceipt>()
+			.HasOne(p => p.Currency).WithMany().HasForeignKey(p => p.CurrencyId).OnDelete(DeleteBehavior.Restrict);
+		m.Entity<PurchaseReceipt>()
+			.HasOne(p => p.SetWarehouse).WithMany().HasForeignKey(p => p.SetWarehouseId).OnDelete(DeleteBehavior.Restrict);
+		m.Entity<PurchaseReceipt>()
+			.HasOne(p => p.StockTransactionStatus).WithMany().HasForeignKey(p => p.StockTransactionStatusId).OnDelete(DeleteBehavior.Restrict);
+
+		m.Entity<PurchaseReceiptItem>().HasKey(e => e.Id);
+		m.Entity<PurchaseReceiptItem>().Property(e => e.Quantity).HasColumnType("decimal(18,4)");
+		m.Entity<PurchaseReceiptItem>().Property(e => e.Rate).HasColumnType("decimal(18,4)");
+		m.Entity<PurchaseReceiptItem>().Property(e => e.Amount).HasColumnType("decimal(18,4)");
+		m.Entity<PurchaseReceiptItem>()
+			.HasOne(i => i.PurchaseReceipt).WithMany(p => p.Items).HasForeignKey(i => i.PurchaseReceiptId).OnDelete(DeleteBehavior.Cascade);
+		m.Entity<PurchaseReceiptItem>()
+			.HasOne(i => i.Item).WithMany().HasForeignKey(i => i.ItemId).OnDelete(DeleteBehavior.Restrict);
+		m.Entity<PurchaseReceiptItem>()
+			.HasOne(i => i.UOM).WithMany().HasForeignKey(i => i.UOMId).OnDelete(DeleteBehavior.Restrict);
+
+		m.Entity<PurchaseReceiptTax>().HasKey(e => e.Id);
+		m.Entity<PurchaseReceiptTax>().Property(e => e.Description).HasColumnType("nvarchar(200)").IsRequired();
+		m.Entity<PurchaseReceiptTax>().Property(e => e.Rate).HasColumnType("decimal(9,4)");
+		m.Entity<PurchaseReceiptTax>().Property(e => e.Amount).HasColumnType("decimal(18,4)");
+		m.Entity<PurchaseReceiptTax>()
+			.HasOne(t => t.PurchaseReceipt).WithMany(p => p.Taxes).HasForeignKey(t => t.PurchaseReceiptId).OnDelete(DeleteBehavior.Cascade);
+
 		m.Entity<Supplier_cs>().HasOne<User_cs>().WithMany().HasForeignKey(e => e.InsertedBy).OnDelete(DeleteBehavior.SetNull);
 		m.Entity<Company_cs>().HasOne<User_cs>().WithMany().HasForeignKey(e => e.InsertedBy).OnDelete(DeleteBehavior.SetNull);
 		m.Entity<CurrencyExchangeRate_cs>().HasOne<User_cs>().WithMany().HasForeignKey(e => e.InsertedBy).OnDelete(DeleteBehavior.SetNull);
+		m.Entity<PurchaseReceipt>().HasOne<User_cs>().WithMany().HasForeignKey(e => e.InsertedBy).OnDelete(DeleteBehavior.SetNull);
+		m.Entity<PurchaseReceiptItem>().HasOne<User_cs>().WithMany().HasForeignKey(e => e.InsertedBy).OnDelete(DeleteBehavior.SetNull);
+		m.Entity<PurchaseReceiptTax>().HasOne<User_cs>().WithMany().HasForeignKey(e => e.InsertedBy).OnDelete(DeleteBehavior.SetNull);
 
 		m.Entity<Currency_s>().HasData(
 			new Currency_s { Id = 1L, Code = "EGP", Name_EN = "Egyptian Pound", Name_AR = "جنيه مصري", Symbol = "ج.م" },
@@ -404,7 +449,8 @@ public class MerkDbContext : DbContext
 			new TableName_s { Id = 31, Name = "SupplierType_s", EntityKey = null },
 			new TableName_s { Id = 32, Name = "Supplier_cs", EntityKey = "suppliers" },
 			new TableName_s { Id = 33, Name = "Company_cs", EntityKey = "companies" },
-			new TableName_s { Id = 34, Name = "CurrencyExchangeRate_cs", EntityKey = "currency-exchange-rates" }
+			new TableName_s { Id = 34, Name = "CurrencyExchangeRate_cs", EntityKey = "currency-exchange-rates" },
+			new TableName_s { Id = 35, Name = "PurchaseReceipt", EntityKey = "purchase-receipts" }
 		);
 
 		m.Entity<BarcodeType_s>().HasData(
