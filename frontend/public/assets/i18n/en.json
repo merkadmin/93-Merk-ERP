@@ -292,15 +292,11 @@
     "toggle_step": "Mark as done",
     "progress_label": "{{done}} of {{total}} completed",
     "all_done": "You're all set! Great job setting up your workspace.",
-    "step_warehouse_category_title": "Create a Warehouse Category",
-    "step_warehouse_category_desc": "Set up categories to organize your warehouses (e.g., Main Store, Cold Storage).",
     "step_warehouse_title": "Create a Warehouse",
     "step_warehouse_desc": "Add your first warehouse where inventory will be stored and managed.",
-    "step_item_group_title": "Add Item Groups",
-    "step_item_group_desc": "Group your items (e.g., Raw Materials, Finished Goods) for easier management.",
     "step_item_title": "Add Your First Item",
     "step_item_desc": "Create inventory items with UOM, barcodes, and stock settings.",
-    "step_stock_recon_title": "Run a Stock Reconciliation",
-    "step_stock_recon_desc": "Record your opening stock quantities to bring the system up to date."
+    "step_stock_recon_title": "Enter Opening Stock",
+    "step_stock_recon_desc": "Create an Opening Balance entry to record your initial inventory quantities."
   }
 }

@@ -57,17 +57,16 @@
       <!-- Steps -->
       <div class="guide-steps">
         @for (step of steps; track step.key; let i = $index) {
-          <div class="guide-step" [class.guide-step-done]="isCompleted(step.key)">
+          <div class="guide-step" [class.guide-step-done]="isDone(step.key)" [class.guide-step-pending]="!isDone(step.key)">
 
-            <!-- Checkbox -->
-            <button class="guide-step-check" (click)="toggleStep(step.key)"
-                    [title]="'guide.toggle_step' | translate">
-              @if (isCompleted(step.key)) {
+            <!-- Status circle -->
+            <div class="guide-step-check">
+              @if (isDone(step.key)) {
                 <i class="ki-outline ki-check fs-7"></i>
               } @else {
                 <span class="guide-step-num">{{ i + 1 }}</span>
               }
-            </button>
+            </div>
 
             <!-- Step content -->
             <div class="guide-step-body">
@@ -75,10 +74,12 @@
               <div class="guide-step-desc">{{ 'guide.step_' + step.key + '_desc' | translate }}</div>
             </div>
 
-            <!-- Go button -->
-            <button class="guide-step-go" (click)="goTo(step.route)" [title]="'guide.go' | translate">
-              <i class="ki-outline ki-arrow-right fs-5"></i>
-            </button>
+            <!-- Go button — hidden when already done -->
+            @if (!isDone(step.key)) {
+              <button class="guide-step-go" (click)="goTo(step.route)" [title]="'guide.go' | translate">
+                <i class="ki-outline ki-arrow-right fs-5"></i>
+              </button>
+            }
 
           </div>
         }

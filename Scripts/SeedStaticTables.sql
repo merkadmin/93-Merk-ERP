@@ -66,10 +66,11 @@ SET IDENTITY_INSERT ItemType_s OFF;
 SET IDENTITY_INSERT WareHouseType_s ON;
 MERGE WareHouseType_s AS target
 USING (VALUES
-    (1, 'Pharmaceutical Warehouses',             N'مستودعات الأدوية'                            ),
-    (2, 'Consumables & PPE Warehouses',          N'مستودعات المستهلكات ومعدات الوقاية الشخصية' ),
-    (3, 'Medical Device & Equipment Warehouses', N'مستودعات الأجهزة والمعدات الطبية'           ),
-    (4, 'Sterile Surgical Warehouses',           N'مستودعات العمليات الجراحية المعقمة'         )
+    (1, 'Pharmaceutical Warehouses',             N'مخازن الأدوية'                            ),
+    (2, 'Consumables & PPE Warehouses',          N'مخازن المستهلكات ومعدات الوقاية الشخصية' ),
+    (3, 'Medical Device & Equipment Warehouses', N'مخازن الأجهزة والمعدات الطبية'           ),
+    (4, 'Sterile Surgical Warehouses',           N'مخازن العمليات الجراحية المعق'         ),
+	(5, 'General Warehouses', N'فئة عامة للمخازن')
 ) AS src (Id, Name_EN, Name_AR)
 ON  target.Id = src.Id
 WHEN NOT MATCHED THEN
@@ -162,6 +163,46 @@ USING (VALUES
 ON  target.Id = src.Id
 WHEN NOT MATCHED THEN
     INSERT (Id, Name) VALUES (src.Id, src.Name);
+
+-- ── WareHouseCategory_cs (default row) ───────────────────────────────────────
+--    Seeded once so new installations have a warehouse category out of the box.
+--    WareHouseTypeId 5 = General Warehouses (seeded above in WareHouseType_s).
+SET IDENTITY_INSERT WareHouseCategory_cs ON;
+MERGE WareHouseCategory_cs AS target
+USING (VALUES
+    (1, N'Default Warehouse Category', N'فئة المستودع الافتراضية', 5)
+) AS src (Id, Name_EN, Name_AR, WareHouseTypeId)
+ON  target.Id = src.Id
+WHEN NOT MATCHED THEN
+    INSERT (Id, Name_EN, Name_AR, IsActive, WareHouseTypeId, InsertedDate)
+    VALUES (src.Id, src.Name_EN, src.Name_AR, 1, src.WareHouseTypeId, GETUTCDATE());
+SET IDENTITY_INSERT WareHouseCategory_cs OFF;
+
+-- ── ItemGroup_cs (default row) ────────────────────────────────────────────────
+--    Seeded once so new installations have a root item group out of the box.
+SET IDENTITY_INSERT ItemGroup_cs ON;
+MERGE ItemGroup_cs AS target
+USING (VALUES
+    (1, N'Default Group', N'المجموعة الافتراضية')
+) AS src (ItemGroupId, Name_EN, Name_AR)
+ON  target.ItemGroupId = src.ItemGroupId
+WHEN NOT MATCHED THEN
+    INSERT (ItemGroupId, Name_EN, Name_AR, IsMain, IsActive, IsFavorite, InsertedDate)
+    VALUES (src.ItemGroupId, src.Name_EN, src.Name_AR, 1, 1, 0, GETUTCDATE());
+SET IDENTITY_INSERT ItemGroup_cs OFF;
+
+-- ── UOMConversionGroup_cs (default row) ────────────────────────────────────────────────
+--    Seeded once so new installations have a root item group out of the box.
+SET IDENTITY_INSERT UOMConversionGroup_cs ON;
+MERGE UOMConversionGroup_cs AS target
+USING (VALUES
+    (1, N'Default Group', N'المجموعة الافتراضية', 'URG-000', 1, 1)
+) AS src (Id, Name_EN, Name_AR, InternalCode, IsActive, IsFavorite)
+ON  target.Id = src.Id
+WHEN NOT MATCHED THEN
+    INSERT (Id, Name_EN, Name_AR, InternalCode, IsActive, IsFavorite)
+    VALUES (src.Id, src.Name_EN, src.Name_AR, src.InternalCode, 1, 1);
+SET IDENTITY_INSERT ItemGroup_cs OFF;
 
 -- ── Done ──────────────────────────────────────────────────────────────────────
 PRINT 'Static tables seeded successfully.';

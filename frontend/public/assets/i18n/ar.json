@@ -292,15 +292,11 @@
     "toggle_step": "تحديد كمكتمل",
     "progress_label": "{{done}} من {{total}} مكتمل",
     "all_done": "أحسنت! تم إعداد بيئة العمل بنجاح.",
-    "step_warehouse_category_title": "إنشاء تصنيف مخزن",
-    "step_warehouse_category_desc": "أنشئ تصنيفات لتنظيم مخازنك مثل: المخزن الرئيسي، مخزن التبريد.",
     "step_warehouse_title": "إنشاء مخزن",
     "step_warehouse_desc": "أضف أول مخزن لتخزين المخزون وإدارته.",
-    "step_item_group_title": "إضافة مجموعات الأصناف",
-    "step_item_group_desc": "صنّف أصنافك مثل: مواد خام، منتجات نهائية.",
     "step_item_title": "إضافة أول صنف",
     "step_item_desc": "أنشئ أصناف المخزون مع وحدات القياس والباركود وإعدادات المخزون.",
-    "step_stock_recon_title": "تسوية المخزون",
-    "step_stock_recon_desc": "سجّل كميات المخزون الافتتاحية لتحديث النظام."
+    "step_stock_recon_title": "مخزون بداية المدة",
+    "step_stock_recon_desc": "أنشئ قيد رصيد افتتاحي لتسجيل كميات المخزون الابتدائية."
   }
 }

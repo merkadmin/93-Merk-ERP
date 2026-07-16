@@ -1,7 +1,8 @@
 import { DOCUMENT } from '@angular/common';
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
+import { ApiService } from '../../../core/api.service';
 
 interface GuideStep {
   key: string;
@@ -9,15 +10,18 @@ interface GuideStep {
   icon: string;
 }
 
-const COMPLETED_KEY = 'merk_guide_completed';
+interface GuideStatus {
+  warehouse:  boolean;
+  item:       boolean;
+  stockRecon: boolean;
+}
+
 const DISMISSED_KEY = 'merk_guide_dismissed';
 
 const STEPS: GuideStep[] = [
-  { key: 'warehouse_category', route: '/stock/warehouse-categories/operation', icon: 'ki-abstract-28' },
-  { key: 'warehouse',          route: '/stock/warehouses/operation',           icon: 'ki-home-2'     },
-  { key: 'item_group',         route: '/stock/item-groups/operation',          icon: 'ki-category'   },
-  { key: 'item',               route: '/stock/items/operation',                icon: 'ki-package'    },
-  { key: 'stock_recon',        route: '/stock/stock-reconciliation/operation', icon: 'ki-document'   },
+  { key: 'warehouse',  route: '/stock/warehouses/operation',           icon: 'ki-home-2'  },
+  { key: 'item',       route: '/stock/items/operation',                icon: 'ki-package' },
+  { key: 'stock_recon', route: '/stock/stock-reconciliation/operation', icon: 'ki-document' },
 ];
 
 @Component({
@@ -27,7 +31,8 @@ const STEPS: GuideStep[] = [
   templateUrl: './getting-started-guide.component.html',
   styleUrl: './getting-started-guide.component.less',
 })
-export class GettingStartedGuideComponent {
+export class GettingStartedGuideComponent implements OnInit {
+  private api    = inject(ApiService);
   private router = inject(Router);
   private doc    = inject(DOCUMENT);
 
@@ -36,13 +41,20 @@ export class GettingStartedGuideComponent {
   steps       = STEPS;
   isOpen      = signal(false);
   isDismissed = signal(this._loadDismissed());
-  completed   = signal<Set<string>>(this._loadCompleted());
+  dbStatus    = signal<GuideStatus>({ warehouse: false, item: false, stockRecon: false });
 
-  completedCount = computed(() => this.steps.filter(s => this.completed().has(s.key)).length);
+  completedCount = computed(() => this.steps.filter(s => this._isDone(s.key)).length);
   progress       = computed(() => Math.round((this.completedCount() / this.steps.length) * 100));
   allDone        = computed(() => this.completedCount() === this.steps.length);
 
-  toggle() { this.isOpen.update(v => !v); }
+  ngOnInit() { this._loadStatus(); }
+
+  isDone(key: string) { return this._isDone(key); }
+
+  toggle() {
+    this.isOpen.update(v => !v);
+    if (this.isOpen()) this._loadStatus();
+  }
 
   dismiss() {
     this.isOpen.set(false);
@@ -50,27 +62,23 @@ export class GettingStartedGuideComponent {
     localStorage.setItem(DISMISSED_KEY, '1');
   }
 
-  isCompleted(key: string) { return this.completed().has(key); }
-
-  toggleStep(key: string) {
-    this.completed.update(set => {
-      const next = new Set(set);
-      if (next.has(key)) next.delete(key); else next.add(key);
-      localStorage.setItem(COMPLETED_KEY, JSON.stringify([...next]));
-      return next;
-    });
-  }
-
   goTo(route: string) {
     this.router.navigate([route]);
     this.isOpen.set(false);
   }
 
-  private _loadCompleted(): Set<string> {
-    try {
-      const json = localStorage.getItem(COMPLETED_KEY);
-      return json ? new Set(JSON.parse(json)) : new Set();
-    } catch { return new Set(); }
+  private _isDone(key: string): boolean {
+    const s = this.dbStatus();
+    switch (key) {
+      case 'warehouse':  return s.warehouse;
+      case 'item':       return s.item;
+      case 'stock_recon': return s.stockRecon;
+      default:           return false;
+    }
+  }
+
+  private _loadStatus() {
+    this.api.get<GuideStatus>('gettingstarted/status').subscribe(s => this.dbStatus.set(s));
   }
 
   private _loadDismissed(): boolean {

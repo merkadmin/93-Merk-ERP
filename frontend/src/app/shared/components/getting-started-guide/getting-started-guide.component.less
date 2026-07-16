@@ -152,16 +152,43 @@
   padding: 10px 16px;
   transition: background 0.12s;
 
-  &:hover { background: var(--bs-secondary-bg); }
+  // ── Pending: bold & highlighted ──────────────────────────────────────────
+  &.guide-step-pending {
+    &:hover { background: var(--bs-secondary-bg); }
 
+    .guide-step-title {
+      font-weight: 700;
+      color: var(--bs-gray-900);
+    }
+
+    .guide-step-check {
+      border-color: var(--bs-primary);
+      color: var(--bs-primary);
+    }
+  }
+
+  // ── Done: muted & de-emphasised ──────────────────────────────────────────
   &.guide-step-done {
-    .guide-step-title { text-decoration: line-through; color: var(--bs-secondary-color); }
+    opacity: 0.6;
+
+    .guide-step-title {
+      font-weight: 400;
+      color: var(--bs-secondary-color);
+      text-decoration: line-through;
+      text-decoration-color: rgba(var(--bs-secondary-rgb), 0.4);
+    }
+
     .guide-step-desc  { color: var(--bs-tertiary-color); }
-    .guide-step-check { background: rgba(var(--bs-success-rgb), 0.12); color: var(--bs-success); border-color: var(--bs-success); }
+
+    .guide-step-check {
+      background: rgba(var(--bs-success-rgb), 0.12);
+      color: var(--bs-success);
+      border-color: var(--bs-success);
+    }
   }
 }
 
-// Checkbox circle
+// Status circle (read-only — no cursor pointer, no hover)
 .guide-step-check {
   flex-shrink: 0;
   display: flex;
@@ -172,12 +199,8 @@
   border-radius: 50%;
   border: 2px solid var(--bs-border-color);
   background: transparent;
-  cursor: pointer;
-  transition: background 0.15s, border-color 0.15s, color 0.15s;
   color: var(--bs-secondary-color);
   margin-top: 1px;
-
-  &:hover { border-color: var(--bs-primary); color: var(--bs-primary); }
 }
 
 .guide-step-num {
